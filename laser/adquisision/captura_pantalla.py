@@ -23,8 +23,8 @@ print(rm.list_resources())
 
 #imports, setear instrumentos
 #%%
-osci = TDS1002B('USB0::0x0699::0x0363::C102220::INSTR')
-# fungen = AFG3021B('USB0::0x0699::0x0346::C034166::INSTR')
+osci = TDS1002B("USB0::0x0699::0x0363::C108012::INSTR")
+# fungen = AFG3021B('USB0::0x0699::0x0363::C108012::INSTR')
 #%%
 # Creamos listas vacias para guardar los datos
 tiempos = []
@@ -61,11 +61,12 @@ df = pd.DataFrame({
     "ResolucionVCH1": deltaVCH1, 
     # "ResolucionVCH2": deltaVCH2
 })
-f = 186 # Frecuancia Hz
+L = 87 # cm
+f = 610 # Frecuancia Hz
 p = 2.38 # potencia (corriente al laser en A)
-ventana = "p" # p: pico, s: subida o v: , pc:  pulso completo 
+ventana = "s" # p: pico, s: subida o v: , pc:  pulso completo 
 save_folder = r"C:\Users\publico\Documents\labo-5-G6-2026-2C\labo-5-2026\laser\datos\\"
-df.to_csv(save_folder+f"laser_chopper_f{f:.0f}_p{p:.2f}_{ventana}_{counter}.csv", index=False, header=True)
+df.to_csv(save_folder+f"laser_chopper_L{L:.1f}_f{f:.0f}_p{p:.2f}_{ventana}_{counter}.csv", index=False, header=True)
 counter += 1
 # %%
 counter = 1
