@@ -1,0 +1,157 @@
+{
+  "medicion": "amarillas_2",
+  "fecha": "2026-09-10_191504",
+  "cuadros": 1665,
+  "duracion_s": 68.1095,
+  "fps_efectivo": 24.446,
+  "velocidad_agitador_rpm": 1600.0,
+  "particulas_seguidas": 2,
+  "deteccion_pct": {
+    "a": [
+      100.0,
+      99.94
+    ],
+    "b": [
+      0.0,
+      0.0
+    ]
+  },
+  "reloj": "frame_timestamp de la capa de captura: instante en que llego el cuadro, corriente arriba del cocinado de TD. Una fila por cuadro de camara (sin repetidos). Cuantizado a ~1/256 s por la precision float32 del CHOP: promedia sobre varios cuadros para el periodo.",
+  "camara": {
+    "a": {
+      "fps": 20.0,
+      "repetidos_descartados": 6921
+    }
+  },
+  "dt_mediano_s": 0.033325,
+  "dt_maximo_s": 1.189209,
+  "dt_desvio_s": 0.09284,
+  "saltos": 11,
+  "cortes_de_reloj": 11,
+  "imagenes_repetidas_descartadas": 0,
+  "fps_nominal": 60.0,
+  "cam_a_vista_superior": {
+    "origen": "camera",
+    "archivo_video": "",
+    "espejado": false,
+    "resolucion_px": [
+      1920,
+      1080
+    ],
+    "resolucion_analisis_px": [
+      960,
+      540
+    ],
+    "calibracion": {
+      "punto_a_px": [
+        250.22556390977442,
+        558.8422360248446
+      ],
+      "punto_b_px": [
+        1381.0526315789475,
+        583.9652173913043
+      ],
+      "distancia_real_mm": 122.0,
+      "escala_mm_por_px": 0.10785902351843185,
+      "centro_vortice_px": [
+        844.0,
+        513.0
+      ]
+    },
+    "deteccion": {
+      "particula_oscura": false,
+      "nivel_negro": 0.0,
+      "nivel_blanco": 1.0,
+      "umbral": 0.5,
+      "area_minima_px": 6,
+      "roi_px": [
+        843.0,
+        556.8,
+        242.0
+      ],
+      "pesos_color_rgb_offset": [
+        0.33989695134353237,
+        0.39804719729984844,
+        -0.6621745353372659,
+        -0.011690633429550599
+      ]
+    }
+  },
+  "cam_b_vista_lateral": {
+    "origen": "off",
+    "archivo_video": "",
+    "espejado": false,
+    "resolucion_px": [
+      640,
+      480
+    ],
+    "resolucion_analisis_px": [
+      640,
+      480
+    ],
+    "calibracion": {
+      "punto_a_px": [
+        200.0,
+        240.0
+      ],
+      "punto_b_px": [
+        440.0,
+        240.0
+      ],
+      "distancia_real_mm": 100.0,
+      "escala_mm_por_px": 0.4166666666666667,
+      "centro_vortice_px": [
+        640.0,
+        360.0
+      ]
+    },
+    "deteccion": {
+      "particula_oscura": false,
+      "nivel_negro": 0.0,
+      "nivel_blanco": 1.0,
+      "umbral": 0.5,
+      "area_minima_px": 30,
+      "roi_px": [
+        320.0,
+        240.0,
+        0.0
+      ],
+      "pesos_color_rgb_offset": [
+        0.2126,
+        0.7152,
+        0.0722,
+        0.0
+      ]
+    }
+  },
+  "columnas_csv": [
+    "frame",
+    "t_s",
+    "t_b_s",
+    "a_p1_ok",
+    "a_p1_x_px",
+    "a_p1_y_px",
+    "a_p1_x_mm",
+    "a_p1_y_mm",
+    "a_p1_area",
+    "a_p2_ok",
+    "a_p2_x_px",
+    "a_p2_y_px",
+    "a_p2_x_mm",
+    "a_p2_y_mm",
+    "a_p2_area",
+    "b_p1_ok",
+    "b_p1_h_px",
+    "b_p1_z_px",
+    "b_p1_h_mm",
+    "b_p1_z_mm",
+    "b_p1_area",
+    "b_p2_ok",
+    "b_p2_h_px",
+    "b_p2_z_px",
+    "b_p2_h_mm",
+    "b_p2_z_mm",
+    "b_p2_area"
+  ],
+  "convencion": "Cada camara tiene su propia escala. Origen abajo-izquierda de SU imagen, x a la derecha, y hacia arriba. cam_a (vista superior) da el plano horizontal (a_x_mm, a_y_mm). cam_b (vista lateral) da la ALTURA en b_z_mm; b_h_mm es su coordenada horizontal. Las posiciones son absolutas respecto del borde de la imagen: el centro del vortice se calcula despues, a partir de la trayectoria. t_s arranca en 0 al comenzar la medicion y sale del reloj indicado en el campo \"reloj\"; revisa dt_maximo_s y saltos antes de derivar velocidades."
+}
