@@ -1,0 +1,22 @@
+{
+  "nombre": "TARRO_CHICO_AGUA_3",
+  "fecha": "2026-09-17_192346",
+  "velocidad_agitador_rpm": 1200.0,
+  "duracion_pedida_s": 3.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 92,
+      "duracion_s": 3.0390625,
+      "t0_absoluto_s": 98699.140625,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}

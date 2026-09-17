@@ -1,0 +1,22 @@
+{
+  "nombre": "TARRO_GRANDE_AGUA_4",
+  "fecha": "2026-09-17_184217",
+  "velocidad_agitador_rpm": 1000.0,
+  "duracion_pedida_s": 3.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 92,
+      "duracion_s": 3.03125,
+      "t0_absoluto_s": 96210.1796875,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}
