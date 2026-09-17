@@ -1,0 +1,22 @@
+{
+  "nombre": "barrido_velocidades_palangana_2",
+  "fecha": "2026-09-17_163108",
+  "velocidad_agitador_rpm": 1000.0,
+  "duracion_pedida_s": 3.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 89,
+      "duracion_s": 3.0234375,
+      "t0_absoluto_s": 88341.046875,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}

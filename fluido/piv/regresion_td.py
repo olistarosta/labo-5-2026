@@ -38,9 +38,17 @@ def direccion(fondo, objetivo, otro, separable_min=0.25):
     return w / (d @ w)
 
 
-def imagen_piv(ruta, colores, clahe):
-    """Cuadro -> lo que entra al bucle en TD: proyeccion del glitter, escala p99.9, CLAHE."""
+def imagen_piv(ruta, colores, modo, tam=None):
+    """Cuadro -> lo que entra al bucle en TD: proyeccion del glitter y preprocesamiento.
+
+    tam: (ancho, alto) con el que analizo TD. Importa: sin licencia comercial TD limita
+    los TOP a 1280 px, asi que una grabacion de 1920 se analiza reducida.
+    """
     im = cv2.imread(ruta, cv2.IMREAD_UNCHANGED)
+    if tam and (im.shape[1], im.shape[0]) != tuple(tam):
+        # Bilineal: es lo que hace TD al bajar la imagen al limite de 1280 px
+        # (medido contra el TOP: diferencia maxima 0.002 en 0..1).
+        im = cv2.resize(im, tuple(tam), interpolation=cv2.INTER_LINEAR)
     if im.ndim == 2:
         rgb = np.repeat(im[..., None], 3, axis=2)
     else:
@@ -48,97 +56,99 @@ def imagen_piv(ruta, colores, clahe):
     rgb = np.flipud(rgb).astype(np.float32) / 255.0      # TD: fila 0 ABAJO
     f, g, p = (np.array(colores[k]) for k in ('fondo', 'glitter', 'particula'))
     v = np.maximum((rgb - f) @ direccion(f, g, p), 0.0)
-    tope = max(float(np.percentile(v, 99.9)), 1e-6)
-    gris = np.rint(np.clip(v / tope, 0, 1) * 255).astype(np.uint8)
-    return preprocesar(gris, clahe=clahe)
+    return preprocesar(v, modo=modo)
 
 
-grab, ruta_json = sys.argv[1], sys.argv[2]
-npares = int(sys.argv[3]) if len(sys.argv) > 3 else 20
-p = json.load(open(ruta_json, encoding='utf-8'))
-salida = os.path.dirname(ruta_json)
-ventanas = p['piv']['ventanas_px']
-clahe = p['piv']['preprocesamiento'] == 'CLAHE'
-BRILLO = {'fondo': [0, 0, 0], 'glitter': [1, 1, 1], 'particula': [0, 0, 0]}   # analisis sin colores
+if __name__ == '__main__':
+    grab, ruta_json = sys.argv[1], sys.argv[2]
+    npares = int(sys.argv[3]) if len(sys.argv) > 3 else 20
+    p = json.load(open(ruta_json, encoding='utf-8'))
+    salida = os.path.dirname(ruta_json)
+    ventanas = p['piv']['ventanas_px']
+    modo = 'clahe' if p['piv']['preprocesamiento'] == 'CLAHE' else 'lineal'
+    pico_min = float(p['piv'].get('relacion_picos_minima', 1.0))
+    BRILLO = {'fondo': [0, 0, 0], 'glitter': [1, 1, 1], 'particula': [0, 0, 0]}   # analisis sin colores
 
-for L, cam in p['camaras'].items():
-    sub = os.path.join(grab, 'camara_' + L)
-    if not os.path.isdir(sub):
-        sub = grab
-    cal = cam['calibracion']
-    s = cal['mm_por_px'] or 1.0
-    dt = cam['tiempo']['dt_por_cuadro_s']
-    roi = (cal['centro_vortice_px'][0], cal['centro_vortice_px'][1], cal['radio_roi_px'])
-    colores = cam.get('colores', BRILLO)
-    tiempos = np.loadtxt(os.path.join(sub, 'tiempos.csv'), delimiter=',', skiprows=1, ndmin=2)
-    sep = int(p['piv'].get('separacion_cuadros', 1))       # pares (k, k + sep)
-    nint = np.maximum(np.rint(np.diff(tiempos[:, 1]) / dt), 1).astype(int)
-    # Mismo paso temporal que TD: diferencia de horas (simulación) o dt fijo por los intervalos
-    # entre los dos cuadros (cámara).
-    cum = np.r_[0, np.cumsum(nint)]
-    if cam['tiempo'].get('reloj_exacto'):
-        dt_par = tiempos[sep:, 1] - tiempos[:-sep, 1]
-    else:
-        dt_par = (cum[sep:] - cum[:-sep]) * dt
-    csv = np.loadtxt(os.path.join(salida, cam['csv']), delimiter=',', skiprows=1)
-    cuadros = sorted(os.listdir(os.path.join(sub, 'cuadros')))
-    leer = lambda k: imagen_piv(os.path.join(sub, 'cuadros', cuadros[k]), colores, clahe)
+    for L, cam in p['camaras'].items():
+        sub = os.path.join(grab, 'camara_' + L)
+        if not os.path.isdir(sub):
+            sub = grab
+        cal = cam['calibracion']
+        tam = cal.get('resolucion_analisis_px')
+        s = cal['mm_por_px'] or 1.0
+        dt = cam['tiempo']['dt_por_cuadro_s']
+        roi = (cal['centro_vortice_px'][0], cal['centro_vortice_px'][1], cal['radio_roi_px'])
+        colores = cam.get('colores', BRILLO)
+        tiempos = np.loadtxt(os.path.join(sub, 'tiempos.csv'), delimiter=',', skiprows=1, ndmin=2)
+        sep = int(p['piv'].get('separacion_cuadros', 1))       # pares (k, k + sep)
+        nint = np.maximum(np.rint(np.diff(tiempos[:, 1]) / dt), 1).astype(int)
+        # Mismo paso temporal que TD: diferencia de horas (simulación) o dt fijo por los intervalos
+        # entre los dos cuadros (cámara).
+        cum = np.r_[0, np.cumsum(nint)]
+        if cam['tiempo'].get('reloj_exacto'):
+            dt_par = tiempos[sep:, 1] - tiempos[:-sep, 1]
+        else:
+            dt_par = (cum[sep:] - cum[:-sep]) * dt
+        csv = np.loadtxt(os.path.join(salida, cam['csv']), delimiter=',', skiprows=1)
+        cuadros = sorted(os.listdir(os.path.join(sub, 'cuadros')))
+        leer = lambda k: imagen_piv(os.path.join(sub, 'cuadros', cuadros[k]), colores, modo, tam)
 
-    h, w = leer(0).shape
-    ref = PIV((h, w), ventanas=ventanas, roi=roi)
-    difs, marcas = [], []
-    for k in range(min(npares, cam['pares_analizados'])):
-        u, v, interp = ref.par(leer(k), leer(k + sep))
-        m = ref.dentro
-        filas = csv[csv[:, 0] == k]
-        dtp = dt_par[k]
-        du_td, dv_td = filas[:, 6] / s * dtp, filas[:, 7] / s * dtp
-        it_td = filas[:, 8] > 0.5
-        ok = ~interp[m] & ~it_td
-        difs.append(np.hypot(du_td - u[m], dv_td - v[m])[ok])
-        marcas.append(np.mean(interp[m] != it_td))
-    dd = np.concatenate(difs)
-    print('== camara %s: TD contra piv_core, %d pares, %d vectores ==' % (L, len(difs), dd.size))
-    print('   |d_TD - d_ref| px: mediana %.5f  p95 %.5f  maxima %.5f   marca de interpolado distinta: %.2f %%'
-          % (np.median(dd), np.percentile(dd, 95), dd.max(), 100 * np.mean(marcas)))
+        h, w = leer(0).shape
+        ref = PIV((h, w), ventanas=ventanas, roi=roi, pico_min=pico_min)
+        difs, marcas = [], []
+        for k in range(min(npares, cam['pares_analizados'])):
+            u, v, malo = ref.par(leer(k), leer(k + sep))
+            m = ref.dentro
+            filas = csv[csv[:, 0] == k]
+            dtp = dt_par[k]
+            du_td, dv_td = filas[:, 6] / s * dtp, filas[:, 7] / s * dtp
+            malo_td = filas[:, 8] < 0.5                       # columna valido
+            ok = ~malo[m] & ~malo_td
+            difs.append(np.hypot(du_td - u[m], dv_td - v[m])[ok])
+            marcas.append(np.mean(malo[m] != malo_td))
+        dd = np.concatenate(difs)
+        print('== camara %s: TD contra piv_core, %d pares, %d vectores ==' % (L, len(difs), dd.size))
+        print('   |d_TD - d_ref| px: mediana %.5f  p95 %.5f  maxima %.5f   marca de descartado distinta: %.2f %%'
+              % (np.median(dd), np.percentile(dd, 95), dd.max(), 100 * np.mean(marcas)))
 
-    info = p.get('grabacion_info', {})
-    sim = info.get('camaras', {}).get(L, info).get('simulacion')
-    if not sim:
-        continue
+        info = p.get('grabacion_info', {})
+        sim = info.get('camaras', {}).get(L, info).get('simulacion')
+        if not sim:
+            continue
 
-    # Centro de cada par: el seguido si hay _centro.csv; si no, el marcado.
-    k_par = csv[:, 0].astype(int)
-    if 'csv_centro' in cam:
-        cen = np.loadtxt(os.path.join(salida, cam['csv_centro']), delimiter=',', skiprows=1, ndmin=2)
-        cx_par, cy_par, t_par = cen[:, 2], cen[:, 3], cen[:, 1]
-        uc, vc = np.gradient(cx_par, t_par), np.gradient(cy_par, t_par)
-        cx, cy = cx_par[k_par], cy_par[k_par]
-        ucv, vcv = uc[k_par], vc[k_par]
-        if tiempos.shape[1] >= 4:
-            n = len(cen)
-            real_x = 0.5 * (tiempos[:n, 2] + tiempos[sep:n + sep, 2])
-            real_y = 0.5 * (tiempos[:n, 3] + tiempos[sep:n + sep, 3])
-            e = np.hypot(cx_par - real_x, cy_par - real_y)
-            seg = cen[:, 6] > 0.5
-            print('   centro seguido contra el real: %d de %d pares con particula, error mediana %.3f px, '
-                  'p95 %.3f px, max %.3f px' % (seg.sum(), n, np.median(e[seg]), np.percentile(e[seg], 95), e[seg].max()))
-    else:
-        cx, cy = cal['centro_vortice_px']
-        ucv = vcv = 0.0
+        # Centro de cada par: el seguido si hay _centro.csv; si no, el marcado.
+        csv = csv[csv[:, 8] > 0.5]                            # solo lo medido
+        k_par = csv[:, 0].astype(int)
+        if 'csv_centro' in cam:
+            cen = np.loadtxt(os.path.join(salida, cam['csv_centro']), delimiter=',', skiprows=1, ndmin=2)
+            cx_par, cy_par, t_par = cen[:, 2], cen[:, 3], cen[:, 1]
+            uc, vc = np.gradient(cx_par, t_par), np.gradient(cy_par, t_par)
+            cx, cy = cx_par[k_par], cy_par[k_par]
+            ucv, vcv = uc[k_par], vc[k_par]
+            if tiempos.shape[1] >= 4:
+                n = len(cen)
+                real_x = 0.5 * (tiempos[:n, 2] + tiempos[sep:n + sep, 2])
+                real_y = 0.5 * (tiempos[:n, 3] + tiempos[sep:n + sep, 3])
+                e = np.hypot(cx_par - real_x, cy_par - real_y)
+                seg = cen[:, 6] > 0.5
+                print('   centro seguido contra el real: %d de %d pares con particula, error mediana %.3f px, '
+                      'p95 %.3f px, max %.3f px' % (seg.sum(), n, np.median(e[seg]), np.percentile(e[seg], 95), e[seg].max()))
+        else:
+            cx, cy = cal['centro_vortice_px']
+            ucv = vcv = 0.0
 
-    w0, rc = sim['omega_nucleo_rad_s'], sim['radio_nucleo_px']
-    x, y = csv[:, 2] - cx, csv[:, 3] - cy
-    uu, vv = csv[:, 6] / s - ucv, csv[:, 7] / s - vcv
-    r = np.hypot(x, y)
-    om = (-uu * y + vv * x) / r ** 2
-    vr = (uu * x + vv * y) / r
-    print('   w(r) contra el Rankine inyectado (w0=%.2f, Rc=%.0f px), %d pares:' %
-          (w0, rc, len(np.unique(csv[:, 0]))))
-    for lo, hi in ((20, 60), (60, 110), (110, 160), (160, 260)):
-        k = (r >= lo) & (r < hi)
-        wt = np.where(r[k] <= rc, w0, w0 * rc * rc / r[k] ** 2)
-        dts = dt * sep                                      # la cuerda depende del intervalo del par
-        real = np.mean(2 * np.sin(wt * dts / 2) / dts)
-        print('     r %3d-%3d px   w %.4f  real %.4f  error %+6.2f %%   v_r %+5.2f px/s' %
-              (lo, hi, om[k].mean(), real, 100 * (om[k].mean() / real - 1), vr[k].mean()))
+        w0, rc = sim['omega_nucleo_rad_s'], sim['radio_nucleo_px']
+        x, y = csv[:, 2] - cx, csv[:, 3] - cy
+        uu, vv = csv[:, 6] / s - ucv, csv[:, 7] / s - vcv
+        r = np.hypot(x, y)
+        om = (-uu * y + vv * x) / r ** 2
+        vr = (uu * x + vv * y) / r
+        print('   w(r) contra el Rankine inyectado (w0=%.2f, Rc=%.0f px), %d pares:' %
+              (w0, rc, len(np.unique(csv[:, 0]))))
+        for lo, hi in ((20, 60), (60, 110), (110, 160), (160, 260)):
+            k = (r >= lo) & (r < hi)
+            wt = np.where(r[k] <= rc, w0, w0 * rc * rc / r[k] ** 2)
+            dts = dt * sep                                      # la cuerda depende del intervalo del par
+            real = np.mean(2 * np.sin(wt * dts / 2) / dts)
+            print('     r %3d-%3d px   w %.4f  real %.4f  error %+6.2f %%   v_r %+5.2f px/s' %
+                  (lo, hi, om[k].mean(), real, 100 * (om[k].mean() / real - 1), vr[k].mean()))
