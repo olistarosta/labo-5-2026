@@ -81,14 +81,22 @@ if __name__ == '__main__':
         colores = cam.get('colores', BRILLO)
         tiempos = np.loadtxt(os.path.join(sub, 'tiempos.csv'), delimiter=',', skiprows=1, ndmin=2)
         sep = int(p['piv'].get('separacion_cuadros', 1))       # pares (k, k + sep)
-        nint = np.maximum(np.rint(np.diff(tiempos[:, 1]) / dt), 1).astype(int)
+        # Cuantos intervalos abarca cada salto de hora, con el mismo criterio que TD
+        # (ext_analizar._ritmo): un cuadro perdido recien a partir de 1.7 periodos, porque la
+        # hora llega cuantizada y con jitter y hay saltos de 1.65 sin que falte nada.
+        nint = np.maximum(np.floor(np.diff(tiempos[:, 1]) / dt + 0.3), 1).astype(int)
         # Mismo paso temporal que TD: diferencia de horas (simulación) o dt fijo por los intervalos
         # entre los dos cuadros (cámara).
         cum = np.r_[0, np.cumsum(nint)]
+        # El segundo cuadro de cada par, con el mismo criterio que TD (ext_analizar._pareja): el
+        # que esta a sep intervalos DE CAMARA; si justo ese se perdio, el anterior que exista.
+        pareja = np.array([max(int(np.searchsorted(cum, cum[k] + sep, side='right')) - 1, k + 1)
+                           for k in range(len(cum) - 1)])
+        kk = np.arange(len(pareja))
         if cam['tiempo'].get('reloj_exacto'):
-            dt_par = tiempos[sep:, 1] - tiempos[:-sep, 1]
+            dt_par = tiempos[pareja, 1] - tiempos[kk, 1]
         else:
-            dt_par = (cum[sep:] - cum[:-sep]) * dt
+            dt_par = (cum[pareja] - cum[kk]) * dt
         csv = np.loadtxt(os.path.join(salida, cam['csv']), delimiter=',', skiprows=1)
         cuadros = sorted(os.listdir(os.path.join(sub, 'cuadros')))
         leer = lambda k: imagen_piv(os.path.join(sub, 'cuadros', cuadros[k]), colores, modo, tam)
@@ -97,7 +105,7 @@ if __name__ == '__main__':
         ref = PIV((h, w), ventanas=ventanas, roi=roi, pico_min=pico_min)
         difs, marcas = [], []
         for k in range(min(npares, cam['pares_analizados'])):
-            u, v, malo = ref.par(leer(k), leer(k + sep))
+            u, v, malo = ref.par(leer(k), leer(pareja[k]))
             m = ref.dentro
             filas = csv[csv[:, 0] == k]
             dtp = dt_par[k]
@@ -127,8 +135,8 @@ if __name__ == '__main__':
             ucv, vcv = uc[k_par], vc[k_par]
             if tiempos.shape[1] >= 4:
                 n = len(cen)
-                real_x = 0.5 * (tiempos[:n, 2] + tiempos[sep:n + sep, 2])
-                real_y = 0.5 * (tiempos[:n, 3] + tiempos[sep:n + sep, 3])
+                real_x = 0.5 * (tiempos[:n, 2] + tiempos[pareja[:n], 2])
+                real_y = 0.5 * (tiempos[:n, 3] + tiempos[pareja[:n], 3])
                 e = np.hypot(cx_par - real_x, cy_par - real_y)
                 seg = cen[:, 6] > 0.5
                 print('   centro seguido contra el real: %d de %d pares con particula, error mediana %.3f px, '

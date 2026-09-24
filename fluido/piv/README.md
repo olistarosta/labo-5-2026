@@ -8,6 +8,10 @@ Todo está en `TDS GLITTER/TDS GLITTER.toe`, en dos componentes con su propia in
 | `/project1/grabar` | graba **una o dos cámaras en color**, cuadro a cuadro (TIFF sin pérdida), con la hora de cada cuadro |
 | `/project1/analizar` | PIV + seguimiento de la **partícula central**; guarda CSV por cámara en `data glitter` e imágenes de cada etapa para el póster |
 
+Para entender qué hace el análisis con cada imagen (proyección de color, CLAHE, PIV con
+deformación de ventana y detección de la partícula), explicado simple y con figuras:
+[como_funciona_el_analisis.md](como_funciona_el_analisis.md).
+
 Cámara **A** = vista superior (da x, y). Cámara **B** = vista lateral (da la altura z).
 Adentro de cada componente, la red está ordenada de izquierda a derecha con placas de
 comentario por etapa, y `agents_md` tiene la guía completa.
@@ -59,7 +63,9 @@ comprobar el análisis.
    - `Color del fondo` → click en el agua; pasa solo a `Color del glitter` → click sobre un
      destello; pasa solo a `Color de la partícula` → click sobre la partícula.
      El estado dice si cada imagen quedó separada del otro color.
-3. Página **Partícula**: `Seguir partícula central`, `Umbral` y `Área mínima`. Con
+3. Página **Partícula**: `Seguir partícula central`, `Umbral (fracción del pico)` y
+   `Área mínima`. El umbral es **relativo**: 0.5 = la mitad del brillo de la partícula en ese
+   cuadro, así que no depende de haber marcado el color exacto ni de la luz. Con
    `Mostrar = 3 partícula` se ve qué pasa el umbral: la partícula entera en rojo y nada más.
 4. **ANALIZAR TODO**. Cada análisis va a su propia carpeta (nunca pisa uno anterior):
 
@@ -120,8 +126,17 @@ y la correlación solo mide lo que falta corregir. En la superposición se ve: e
 y escalado para que el color buscado dé 1. Es la dirección de máximo contraste que además
 borra el otro color.
 
-**Partícula**: manchas del umbral dentro del ROI, la más cercana al centro del par anterior,
-centroide pesado por la intensidad (subpíxel). El centro de un par es el promedio de sus dos cuadros.
+**Partícula**: en cada cuadro se busca el pico de la proyección de la partícula adentro del ROI y
+se umbraliza a una fracción de ese pico (`Umbral`, 0.5 por defecto); de las manchas que quedan,
+la más cercana al centro del par anterior, con el centroide pesado por la intensidad (subpíxel).
+El centro de un par es el promedio de sus dos cuadros. Si el pico no se destaca del resto del ROI
+(al menos 4 veces el percentil 99.9), la partícula no está a la vista y ese par queda sin seguir.
+
+Antes el umbral era absoluto y **no se encontraba la partícula en ninguna medición**: el color
+marcado era amarillo puro (0.91, 1.00, 0.00) pero la partícula adentro del agua se ve amarillo
+pálido (0.61, 0.71, 0.47), así que su proyección llegaba a 0.27 y el umbral estaba en 0.49.
+Con el umbral relativo, en la grabación DINAMICA queda una sola mancha de 90 a 200 px en todos
+los cuadros, entre 10 y miles de veces más brillante que el fondo.
 
 **PIV**, como PIVlab: CLAHE → FFT en 3 pasadas con deformación de ventana (Lanczos) → pico
 gaussiano de 3 puntos → validación (mediana local 3, desvío estándar 8). Lo que no pasa la
@@ -149,23 +164,31 @@ la GPU (GLSL) o bajar la resolución de análisis.
 
 ### Imágenes para el póster
 
-Página **Poster**: `Zoom` (px), `Ventana de ejemplo` (o `Marcar = Ventana de ejemplo`, que
-elige dónde se hace el zoom) y **GUARDAR IMÁGENES**. Guarda en `imagenes/camaraA_cuadros<k>_<k+s>/` del
-**último análisis** terminado de esa grabación (si no hay ninguno, crea la carpeta), una
-imagen de cada tipo por iteración (3 por defecto, o las que diga `Iteraciones`):
+Página **Poster**: `Zoom` (px de la imagen, por defecto 512) y **GUARDAR IMÁGENES**. Guarda
+las imágenes del par que se está mirando (`Par a mirar`) en
+`imagenes/camaraA_cuadros<k>_<j>/` del **último análisis** terminado de esa grabación (si no
+hay ninguno, crea la carpeta). ANALIZAR TODO también las guarda, del par que se estaba mirando.
 
-| archivo | |
-|---|---|
-| `ventanas_iterN.png` | **lo que considera la iteración N**. Zoom de 384 × 384 px con los cuadros A (rojo claro) y B (azul claro) sin deformar: cada destello aparece dos veces, separado por lo que se movió. Encima: una grilla negra con las ventanas de interrogación de esa iteración, de su tamaño real (128, 64, 32 px), en el lugar donde se leen en el cuadro B, p + d(p)/2, con d = el campo de la iteración anterior (en el cuadro A se leen en p − d(p)/2); en la 1 la grilla es recta; en las siguientes, debajo, la misma grilla sin mover en gris claro como referencia. En cada ventana, una flecha violeta con el **desplazamiento promedio que calculó la iteración** (ampliado, mismo factor en todas, valor en `leeme.txt`). |
-| `correlacion_iterN_ventanaA.png`, `_ventanaB.png`, `_plano.png` | la ventana de ejemplo (`Marcar = Ventana de ejemplo`; su posición está en `leeme.txt`) tal como la compara la iteración N: leída en A y en B (ya corridas por el predictor), y su correlación cruzada. En el plano, el centro es desplazamiento cero, el cuadrado blanco la zona de búsqueda y el anillo el pico: lo que falta corregir. En la 1 el pico está lejos del centro; en las siguientes, cerca |
-| `desplazamiento_iterN.png` | el desplazamiento medido en la iteración N en todo el ROI (flechas azules; rojas = interpoladas), con la misma escala de flechas en todas las iteraciones |
+Una imagen por iteración, `grilla_iter1.png`, `grilla_iter2.png`, `grilla_iter3.png`: un
+recorte cuadrado **centrado en el vórtice** (la partícula del centro si se la encontró), con el
+cuadro de fondo tal como lo ve el PIV y encima las **ventanas de interrogación de esa
+iteración**, de su tamaño real (128, 64 y 32 px). En la primera la grilla es recta; en las
+siguientes cada ventana está corrida la mitad del desplazamiento que midió la iteración
+anterior, así que la grilla se curva siguiendo el giro. El borde del recorte cae en múltiplos
+de la ventana más grande, así que las ventanas entran enteras en todas.
 
-Con 50 % de solapamiento hay además una ventana centrada en cada esquina de las dibujadas:
-se dibuja una sí y una no para que se lea el tamaño.
+Encima de la grilla, una **flecha blanca por ventana** con el desplazamiento que midió esa
+iteración, centrada en la ventana y ampliada con el mismo factor en las tres imágenes (para que
+se puedan comparar; el factor está en `leeme.txt`). Donde la validación descartó el vector no
+hay flecha.
 
-Son **solo imágenes, sin texto**, de 2048 px, con fondo blanco. `leeme.txt` tiene los números
-para rotularlas: región y ampliación, escala en mm por px, escala de las flechas, y por
-iteración ventana, paso, vectores, interpolados y desplazamiento mediano.
+Son **solo imágenes**, de 2048 × 2048 px: sin texto ni grillas de referencia. El glitter va en
+tonos fríos sobre casi negro, la grilla en un único color cálido y las flechas en blanco con un
+contorno oscuro fino, para que se lean sobre zonas claras y oscuras. Con 50 % de
+solapamiento hay otra ventana centrada en cada esquina de las dibujadas: se dibuja una sí y
+una no para que se lea el tamaño. `leeme.txt` tiene lo necesario para rotularlas: el par, el
+intervalo entre los cuadros, la región recortada, la escala en px por cm y el tamaño de las
+ventanas de cada iteración.
 
 **Lo que no se midió no se inventa.** La validación descarta vectores (ventana sin textura,
 pico fuera del rango de búsqueda, test de mediana local, desvío estándar). Antes esos huecos se
@@ -223,13 +246,53 @@ por zonas rescata el glitter de las partes oscuras, y eso pesa más que los deci
 `camaraA_centro.csv`: `frame, t_s, xc_px, yc_px, xc_mm, yc_mm, seguido, area_px`
 (`seguido` = 0: no se encontró la partícula y se repite la última posición).
 
-Para graficar: `fluido/analisis/graficar_glitter.ipynb` (centro en el tiempo, campo medio,
-perfil v_θ(r), evolución de v(r), calidad).
+Dos notebooks leen esto:
 
-**Paso temporal**: con cámara, dt fijo por cuadro (duración / intervalos), porque la hora
-viene redondeada a ~4 ms y la cámara tiene un ritmo fijo; un cuadro perdido se detecta y ese
-par usa 2·dt. Con la simulación, la diferencia de horas de cada par (su reloj es exacto, pero
-el ritmo de TD varía).
+- `fluido/analisis/graficar_glitter.ipynb`: mira **un** análisis (centro en el tiempo, campo
+  medio, perfil v_θ(r), evolución de v(r), calidad).
+- `fluido/analisis/modelos_vortice.ipynb`: compara **todas** las mediciones contra los modelos
+  de vórtice (Rankine, Burgers, Lamb–Oseen, confinado, Vatistas), y saca circulación, radio del
+  núcleo, vorticidad, velocidad radial, viscosidad efectiva y cómo escalan con las rpm, el
+  fluido y el recipiente. Usa que los dos puntos de la calibración se marcaron diametralmente
+  opuestos, así que de ahí salen el radio y el centro del recipiente.
+
+**Paso temporal**: con cámara, dt fijo por cuadro, porque la cámara tiene un ritmo fijo y la
+hora de cada cuadro no es confiable salto a salto; un cuadro perdido se detecta y ese par usa
+2·dt. Con la simulación, la diferencia de horas de cada par (su reloj es exacto, pero el ritmo
+de TD varía).
+
+Cómo se saca ese dt, y por qué no es obvio. La hora que da el driver de la webcam viene
+**cuantizada** (a 1/128 s = 7.8 ms) y además con **jitter**. Medido sobre los 3785 intervalos
+de todas las grabaciones, tomando como unidad el período real T:
+
+| salto entre cuadros | qué es |
+|---|---|
+| 0.89 – 1.65 T (99.3 % de los casos, promedio 1.000 T, desvío 0.16 T) | un solo cuadro: cuantización y jitter |
+| nada entre 1.65 y 1.80 T | — |
+| 1.80 – 2.12 T | ahí sí falta un cuadro |
+
+Así que el período se estima **promediando los saltos de un solo cuadro** (promediar muchos
+borra la cuantización) y un salto cuenta como cuadro perdido recién a partir de **1.7 T**, que
+cae justo en el valle. Los dos números están medidos, no elegidos: comparando con el PIV el
+desplazamiento de cada par contra el de sus vecinos, los saltos de 1.55 – 1.58 T dan el mismo
+desplazamiento (no falta nada) y los de 1.80 – 2.26 T dan el doble (falta un cuadro).
+
+Tomar la mediana de los saltos como período —lo que se hacía antes— elige el valor más
+repetido, que con la cuantización es 31.25 ms y no 33.4 ms. Con ese período, cada salto de
+1.5 T parecía un cuadro perdido: ese par se dividía por un dt 1.5 veces más grande y su
+velocidad salía **2/3** de la real (rachas regulares, bien visibles en la evolución temporal),
+y de paso **todos** los demás pares quedaban 7 % altos. Las tres tomas de la palangana pasan
+de "32 fps con 4 a 7 cuadros perdidos" a **30.0 fps sin ningún cuadro perdido**.
+
+El método aguanta hasta ~30 % de cuadros realmente perdidos. Si una grabación da un fps muy
+distinto del que declara la cámara, conviene mirarla.
+
+**Pares que cruzan un cuadro perdido de verdad.** El segundo cuadro de cada par es el que está a
+`Separación` intervalos **de cámara** del primero, no a `Separación` posiciones en la lista de
+cuadros guardados. Si justo ese cuadro se perdió, se usa el anterior que exista (nunca uno más
+lejos). Antes, en DINAMICA (5 cuadros perdidos de verdad, tres seguidos), los pares que los
+cruzaban abarcaban 3 o 4 intervalos: el desplazamiento pasaba de 12 a 21 px, el PIV se quedaba
+sin rango de búsqueda, descartaba los vectores rápidos y la velocidad del par caía un 15 %.
 
 ## Validación
 

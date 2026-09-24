@@ -1,0 +1,21 @@
+Imagenes para el poster: las iteraciones del PIV sobre un mismo par de cuadros
+
+grabacion 2026-09-17_165213_DINAMICA, camara A
+par: cuadros 14 y 16, separados 0.0692 s
+
+Recorte de 512 x 512 px de la imagen, centrado en el vortice (1008, 533), ampliado a 2048 px.
+Escala del PNG: 208.9 px = 1 cm. El recorte mide 98.0 x 98.0 mm.
+
+Fondo: el segundo cuadro del par tal como entra al PIV (proyeccion de color).
+Grilla: las ventanas de interrogacion de cada iteracion, de su tamano real, en el lugar
+donde se leen. En la primera la grilla es recta; en las siguientes cada ventana se
+corre la mitad del desplazamiento que midio la iteracion anterior, asi que la grilla
+se curva siguiendo el giro. Se dibuja una ventana si y una no: con 50 % de
+solapamiento hay otra centrada en cada esquina.
+Flechas: el desplazamiento que midio esa iteracion en cada ventana dibujada, de un
+cuadro al otro, centrado en la ventana y AMPLIADO x6 (igual en las tres imagenes).
+Donde la validacion descarto el vector no hay flecha.
+
+  grilla_iter1.png: ventanas de 128 px (24.5 mm), 4 x 4 en el recorte
+  grilla_iter2.png: ventanas de 64 px (12.3 mm), 8 x 8 en el recorte
+  grilla_iter3.png: ventanas de 32 px (6.1 mm), 16 x 16 en el recorte

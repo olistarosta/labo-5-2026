@@ -1,0 +1,121 @@
+{
+  "grabacion": "GRABACIONES/2026-09-17_163150_barrido_velocidades_palangana_3",
+  "fecha_analisis": "2026-09-22 20:30:55",
+  "detenido_a_mano": false,
+  "camaras": {
+    "A": {
+      "csv": "camaraA_campo.csv",
+      "csv_centro": "camaraA_centro.csv",
+      "vista": "superior (x, y)",
+      "pares_analizados": 89,
+      "completo": true,
+      "calibracion": {
+        "mm_por_px": 0.1914701757168684,
+        "punto_a_px": [
+          483.53460972017666,
+          561.205923259429
+        ],
+        "punto_b_px": [
+          1507.1575846833578,
+          569.6882925632004
+        ],
+        "distancia_mm": 196.0,
+        "centro_vortice_px": [
+          998.1737849779087,
+          569.6882925632004
+        ],
+        "radio_roi_px": 480.7401822652928,
+        "resolucion_analisis_px": [
+          1920,
+          1080
+        ]
+      },
+      "colores": {
+        "fondo": [
+          0.0024,
+          0.0064,
+          0.009
+        ],
+        "glitter": [
+          0.737,
+          0.737,
+          0.737
+        ],
+        "particula": [
+          0.9137,
+          1.0,
+          0.0
+        ]
+      },
+      "seguimiento_particula": {
+        "activo": true,
+        "umbral": 0.5,
+        "area_minima_px": 20,
+        "pares_con_particula": 89
+      },
+      "tiempo": {
+        "dt_por_cuadro_s": 0.03322459340659341,
+        "fps": 30.098186236992454,
+        "cuadros_perdidos": 1,
+        "reloj_exacto": false,
+        "paso_temporal": "fijo: dt por cuadro x cuadros del intervalo; el dt sale de ajustar la hora contra el numero de cuadro (la hora viene cuantizada y no sirve salto a salto)"
+      },
+      "vectores_por_par": 2653,
+      "descartados_pct": 30.03002748637328
+    }
+  },
+  "piv": {
+    "metodo": "FFT multipasada con deformacion de ventana (como PIVlab)",
+    "imagen": "proyeccion de color sobre la direccion del glitter (sin la particula)",
+    "separacion_cuadros": 2,
+    "ventanas_px": [
+      128,
+      64,
+      32
+    ],
+    "solapamiento": 0.5,
+    "preprocesamiento": "CLAHE",
+    "subpixel": "gaussiano 3 puntos",
+    "deformacion": "Lanczos 8x8",
+    "validacion": "mediana local umbral 3, desvio estandar n=8",
+    "relacion_picos_minima": 1.0,
+    "rellenar_huecos": false,
+    "huecos": "no se rellenan: lo descartado va NaN"
+  },
+  "grabacion_info": {
+    "nombre": "barrido_velocidades_palangana_3",
+    "fecha": "2026-09-17_163150",
+    "velocidad_agitador_rpm": 1200.0,
+    "duracion_pedida_s": 3.0,
+    "camaras": {
+      "A": {
+        "vista": "superior (x, y)",
+        "fuente": "camara",
+        "dispositivo": "USB Video Device",
+        "espejado": false,
+        "resolucion_px": [
+          1920,
+          1080
+        ],
+        "cuadros": 91,
+        "duracion_s": 3.0234375,
+        "t0_absoluto_s": 88382.484375,
+        "reloj": "frame_timestamp del driver de la cámara"
+      }
+    }
+  },
+  "columnas_csv": {
+    "frame": "primer cuadro del par (el segundo es el que esta a piv.separacion_cuadros intervalos de camara; si justo ese se perdio, el anterior que exista)",
+    "t_s": "centro del par, desde el primer cuadro de esa camara",
+    "x_px, y_px": "centro de la ventana; origen abajo-izquierda, y hacia arriba",
+    "x_mm, y_mm": "idem en mm (en la camara B, y es la altura z)",
+    "u_mm_s, v_mm_s": "velocidad (px/s si esa camara no tiene calibracion); NaN = la validacion descarto ese vector",
+    "valido": "1 = medido; 0 = descartado por la validacion"
+  },
+  "columnas_csv_centro": {
+    "xc_px, yc_px": "centro del vortice en el instante medio del par (promedio de los dos cuadros)",
+    "xc_mm, yc_mm": "idem en mm",
+    "seguido": "1 = particula encontrada en los dos cuadros; 0 = se repite la ultima posicion (o el centro marcado si el seguimiento esta apagado)",
+    "area_px": "area de la mancha de la particula en el primer cuadro"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "grabacion": "GRABACIONES/2026-09-16_161424_particula_prueba",
+  "fecha_analisis": "2026-09-16 16:26:38",
+  "detenido_a_mano": false,
+  "camaras": {
+    "A": {
+      "csv": "camaraA_campo.csv",
+      "csv_centro": "camaraA_centro.csv",
+      "vista": "superior (x, y)",
+      "pares_analizados": 281,
+      "completo": true,
+      "calibracion": {
+        "mm_por_px": 0.19107049105637317,
+        "punto_a_px": [
+          313.237,
+          363.561
+        ],
+        "punto_b_px": [
+          972.458,
+          380.651
+        ],
+        "distancia_mm": 126.0,
+        "centro_vortice_px": [
+          639.288,
+          363.561
+        ],
+        "radio_roi_px": 331.398
+      },
+      "colores": {
+        "fondo": [
+          0.0588,
+          0.1569,
+          0.2196
+        ],
+        "glitter": [
+          0.5922,
+          0.5326,
+          0.296
+        ],
+        "particula": [
+          0.8655,
+          0.1214,
+          0.1477
+        ]
+      },
+      "seguimiento_particula": {
+        "activo": true,
+        "umbral": 0.5,
+        "area_minima_px": 20,
+        "pares_con_particula": 281
+      },
+      "tiempo": {
+        "dt_por_cuadro_s": 0.029783409722222223,
+        "fps": 33.57573928998037,
+        "cuadros_perdidos": 7,
+        "reloj_exacto": true,
+        "paso_temporal": "hora de cada cuadro (reloj exacto de la simulacion)"
+      },
+      "vectores_por_par": 1222,
+      "interpolados_pct": 0.16919931737831337
+    }
+  },
+  "piv": {
+    "metodo": "FFT multipasada con deformacion de ventana (como PIVlab)",
+    "imagen": "proyeccion de color sobre la direccion del glitter (sin la particula)",
+    "ventanas_px": [
+      128,
+      64,
+      32
+    ],
+    "solapamiento": 0.5,
+    "preprocesamiento": "CLAHE",
+    "subpixel": "gaussiano 3 puntos",
+    "deformacion": "Lanczos 8x8",
+    "validacion": "mediana local umbral 3, desvio estandar n=8"
+  },
+  "grabacion_info": {
+    "nombre": "particula_prueba",
+    "fecha": "2026-09-16_161424",
+    "velocidad_agitador_rpm": 0.0,
+    "camaras": {
+      "A": {
+        "vista": "superior (x, y)",
+        "fuente": "simulacion",
+        "dispositivo": null,
+        "espejado": false,
+        "resolucion_px": [
+          1280,
+          720
+        ],
+        "cuadros": 282,
+        "duracion_s": 8.577622299999916,
+        "t0_absoluto_s": 936.1967286,
+        "reloj": "reloj de la simulación",
+        "simulacion": {
+          "modelo": "Rankine",
+          "omega_nucleo_rad_s": 2.0,
+          "radio_nucleo_px": 110.0,
+          "centro_medio_px": [
+            640.0,
+            360.0
+          ],
+          "deriva_px": 40.0,
+          "periodo_deriva_s": 8.0,
+          "radio_sembrado_px": 330.0,
+          "destellos": 3000,
+          "particula": true,
+          "radio_particula_px": 9.0,
+          "color_fondo": [
+            0.06,
+            0.16,
+            0.22
+          ],
+          "color_glitter": [
+            0.95,
+            0.78,
+            0.35
+          ],
+          "color_particula": [
+            0.85,
+            0.12,
+            0.15
+          ]
+        }
+      }
+    }
+  },
+  "columnas_csv": {
+    "frame": "primer cuadro del par",
+    "t_s": "centro del par, desde el primer cuadro de esa camara",
+    "x_px, y_px": "centro de la ventana; origen abajo-izquierda, y hacia arriba",
+    "x_mm, y_mm": "idem en mm (en la camara B, y es la altura z)",
+    "u_mm_s, v_mm_s": "velocidad (px/s si esa camara no tiene calibracion)",
+    "interpolado": "1 = descartado por la validacion y reemplazado por sus vecinos"
+  },
+  "columnas_csv_centro": {
+    "xc_px, yc_px": "centro del vortice en el instante medio del par (promedio de los dos cuadros)",
+    "xc_mm, yc_mm": "idem en mm",
+    "seguido": "1 = particula encontrada en los dos cuadros; 0 = se repite la ultima posicion (o el centro marcado si el seguimiento esta apagado)",
+    "area_px": "area de la mancha de la particula en el primer cuadro"
+  }
+}
