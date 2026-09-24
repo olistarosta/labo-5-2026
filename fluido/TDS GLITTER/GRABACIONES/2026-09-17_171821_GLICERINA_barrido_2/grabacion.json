@@ -1,0 +1,22 @@
+{
+  "nombre": "GLICERINA_3",
+  "fecha": "2026-09-17_171821",
+  "velocidad_agitador_rpm": 1000.0,
+  "duracion_pedida_s": 3.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 87,
+      "duracion_s": 3.0078125,
+      "t0_absoluto_s": 91173.8203125,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}

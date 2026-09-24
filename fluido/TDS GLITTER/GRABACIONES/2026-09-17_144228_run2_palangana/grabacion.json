@@ -1,0 +1,21 @@
+{
+  "nombre": "run2_palangana",
+  "fecha": "2026-09-17_144228",
+  "velocidad_agitador_rpm": 1600.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 60,
+      "duracion_s": 1.96875,
+      "t0_absoluto_s": 81820.90625,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}

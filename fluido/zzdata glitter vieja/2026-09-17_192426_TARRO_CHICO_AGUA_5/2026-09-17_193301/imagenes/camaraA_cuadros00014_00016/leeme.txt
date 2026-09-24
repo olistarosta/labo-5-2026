@@ -1,0 +1,46 @@
+Imagenes del PIV de un par de cuadros (sin rotulos)
+grabacion 2026-09-17_192426_TARRO_CHICO_AGUA_5, camara A, par 14 (cuadros 14 y 16), dt del par 0.06645 s
+
+ventanas_iterN.png  (lo que considera la iteracion N)
+  Region de 512 x 512 px de la imagen (x = 676..1188, y = 350..862, y hacia arriba), ampliada a 2048 px (x4.00).
+  Fondo: cuadro A en rojo claro y cuadro B en azul claro, SIN deformar (gris = coinciden):
+  cada destello aparece dos veces, separado por lo que se movio entre los dos cuadros.
+  Grilla negra: las ventanas de interrogacion de la iteracion, de su tamano real (una si y una
+  no: con 50 % de solapamiento hay otra ventana centrada en cada esquina), en el lugar donde se
+  leen en el cuadro B: p + d(p)/2, con d = predictor de la iteracion = campo (suavizado) de la
+  iteracion anterior, a escala real. En el cuadro A se leen en p - d(p)/2 (la misma grilla
+  corrida hacia el otro lado); la correlacion compara las dos lecturas.
+  iter1: sin predictor, la grilla es recta. En las siguientes la grilla se mueve con el flujo;
+  debajo, en gris claro, la misma grilla sin mover como referencia.
+  Flechas violetas: el desplazamiento promedio que calculo la iteracion N en cada ventana
+  dibujada, centradas en la ventana y AMPLIADAS x2 (igual en todas las iteraciones): apuntan
+  hacia donde se movieron los destellos de esa ventana, de A (rojo) a B (azul).
+  Escala de ventanas_*: 1 px = 0.0348 mm (287.7 px por cm).
+
+correlacion_iterN_ventanaA.png, correlacion_iterN_ventanaB.png, correlacion_iterN_plano.png
+  La ventana de ejemplo (posicion abajo), tal como la compara la iteracion N: leida en el cuadro A
+  (ventanaA) y en el B (ventanaB), ya corridas por el predictor. Pixeles sin suavizar,
+  1024 x 1024 px cada imagen.
+  plano = correlacion cruzada de las dos ventanas (calculada con FFT): cuanto se parecen
+  B y A si se corre B cada desplazamiento posible. Centro (cruz gris) = desplazamiento 0;
+  hacia la derecha +x, hacia arriba +y. 1 px de desplazamiento = (1024 / ventana) px del plano:
+  iter1 8 px, iter2 16 px, iter3 32 px. Cuadrado blanco = zona de busqueda (|d| <= ventana/4).
+  Anillo = pico con ajuste gaussiano de 3 puntos: el desplazamiento que falta sumarle al
+  predictor (residuo). En la iter1 (sin predictor) el pico esta lejos del centro; en las
+  siguientes queda cerca: el predictor ya explico casi todo el movimiento.
+  iteracion 1: ventana de 128 px centrada en (959.5, 575.5) px; residuo medido por la correlacion (+6.000, +32.000) px; desplazamiento total de la ventana (+8.463, -8.099) px
+  iteracion 2: ventana de 64 px centrada en (927.5, 607.5) px; residuo medido por la correlacion (+4.000, +16.000) px; desplazamiento total de la ventana (-7.809, -3.389) px
+  iteracion 3: ventana de 32 px centrada en (943.5, 591.5) px; residuo medido por la correlacion (+8.000, -8.000) px; desplazamiento total de la ventana (-6.847, -1.852) px
+
+desplazamiento_iterN.png
+  Todo el ROI: recorte x = 468..1093, y = 294..919 px, ampliado x3.277 (2048 px).
+  Flechas azules = desplazamiento medido en esa iteracion. Donde la validacion descarto
+  el vector no hay flecha: ahi no se midio nada (con "Rellenar huecos" prendido aparecen
+  en rojo, que es el promedio de los vecinos). Misma escala en todas: 1 px = 0.92 px de la
+  imagen original = 3.0 px del PNG.
+  Escala del PNG: 1 px = 0.0424 mm (235.67 px por cm). 1 px de desplazamiento en este par = 2.09 mm/s.
+
+Iteraciones:
+  iteracion 1: ventana 128 px, paso 64 px,   44 nodos,   17 medidos,  27 descartados, desplazamiento mediano 14.85 px
+  iteracion 2: ventana  64 px, paso 32 px,  229 nodos,   34 medidos, 195 descartados, desplazamiento mediano 12.30 px
+  iteracion 3: ventana  32 px, paso 16 px, 1012 nodos,  165 medidos, 847 descartados, desplazamiento mediano 10.57 px

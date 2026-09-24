@@ -1,0 +1,22 @@
+{
+  "nombre": "TARRO_ALTO_AGUA_5",
+  "fecha": "2026-09-17_185523",
+  "velocidad_agitador_rpm": 1600.0,
+  "duracion_pedida_s": 3.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 90,
+      "duracion_s": 3.0234375,
+      "t0_absoluto_s": 96995.578125,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}

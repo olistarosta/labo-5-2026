@@ -1,0 +1,22 @@
+{
+  "nombre": "GLICERINA_DINAMICA",
+  "fecha": "2026-09-17_175713",
+  "velocidad_agitador_rpm": 1400.0,
+  "duracion_pedida_s": 25.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 711,
+      "duracion_s": 25.0234375,
+      "t0_absoluto_s": 93506.1796875,
+      "reloj": "frame_timestamp del driver de la cámara"
+    }
+  }
+}
