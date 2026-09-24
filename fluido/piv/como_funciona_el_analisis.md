@@ -112,27 +112,91 @@ se movió cada zona, y solo tiene que medir lo que falta.
 
 ### 3.3 La deformación de ventana
 
-Con el predictor $\vec d(\vec p)$ de la pasada anterior, antes de correlacionar se **deforman**
-las dos imágenes:
+#### El problema: comparar una ventana fija falla justo donde más interesa
 
-- el cuadro A se lee en $\vec p - \vec d/2$,
-- el cuadro B se lee en $\vec p + \vec d/2$.
+Si se toma una ventana de 32 px en el mismo lugar de los dos cuadros y se las compara, pasan
+tres cosas malas, y las tres empeoran cerca del núcleo, que es donde el agua va más rápido:
 
-Cada imagen se mueve la mitad del recorrido, en sentidos opuestos, así que cada destello queda
-en el punto medio de su trayectoria en las dos. Si el predictor es bueno, **A y B deformadas
-coinciden** y la correlación da un pico muy cerca de cero: lo que mide es solo la corrección.
+1. **El movimiento se sale del rango.** Una ventana de 32 px solo puede medir hasta 8 px (la
+   regla del cuarto). Cerca del núcleo el glitter se mueve unos 13 px entre los dos cuadros: el
+   pico correcto queda afuera y el algoritmo devuelve otro, equivocado, o ninguno.
+2. **El glitter entra y sale de la ventana.** Como la ventana está quieta y el glitter no, parte
+   de lo que está adentro en el cuadro A ya salió en el B, y entró glitter nuevo. Cuantos menos
+   destellos tengan en común las dos ventanas, más débil es el pico.
+3. **Adentro de la ventana no todo se mueve igual.** En un vórtice, un lado de la ventana va más
+   rápido que el otro y en otra dirección: la ventana gira y se estira. Cada parte "vota" por un
+   corrimiento distinto, y el pico se desparrama y pierde altura.
 
-Se deforma píxel por píxel, no se corre la ventana entera. Eso importa en un vórtice: adentro de
-una misma ventana, un lado gira distinto que el otro. Ningún corrimiento único alinea toda la
-ventana, pero deformarla sí. La interpolación de los píxeles (Lanczos 8×8) está elegida porque
-casi no introduce sesgo: medido, 0.001 px, contra 0.03–0.06 px de las interpolaciones más
-simples.
+#### La idea: deshacer primero lo que ya se sabe
+
+La pasada anterior ya dio una idea de cuánto se movió cada zona: el **predictor**. Si antes de
+comparar se deshace ese movimiento, las dos imágenes quedan casi iguales y a la correlación
+solo le queda medir un **resto chico**. Ese resto está dentro del rango, las dos ventanas tienen
+el mismo glitter y el pico no se desparrama.
+
+Es lo mismo que hacemos con la vista para seguir algo que se mueve: si ya sabemos hacia dónde
+va, miramos ahí y solo corregimos un poco.
+
+#### Cómo se hace, paso a paso
+
+1. **Un desplazamiento para cada píxel.** La pasada anterior da un vector por ventana. Se
+   suaviza y se interpola entre ventanas, y así cada píxel $\vec p$ tiene su propio
+   $\vec d(\vec p)$. Por eso es una *deformación* y no un simple corrimiento: cada píxel se
+   mueve lo suyo, y la ventana puede girar y estirarse igual que el agua.
+2. **Se arman dos imágenes nuevas.** En la A' cada píxel $\vec p$ toma el valor que la A tenía
+   en $\vec p - \vec d/2$; en la B', el que la B tenía en $\vec p + \vec d/2$. Como esas posiciones
+   caen entre píxeles, se interpola.
+3. **Se correlacionan A' y B'** como siempre: el pico da el **resto** $\vec r$, lo que el
+   predictor no había explicado.
+4. **El desplazamiento medido** es el predictor más el resto: $\vec d + \vec r$.
+
+La figura muestra una ventana de 32 px cerca del núcleo, en la última pasada. Arriba, sin
+deformar: el cuadro A va en rojo y el B en cian, y se ven corridos uno respecto del otro.
+Abajo, con las dos imágenes deformadas por el predictor, se superponen (quedan grises).
+
+![deformación de ventana](figuras_analisis/deformacion.png)
+
+- **Sin deformar**, el glitter se movió 13 px: el pico de la correlación es bajo (0.44) y cae en
+  (+3, −14) px, **afuera** del rango que la ventana puede medir (el cuadrado punteado).
+- **Con deformación**, el pico es alto (0.84) y cae **en el centro**: el predictor ya explicó
+  casi todo el movimiento y el resto es menor a un píxel.
+
+No es un caso elegido a propósito. Sobre las 937 ventanas de 32 px de este par:
+
+| | sin deformar | con deformación |
+|---|---|---|
+| ventanas con el pico en el borde del rango (no se pueden medir) | 29 % | 1 % |
+| altura media del pico (1 = las dos ventanas son idénticas) | 0.62 | 0.82 |
+| corrimiento típico del pico | 6 px | 0 px |
+
+#### Por qué mitad y mitad
+
+Se podría mover solo la imagen B, todo el desplazamiento $\vec d$. Se mueve cada una la mitad,
+y en sentidos opuestos, por dos razones:
+
+- **El vector queda en el lugar y el momento correctos.** Un destello que estaba en $\vec x_A$ en
+  el cuadro A y en $\vec x_B$ en el B termina, en las dos imágenes deformadas, en el punto medio
+  $(\vec x_A + \vec x_B)/2$. Entonces el vector medido corresponde al punto medio del recorrido
+  y al instante medio entre los dos cuadros. En un flujo que gira eso importa: el recorrido es
+  un arco, y el vector que une sus dos puntas es exactamente tangente al giro solo en el punto
+  medio. Asignado al punto de partida queda torcido hacia el eje, y aparece una velocidad radial
+  que el agua no tiene; justo lo que se quiere medir, porque la velocidad radial real es chica.
+- **Las dos imágenes se tratan igual.** Interpolar suaviza un poco la imagen. Si se interpolara
+  solo la B, una de las dos ventanas estaría más suavizada que la otra y eso sesga el pico.
+  Moviendo cada una la mitad, las dos se suavizan lo mismo.
+
+La interpolación que se usa (Lanczos 8×8) está elegida porque casi no introduce error: medido
+sobre un corrimiento conocido de 0.5 px, deja 0.001 px de sesgo, contra 0.03–0.06 px de las
+interpolaciones más simples (bilineal, bicúbica).
+
+#### Cómo se ve a lo largo de las tres pasadas
 
 ![las tres pasadas](figuras_analisis/iteraciones.png)
 
-En la figura, la grilla naranja son las ventanas de cada pasada, en el lugar donde se leen: en
-la primera la grilla es recta (todavía no hay predictor), y en las siguientes se curva siguiendo
-el giro. Las flechas son lo que midió cada pasada (ampliadas ×2).
+La grilla naranja son las ventanas de cada pasada, en el lugar donde se leen en el cuadro B
+($\vec p + \vec d/2$). En la primera la grilla es recta, porque todavía no hay predictor. En las
+siguientes se curva siguiendo el giro: cada ventana va a buscar su pedazo de glitter adonde el
+agua lo llevó. Las flechas son lo que midió cada pasada (ampliadas ×2).
 
 ### 3.4 Validación: descartar lo que no se midió bien
 
