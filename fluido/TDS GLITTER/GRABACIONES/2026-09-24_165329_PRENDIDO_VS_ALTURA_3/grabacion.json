@@ -1,0 +1,25 @@
+{
+  "nombre": "PRENDIDO_VS_ALTURA_3",
+  "fecha": "2026-09-24_165329",
+  "velocidad_agitador_rpm": 1200.0,
+  "duracion_pedida_s": 45.0,
+  "camaras": {
+    "A": {
+      "vista": "superior (x, y)",
+      "fuente": "camara",
+      "dispositivo": "USB Video Device",
+      "espejado": false,
+      "resolucion_px": [
+        1920,
+        1080
+      ],
+      "cuadros": 1145,
+      "duracion_s": 45.01022518382353,
+      "t0_absoluto_s": 155267.640625,
+      "reloj": "hora del driver ajustada contra el contador de cuadros de la cámara (+-15 cuadros); cruda en t_driver_s",
+      "fps_medido": 25.416446936842885,
+      "cuadros_perdidos": 0,
+      "lecturas_del_contador_reparadas": 0
+    }
+  }
+}

@@ -1,12 +1,13 @@
 # PIV del vórtice con glitter
 
-Todo está en `TDS GLITTER/TDS GLITTER.toe`, en dos componentes con su propia interfaz
+Todo está en `TDS GLITTER/TDS GLITTER.toe`, en tres componentes con su propia interfaz
 (click derecho sobre el componente → *Open Viewer*):
 
 | componente | qué hace |
 |---|---|
 | `/project1/grabar` | graba **una o dos cámaras en color**, cuadro a cuadro (TIFF sin pérdida), con la hora de cada cuadro |
 | `/project1/analizar` | PIV + seguimiento de la **partícula central**; guarda CSV por cámara en `data glitter` e imágenes de cada etapa para el póster |
+| `/project1/figuras` | **figuras** del análisis de imagen de un par, una a la vez y cada una con su configuración; independiente de ANALIZAR (ver *3. Figuras*) |
 
 Para entender qué hace el análisis con cada imagen (proyección de color, CLAHE, PIV con
 deformación de ventana y detección de la partícula), explicado simple y con figuras:
@@ -37,8 +38,20 @@ Cada grabación es una carpeta dentro de `TDS GLITTER/GRABACIONES/` (~2.6 MB por
     GRABACIONES/<fecha>_<nombre>/
       grabacion.json                qué grabó cada cámara, rpm
       camara_A/cuadros/*.tif        imágenes
-      camara_A/tiempos.csv          indice, t_s  (+ xc_px, yc_px: centro real, solo simulación)
+      camara_A/tiempos.csv          cámara:     indice, t_s, cuadro_camara, t_driver_s, t_llegada_s
+                                    simulación: indice, t_s, xc_px, yc_px (centro real)
       camara_B/...
+
+**La hora de cada cuadro de cámara** se arma con tres relojes que se guardan juntos:
+la hora del driver (`t_driver_s`: viene redondeada a 1/64 s = 15.6 ms y con jitter), el
+**contador de cuadros** de la cámara (`cuadro_camara`: exacto; un salto de 2 es un cuadro
+perdido de verdad) y la hora en que llegó a TouchDesigner (`t_llegada_s`, de respaldo). Al
+parar, `t_s` = una recta ajustada a la hora del driver contra el número de cuadro, en una
+ventana de ±15 cuadros (así se borra el redondeo y el ritmo puede cambiar: con poca luz la
+webcam baja de 30 a 20 fps). Medido con la webcam: intervalos entre 49.9 y 50.6 ms, contra
+un error de 6.8 ms de la hora cruda. `grabacion.json` anota `fps_medido` y `cuadros_perdidos`.
+El análisis usa `cuadro_camara` para saber cuántos intervalos hay entre los dos cuadros de
+cada par; con grabaciones viejas (sin esa columna) lo estima de la hora, como antes.
 
 La **simulación** (página Simulación) dibuja glitter en un vórtice de Rankine, una partícula
 en el centro y un centro que se desplaza (`Deriva del centro`): sirve para practicar y para
@@ -67,16 +80,22 @@ comprobar el análisis.
    `Área mínima`. El umbral es **relativo**: 0.5 = la mitad del brillo de la partícula en ese
    cuadro, así que no depende de haber marcado el color exacto ni de la luz. Con
    `Mostrar = 3 partícula` se ve qué pasa el umbral: la partícula entera en rojo y nada más.
-4. **ANALIZAR TODO**. Cada análisis va a su propia carpeta (nunca pisa uno anterior):
+4. Página **Recipiente**: `Volumen de agua (ml)`, `Altura del agua (mm)` y `Circunferencia en
+   la línea de agua (mm)`. Van a `parametros.json` → `recipiente` (con `radio_linea_agua_mm` =
+   circunferencia / 2π; 0 = sin dato → `null`). Al elegir una grabación se recuperan del último
+   análisis de esa grabación; si no tiene, quedan los de antes y el estado avisa que los revises.
+5. **ANALIZAR TODO**. Cada análisis va a su propia carpeta (nunca pisa uno anterior):
 
        data glitter/<grabación>/<fecha y hora del análisis>/
-           parametros.json             calibración, colores, seguimiento, dt, método
+           parametros.json             calibración, colores, seguimiento, dt, método, recipiente
            camaraA_campo.csv           el campo de velocidades de cada par
            camaraA_centro.csv          el centro del vórtice en cada par
            camaraB_...                 (si hay cámara B)
-           imagenes/camaraA_cuadros<k>_<k+s>/    imágenes de un par para el póster (ver abajo)
+           imagenes/camaraA_cuadros<k>_<k+s>/    todas las etapas de un par, para el póster
+           imagenes/camaraA_trayectoria.png       recorrido de la partícula central
 
-   Si el par que estabas mirando ya estaba calculado, sus imágenes se guardan en `imagenes/`.
+   Con `Guardar imágenes al analizar` prendido (página Poster) se guardan las imágenes de un
+   par mientras se lo analiza (ver *Imágenes para el póster*).
    **Detener** corta y guarda lo hecho.
 
 ### Cómo se procesa cada par (y qué muestra cada vista)
@@ -126,11 +145,23 @@ y la correlación solo mide lo que falta corregir. En la superposición se ve: e
 y escalado para que el color buscado dé 1. Es la dirección de máximo contraste que además
 borra el otro color.
 
-**Partícula**: en cada cuadro se busca el pico de la proyección de la partícula adentro del ROI y
-se umbraliza a una fracción de ese pico (`Umbral`, 0.5 por defecto); de las manchas que quedan,
-la más cercana al centro del par anterior, con el centroide pesado por la intensidad (subpíxel).
-El centro de un par es el promedio de sus dos cuadros. Si el pico no se destaca del resto del ROI
-(al menos 4 veces el percentil 99.9), la partícula no está a la vista y ese par queda sin seguir.
+**Partícula**: en cada cuadro se busca el pico de la proyección de la partícula **cerca del
+centro del par anterior** (un disco de 0.35 radios del ROI; al mirar un par suelto, cerca del
+centro marcado) y se umbraliza a una fracción de ese pico (`Umbral`, 0.5 por defecto); se toma
+la mancha que contiene el pico, con el centroide pesado por la intensidad (subpíxel). El centro
+de un par es el promedio de sus dos cuadros. La partícula no está a la vista (y ese par queda
+sin seguir) si el pico es menor que 0.012 o si no es al menos 3 veces más brillante que su
+entorno con la mancha tapada.
+
+Antes el pico se comparaba con el percentil 99.9 de todo el ROI, y en los tarros (filmados a
+1920 px) la partícula ocupaba más que ese 0.1 % del ROI: se comparaba consigo misma y se
+descartaba siempre. Con la búsqueda local los tarros pasaron de 0 % a 100 % de pares seguidos;
+de paso, un reflejo en el borde del recipiente ya no le puede ganar a la partícula. La
+dirección de color de la partícula, además de borrar el glitter, **ignora el blanco** cuando se
+puede (los reflejos de la luz en la superficie son blancos). Lo que sigue sin funcionar es real:
+en GLICERINA_barrido_5 la partícula no se ve (hundida en el hoyo del vórtice), y en
+TARRO_ALTO_AGUA_2 y 3 la partícula y el glitter quedaron marcados casi del mismo color: hay
+que volver a marcarlos (click justo en el centro de la partícula).
 
 Antes el umbral era absoluto y **no se encontraba la partícula en ninguna medición**: el color
 marcado era amarillo puro (0.91, 1.00, 0.00) pero la partícula adentro del agua se ve amarillo
@@ -164,31 +195,43 @@ la GPU (GLSL) o bajar la resolución de análisis.
 
 ### Imágenes para el póster
 
-Página **Poster**: `Zoom` (px de la imagen, por defecto 512) y **GUARDAR IMÁGENES**. Guarda
-las imágenes del par que se está mirando (`Par a mirar`) en
-`imagenes/camaraA_cuadros<k>_<j>/` del **último análisis** terminado de esa grabación (si no
-hay ninguno, crea la carpeta). ANALIZAR TODO también las guarda, del par que se estaba mirando.
+Página **Poster**:
 
-Una imagen por iteración, `grilla_iter1.png`, `grilla_iter2.png`, `grilla_iter3.png`: un
-recorte cuadrado **centrado en el vórtice** (la partícula del centro si se la encontró), con el
-cuadro de fondo tal como lo ve el PIV y encima las **ventanas de interrogación de esa
-iteración**, de su tamaño real (128, 64 y 32 px). En la primera la grilla es recta; en las
-siguientes cada ventana está corrida la mitad del desplazamiento que midió la iteración
-anterior, así que la grilla se curva siguiendo el giro. El borde del recorte cae en múltiplos
-de la ventana más grande, así que las ventanas entran enteras en todas.
+| parámetro | qué hace |
+|---|---|
+| `Guardar imágenes al analizar` | ANALIZAR TODO guarda las imágenes de un par mientras lo analiza (con el centro que da el seguimiento) |
+| `Par de las imágenes` | cuál; −1 = el de `Par a mirar` |
+| `Región de las imágenes` | centrada en el vórtice, centrada en un punto marcado (`Marcar = Centro de las imágenes`) o todo el ROI |
+| `Lado de la región (px)` | el lado del recorte, en px de la imagen (512 por defecto) |
+| `Ventana de la correlación (px)` | la ventana de ejemplo de las imágenes 09 (`Marcar = Ventana de ejemplo`) |
+| **GUARDAR IMÁGENES AHORA** | las guarda ya, en el **último análisis** de la grabación; si el par no es el que se ve, lo calcula primero |
 
-Encima de la grilla, una **flecha blanca por ventana** con el desplazamiento que midió esa
-iteración, centrada en la ventana y ampliada con el mismo factor en las tres imágenes (para que
-se puedan comparar; el factor está en `leeme.txt`). Donde la validación descartó el vector no
-hay flecha.
+La región se ve como un **recuadro ámbar** sobre la imagen (en `original`, `glitter` y `clahe`).
+Todas son **solo imágenes**, sin texto, con el mismo estilo: casi negro, el glitter en tonos
+fríos y un solo color fuerte para lo que cada una muestra. Las de detalle son el recorte de la
+región ampliado a 2048 px; `leeme.txt` dice qué es cada una y trae los números para rotularlas
+(par, intervalo, escala en px por cm, rangos de color, ventanas).
 
-Son **solo imágenes**, de 2048 × 2048 px: sin texto ni grillas de referencia. El glitter va en
-tonos fríos sobre casi negro, la grilla en un único color cálido y las flechas en blanco con un
-contorno oscuro fino, para que se lean sobre zonas claras y oscuras. Con 50 % de
-solapamiento hay otra ventana centrada en cada esquina de las dibujadas: se dibuja una sí y
-una no para que se lea el tamaño. `leeme.txt` tiene lo necesario para rotularlas: el par, el
-intervalo entre los cuadros, la región recortada, la escala en px por cm y el tamaño de las
-ventanas de cada iteración.
+    imagenes/camaraA_cuadros<k>_<j>/
+      01_cuadro_completo.png         el cuadro entero: ROI (gris) y la región (recuadro naranja)
+      02_cuadro.png                  detalle: el cuadro original
+      03_proyeccion_glitter.png      detalle: la proyección de color del glitter
+      04_imagen_piv.png              detalle: lo que entra al PIV (CLAHE o lineal)
+      05_particula.png               primer plano de la partícula: mancha, centroide en A y en B
+      06_superposicion_sin_deformar  A en naranja + B en celeste: cada destello aparece dos veces
+      07_grilla_iter1..3.png         ventanas de cada iteración donde se leen + desplazamiento medido
+      08_superposicion_deformada     A y B deformados con el campo: los destellos se juntan (blanco)
+      09_correlacion_iterN_*.png     ventana A, ventana B y plano de correlación, por iteración
+      10_vectores.png                todo el ROI: el campo final, color = rapidez
+      11_vorticidad.png              todo el ROI: vorticidad (naranja antihoraria, celeste horaria)
+      escala_rapidez / escala_vorticidad.png   las escalas de color, sin números (van en leeme.txt)
+    imagenes/camaraA_trayectoria.png el recorrido de la partícula en toda la grabación, color = tiempo
+
+En las grillas, cada ventana tiene su tamaño real (128, 64 y 32 px) y está corrida la mitad
+del desplazamiento que midió la iteración anterior, así que la grilla se curva siguiendo el
+giro; se dibuja una sí y una no (con 50 % de solapamiento hay otra centrada en cada esquina).
+Las flechas van ampliadas con el mismo factor en las tres. Donde la validación descartó el
+vector no hay flecha, y la vorticidad queda sin color donde falta algún vecino.
 
 **Lo que no se midió no se inventa.** La validación descarta vectores (ventana sin textura,
 pico fuera del rango de búsqueda, test de mediana local, desvío estándar). Antes esos huecos se
@@ -293,6 +336,41 @@ cuadros guardados. Si justo ese cuadro se perdió, se usa el anterior que exista
 lejos). Antes, en DINAMICA (5 cuadros perdidos de verdad, tres seguidos), los pares que los
 cruzaban abarcaban 3 o 4 intervalos: el desplazamiento pasaba de 12 a 21 px, el PIV se quedaba
 sin rango de búsqueda, descartaba los vectores rápidos y la velocidad del par caía un 15 %.
+
+## 3. Figuras
+
+`/project1/figuras` hace figuras del análisis de imagen de **un par de cuadros**, una a la vez,
+**independiente de ANALIZAR**: tiene sus propios datos, sus propios parámetros de análisis y su
+propio motor (numpy, a la **resolución nativa** de la grabación: sin el límite de 1280 px de TD).
+
+| página | qué se elige |
+|---|---|
+| **Datos** | grabación, cámara, cuadro A y cuadro B (B = A + 2 salvo que escribas otro) |
+| **Calibración** | escala (mm/px), centro y radio del ROI; `Marcar` + click sobre la figura (ROI, colores, centro del encuadre, ventana de ejemplo) |
+| **Proyección** | colores de fondo, glitter y partícula, ignorar el blanco, CLAHE o lineal, zonas de CLAHE, umbral y área de la partícula |
+| **PIV** | ventana final, iteraciones, pico contra segundo pico |
+| **Figura** | cuál (cuadro, proyección, imagen del PIV, partícula, superposición A+B, grilla, correlación, vectores, vorticidad) y sus opciones: encuadre, cuadro A o B, iteración, flechas, densidad… |
+| **Aspecto** | tema oscuro o claro, colores, paleta, grosor de líneas y grosor de flechas (por separado), brillo, afuera del ROI, escalas |
+
+En la **grilla de una iteración** se elige además el **fondo** (cuadro A, B o los dos
+superpuestos con los colores A y B), **qué se desplaza** (la grilla: imágenes sin deformar y
+ventanas corridas con el predictor, en A a −d/2 y en B a +d/2; o la imagen: grilla recta sobre
+las imágenes deformadas como las correlaciona esa iteración) y si las **flechas** son el
+desplazamiento total o solo el residuo que midió la correlación después de deformar. La
+grilla se muestra **redonda**: solo el ROI, con la grilla y las flechas recortadas al círculo.
+| **Salida** | tamaño en px, nombre, carpeta (vacía = `fluido/figuras/…`); exportar esta figura o todas |
+
+Calibración, proyección y PIV arrancan, al elegir la grabación, con los valores de su último
+análisis (reescalados a la resolución nativa); después se cambian sin tocar ANALIZAR.
+**Figura, Aspecto y Salida son de cada figura**: al elegir otra figura se carga su
+configuración (se guarda con el proyecto). Solo se recalcula lo necesario: cambiar el aspecto
+redibuja; cambiar un color de la proyección rehace la proyección y el PIV del par (~1.5 s a
+1920 px); las figuras que no usan el PIV no lo calculan.
+
+Exporta a la carpeta **`fluido/figuras/`**, todas juntas: `figuras/<grabación>/cam<L>_cuadros<a>_<b>/<nombre>.png`
+(una subcarpeta por par, porque las figuras se llaman igual en todos), cada una con un
+`<nombre>.txt`: qué es, los números para rotularla (px por cm, rangos de color, ampliación de
+las flechas, iteración, ventana) y los parámetros con que se calculó el par.
 
 ## Validación
 

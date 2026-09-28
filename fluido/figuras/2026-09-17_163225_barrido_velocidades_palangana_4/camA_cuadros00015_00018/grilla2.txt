@@ -1,0 +1,11 @@
+Grilla de una iteración (2048 x 2048 px)
+
+grabacion 2026-09-17_163225_barrido_velocidades_palangana_4, camara A; cuadros 15 (cuadro_000015.tif) y 18 (cuadro_000018.tif); dt = 0.0938 s
+imagen nativa 1920 x 1080 px; escala 0.19147 mm/px; ROI centro (998.2, 569.7) px, radio 425.0 px
+proyeccion: fondo (0.0024, 0.0064, 0.009), glitter (0.737, 0.737, 0.737), particula (1.0, 0.80784, 0.27451) (RGB 0..1); ignorar blanco si; clahe (zonas de 59 px)
+PIV: ventanas [128, 64, 32] px, 50 % de solapamiento, pico/2o pico >= 1; particula: umbral 0.50 del pico, area >= 20 px
+coordenadas en px de la imagen nativa, origen abajo a la izquierda; exportada 2026-09-25 19:00
+
+- iteracion 2 de 3: ventanas de 64 px (una si y una no; con 50 % de solapamiento hay otra centrada en cada esquina) sobre los cuadros A (color A) y B (color B) superpuestos; grilla recta sobre las imagenes DEFORMADAS como las correlaciona esta iteracion (cada una la mitad del campo de la iteracion anterior, hacia la otra). Flechas: desplazamiento total medido de cada ventana dibujada, AMPLIADO x1.25
+- encuadre: 884 x 884 px de la imagen desde (556, 128); 121.0 px de la figura = 1 cm; el encuadre mide 169.3 x 169.3 mm
+- solo el ROI: afuera, el fondo liso; la grilla y las flechas, recortadas al ROI

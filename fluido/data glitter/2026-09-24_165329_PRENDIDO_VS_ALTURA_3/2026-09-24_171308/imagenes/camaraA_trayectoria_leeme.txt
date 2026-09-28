@@ -1,0 +1,7 @@
+Recorrido de la particula central (el centro del vortice), camara A
+
+Un punto por par en que se la encontro (1143 de 1143), unidos si son pares seguidos.
+Color = tiempo: violeta en t = 0.04 s, amarillo en t = 44.97 s (escala_tiempo).
+Fondo: el glitter del ultimo par analizado, apagado.
+Recorte: 208 x 208 px desde (952, 448) = 34.3 x 34.3 mm, ampliado a 2048 px.
+59.7 px de la imagen = 1 mm.
