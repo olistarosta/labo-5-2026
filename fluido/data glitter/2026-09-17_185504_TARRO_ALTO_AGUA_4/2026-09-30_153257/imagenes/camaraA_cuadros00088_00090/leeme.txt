@@ -1,0 +1,106 @@
+Imagenes para el poster: las etapas del analisis de un par de cuadros
+
+grabacion 2026-09-17_185504_TARRO_ALTO_AGUA_4, camara A
+par: cuadros 88 y 90, separados 0.0664 s
+region de detalle: 768 x 768 px desde (320, 192) = 88.5 x 88.5 mm, ampliada a 2048 px
+en las imagenes de detalle, 231.3 px = 1 cm
+en las de todo el ROI (10, 11), 233.7 px = 1 cm
+Coordenadas en px de la imagen analizada, origen abajo a la izquierda.
+
+01_cuadro_completo.png
+    El cuadro A entero, con sus colores (estirados: el agua es casi negra). Círculo gris:
+    el ROI (lo que se analiza). Recuadro naranja: la región de las imágenes de detalle.
+
+02_cuadro.png
+    Detalle: el cuadro A original.
+
+03_proyeccion_glitter.png
+    Detalle: proyección de color del cuadro A sobre la dirección del glitter
+    (1 = el color del glitter, 0 = el fondo y la partícula).
+
+04_imagen_piv.png
+    Detalle: lo que entra al PIV (CLAHE de la proyección).
+
+05_particula.png
+    Primer plano de la partícula central (91 x 91 px = 10.5 mm alrededor de ella).
+    Amarillo: proyección sobre el color de la partícula. Contorno blanco: la mancha que
+    se tomó (más de 0.57 del pico). Cruz: centroide en el cuadro A (739.19, 585.21) px.
+    Anillo celeste: centroide en el cuadro B (740.18, 573.39) px. El centro del vórtice del par es el
+    promedio de los dos.
+
+06_superposicion_sin_deformar.png
+    Detalle: cuadro A en naranja y cuadro B en celeste, sumados (blanco = coinciden).
+    Sin deformar: cada destello aparece dos veces, corrido lo que se movió entre cuadros.
+
+07_grilla_iter1.png
+    Detalle, iteración 1: ventanas de 128 px = 14.8 mm (6 x 6 en la región), una sí y una no,
+    donde se leen en el cuadro B. Flechas: el desplazamiento medido en cada ventana
+    dibujada, AMPLIADO x1 (igual en todas las iteraciones).
+
+07_grilla_iter2.png
+    Detalle, iteración 2: ventanas de 64 px = 7.4 mm (12 x 12 en la región), una sí y una no,
+    donde se leen en el cuadro B (corridas con el campo de la iteración anterior). Flechas: el desplazamiento medido en cada ventana
+    dibujada, AMPLIADO x1 (igual en todas las iteraciones).
+
+07_grilla_iter3.png
+    Detalle, iteración 3: ventanas de 32 px = 3.7 mm (24 x 24 en la región), una sí y una no,
+    donde se leen en el cuadro B (corridas con el campo de la iteración anterior). Flechas: el desplazamiento medido en cada ventana
+    dibujada, AMPLIADO x1 (igual en todas las iteraciones).
+
+08_superposicion_deformada.png
+    Detalle: lo mismo que 06 pero con A y B deformados con el campo que usó la última
+    iteración (cada uno la mitad, hacia el otro): los destellos se juntan y quedan blancos.
+    Lo que sigue separado es lo que la última iteración todavía tiene que medir.
+
+09_correlacion_iter1_ventana_a.png
+    Iteración 1, la ventana de ejemplo (centro 960, 576 px; 128 px = 14.8 mm) en el cuadro A,
+    ya deformado. Píxeles tal cual, sin suavizar.
+
+09_correlacion_iter1_ventana_b.png
+    La misma ventana en el cuadro B.
+
+09_correlacion_iter1_plano.png
+    Correlación cruzada (FFT) de las dos ventanas. Cruz: desplazamiento cero. Cuadrado:
+    zona de búsqueda (+-32 px). Anillo: el pico, con ajuste subpíxel: (-1.00, +32.00) px
+    además de lo que ya corrió la deformación.
+
+09_correlacion_iter2_ventana_a.png
+    Iteración 2, la ventana de ejemplo (centro 928, 608 px; 64 px = 7.4 mm) en el cuadro A,
+    ya deformado. Píxeles tal cual, sin suavizar.
+
+09_correlacion_iter2_ventana_b.png
+    La misma ventana en el cuadro B.
+
+09_correlacion_iter2_plano.png
+    Correlación cruzada (FFT) de las dos ventanas. Cruz: desplazamiento cero. Cuadrado:
+    zona de búsqueda (+-16 px). Anillo: el pico, con ajuste subpíxel: (-0.25, +5.81) px
+    además de lo que ya corrió la deformación.
+
+09_correlacion_iter3_ventana_a.png
+    Iteración 3, la ventana de ejemplo (centro 912, 592 px; 32 px = 3.7 mm) en el cuadro A,
+    ya deformado. Píxeles tal cual, sin suavizar.
+
+09_correlacion_iter3_ventana_b.png
+    La misma ventana en el cuadro B.
+
+09_correlacion_iter3_plano.png
+    Correlación cruzada (FFT) de las dos ventanas. Cruz: desplazamiento cero. Cuadrado:
+    zona de búsqueda (+-8 px). Anillo: el pico, con ajuste subpíxel: (+0.00, -8.00) px
+    además de lo que ya corrió la deformación.
+
+10_vectores.png
+    Todo el ROI: el campo final, una flecha por ventana medida (480 de 1492; donde la
+    validación descartó, nada). Color = rapidez, de 0 (violeta) a 63.2 mm/s (amarillo),
+    ver escala_rapidez.png. Largo: 1 px de desplazamiento = 0.44 px de la imagen.
+
+escala_rapidez.png
+    Escala de 10_vectores: abajo 0, arriba 63.2 mm/s.
+
+11_vorticidad.png
+    Todo el ROI: vorticidad dv/dx - du/dy del campo final (diferencias centradas; sin
+    dato donde falta un vecino). Naranja = giro antihorario, celeste = horario, de
+    -6.61 a +6.61 1/s (ver escala_vorticidad.png). Flechas blancas: el campo, una
+    ventana sí y una no.
+
+escala_vorticidad.png
+    Escala de 11_vorticidad: abajo -6.61 1/s, en el medio 0, arriba +6.61 1/s.

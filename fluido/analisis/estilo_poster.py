@@ -38,6 +38,16 @@ for _cmap in (CMAP_RAPIDEZ, CMAP_VORTICIDAD):   # registrados, para poder usarlo
         matplotlib.colormaps.register(_cmap)
 
 
+def titulo_centrado(fig, ax, texto):
+    """Título de la figura centrado sobre los ejes y no sobre toda la figura (que incluye la
+    etiqueta del eje y y la barra de color), así queda alineado con el título de los ejes."""
+    t = fig.suptitle(texto)
+    fig.canvas.draw()   # que constrained_layout ubique los ejes antes de medirlos
+    p = ax.get_position()
+    t.set_x((p.x0 + p.x1) / 2)
+    return t
+
+
 def usar_estilo(fontsize=25):
     plt.style.use("default")
     plt.rcParams.update({

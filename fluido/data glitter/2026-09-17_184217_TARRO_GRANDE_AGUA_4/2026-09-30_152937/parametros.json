@@ -1,6 +1,6 @@
 {
   "grabacion": "GRABACIONES/2026-09-17_184217_TARRO_GRANDE_AGUA_4",
-  "fecha_analisis": "2026-09-22 21:19:34",
+  "fecha_analisis": "2026-09-30 15:29:37",
   "detenido_a_mano": false,
   "camaras": {
     "A": {
@@ -10,21 +10,21 @@
       "pares_analizados": 90,
       "completo": true,
       "calibracion": {
-        "mm_por_px": 0.12338695432365338,
+        "mm_por_px": 0.12371982026057027,
         "punto_a_px": [
-          274.2857142857143,
-          521.6215331751616
+          279.941089837997,
+          515.9666203059807
         ],
         "punto_b_px": [
-          1303.5640648011783,
-          524.4489896097521
+          1306.3917525773195,
+          527.2764460443426
         ],
         "distancia_mm": 127.0,
         "centro_vortice_px": [
           791.7525773195875,
           527.2764460443426
         ],
-        "radio_roi_px": 474.92055271602726,
+        "radio_roi_px": 473.4412128975526,
         "resolucion_analisis_px": [
           1920,
           1080
@@ -32,26 +32,26 @@
       },
       "colores": {
         "fondo": [
-          0.0479,
-          0.1279,
-          0.179
+          0.0024,
+          0.0064,
+          0.009
         ],
         "glitter": [
-          0.5564,
+          0.737,
           0.737,
           0.737
         ],
         "particula": [
-          0.7281,
-          0.8211,
-          0.5483
+          0.9137,
+          1.0,
+          0.0
         ]
       },
       "seguimiento_particula": {
         "activo": true,
-        "umbral": 0.5,
-        "area_minima_px": 20,
-        "pares_con_particula": 0
+        "umbral": 0.574,
+        "area_minima_px": 10,
+        "pares_con_particula": 90
       },
       "tiempo": {
         "dt_por_cuadro_s": 0.03331043956043956,
@@ -60,8 +60,8 @@
         "reloj_exacto": false,
         "paso_temporal": "fijo: dt por cuadro x cuadros del intervalo; el dt sale de ajustar la hora contra el numero de cuadro (la hora viene cuantizada y no sirve salto a salto)"
       },
-      "vectores_por_par": 2588,
-      "descartados_pct": 61.68040528936974
+      "vectores_por_par": 2561,
+      "descartados_pct": 57.359104516464924
     }
   },
   "piv": {
@@ -81,6 +81,12 @@
     "relacion_picos_minima": 1.0,
     "rellenar_huecos": false,
     "huecos": "no se rellenan: lo descartado va NaN"
+  },
+  "recipiente": {
+    "volumen_agua_ml": 3600.0,
+    "altura_agua_mm": 127.0,
+    "circunferencia_linea_agua_mm": 63.7,
+    "radio_linea_agua_mm": 10.138169874953734
   },
   "grabacion_info": {
     "nombre": "TARRO_GRANDE_AGUA_4",
@@ -103,6 +109,13 @@
         "reloj": "frame_timestamp del driver de la cámara"
       }
     }
+  },
+  "unidades_recipiente": {
+    "volumen_agua_ml": "volumen de agua cargado",
+    "altura_agua_mm": "altura del agua (del fondo a la linea de agua)",
+    "circunferencia_linea_agua_mm": "perimetro del recipiente a la altura de la linea de agua",
+    "radio_linea_agua_mm": "circunferencia / 2 pi",
+    "null": "no se cargo"
   },
   "columnas_csv": {
     "frame": "primer cuadro del par (el segundo es el que esta a piv.separacion_cuadros intervalos de camara; si justo ese se perdio, el anterior que exista)",

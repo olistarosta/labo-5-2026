@@ -1,6 +1,6 @@
 {
   "grabacion": "GRABACIONES/2026-09-17_192404_TARRO_CHICO_AGUA_4",
-  "fecha_analisis": "2026-09-22 21:51:39",
+  "fecha_analisis": "2026-09-30 15:14:09",
   "detenido_a_mano": false,
   "camaras": {
     "A": {
@@ -10,21 +10,21 @@
       "pares_analizados": 89,
       "completo": true,
       "calibracion": {
-        "mm_por_px": 0.13718219694076833,
+        "mm_por_px": 0.13771244994351323,
         "punto_a_px": [
-          438.292,
-          600.79
+          441.1192930780559,
+          589.480487605334
         ],
         "punto_b_px": [
-          1108.45,
-          626.237
+          1108.4536082474226,
+          620.5825083858299
         ],
         "distancia_mm": 92.0,
         "centro_vortice_px": [
-          771.959,
-          612.1
+          771.9587628865979,
+          603.6177697782867
         ],
-        "radio_roi_px": 294.721,
+        "radio_roi_px": 319.97875622082637,
         "resolucion_analisis_px": [
           1920,
           1080
@@ -49,9 +49,9 @@
       },
       "seguimiento_particula": {
         "activo": true,
-        "umbral": 0.5740000009536743,
+        "umbral": 0.574,
         "area_minima_px": 10,
-        "pares_con_particula": 0
+        "pares_con_particula": 89
       },
       "tiempo": {
         "dt_por_cuadro_s": 0.03339628571428571,
@@ -60,8 +60,8 @@
         "reloj_exacto": false,
         "paso_temporal": "fijo: dt por cuadro x cuadros del intervalo; el dt sale de ajustar la hora contra el numero de cuadro (la hora viene cuantizada y no sirve salto a salto)"
       },
-      "vectores_por_par": 955,
-      "descartados_pct": 70.3311959527031
+      "vectores_por_par": 1136,
+      "descartados_pct": 69.99920873555942
     }
   },
   "piv": {
@@ -81,6 +81,12 @@
     "relacion_picos_minima": 1.0,
     "rellenar_huecos": false,
     "huecos": "no se rellenan: lo descartado va NaN"
+  },
+  "recipiente": {
+    "volumen_agua_ml": 3600.0,
+    "altura_agua_mm": 127.0,
+    "circunferencia_linea_agua_mm": 63.7,
+    "radio_linea_agua_mm": 10.138169874953734
   },
   "grabacion_info": {
     "nombre": "TARRO_CHICO_AGUA_4",
@@ -103,6 +109,13 @@
         "reloj": "frame_timestamp del driver de la cámara"
       }
     }
+  },
+  "unidades_recipiente": {
+    "volumen_agua_ml": "volumen de agua cargado",
+    "altura_agua_mm": "altura del agua (del fondo a la linea de agua)",
+    "circunferencia_linea_agua_mm": "perimetro del recipiente a la altura de la linea de agua",
+    "radio_linea_agua_mm": "circunferencia / 2 pi",
+    "null": "no se cargo"
   },
   "columnas_csv": {
     "frame": "primer cuadro del par (el segundo es el que esta a piv.separacion_cuadros intervalos de camara; si justo ese se perdio, el anterior que exista)",
