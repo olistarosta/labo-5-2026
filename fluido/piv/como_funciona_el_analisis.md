@@ -229,16 +229,25 @@ En cada uno de los dos cuadros del par:
 
 1. Se toma la **proyección de la partícula** (sección 1): la partícula brilla y todo lo demás
    queda en negro.
-2. Se busca el **pico**: el punto más brillante adentro de la zona de análisis.
-3. Se umbraliza a **la mitad de ese pico**: quedan los píxeles que brillan al menos la mitad.
-4. De las manchas que quedan, se elige la **más cercana al centro del par anterior**.
+2. Se busca el **pico**, pero no en toda la imagen: solo **cerca de donde estaba** en el par
+   anterior (un círculo de un tercio del radio del ROI). Entre un par y el siguiente la
+   partícula se mueve unos pocos píxeles, y así un reflejo en el borde no le puede ganar.
+3. Se umbraliza a **la mitad de ese pico**: quedan los píxeles que brillan al menos la mitad,
+   y se toma la mancha que contiene al pico.
+4. Se comprueba que la partícula se **destaque de su entorno**: con la mancha tapada, el pico
+   tiene que ser al menos 3 veces más brillante que lo más brillante que queda alrededor.
 5. Su **centroide pesado por el brillo** da la posición con precisión menor a un píxel.
 
 ![detección de la partícula](figuras_analisis/particula.png)
 
 El centro del par es el promedio de las posiciones en los dos cuadros: corresponde al mismo
-instante que la velocidad. Si el pico no se destaca del resto de la imagen (al menos 4 veces
-más brillante), la partícula no está a la vista y ese par queda marcado como no seguido.
+instante que la velocidad. Si el pico es muy débil o no se destaca de su entorno, la
+partícula no está a la vista y ese par queda marcado como no seguido.
+
+**Por qué el entorno y no toda la imagen.** Antes se comparaba el pico contra el 0.1 % más
+brillante de todo el ROI. En los tarros, filmados más cerca, la partícula ocupaba más que ese
+0.1 %: el pico se comparaba consigo mismo y se descartaba siempre. Tapando la mancha y mirando
+solo alrededor, los tarros pasaron de 0 % a 100 % de pares con la partícula encontrada.
 
 **Por qué el umbral es relativo** (la mitad del pico, y no un valor fijo). La proyección vale 1
 en el color que se marcó, pero en el agua la partícula se ve más pálida que ese color: acá su

@@ -2,3 +2,14 @@
 *.tif
 *.mov
 *.png
+
+# CSV de PIV de mas de 100 MB (GitHub no los acepta)
+fluido/data glitter/2026-09-24_155129_PRENDIDO_VS_ALTURA_1/2026-09-24_155448/camaraA_campo.csv
+fluido/data glitter/2026-09-24_162743_PRENDIDO_VS_ALTURA_2/2026-09-24_163036/camaraA_campo.csv
+fluido/data glitter/2026-09-24_165329_PRENDIDO_VS_ALTURA_3/2026-09-24_171308/camaraA_campo.csv
+fluido/data glitter/2026-09-24_174258_PRENDIDO_VS_ALTURA_4/2026-09-24_174719/camaraA_campo.csv
+fluido/data glitter/2026-09-24_194116_PRENDIDO_VS_ALTURA_5/2026-09-25_162944/camaraA_campo.csv
+
+# Figuras del poster
+!fluido/poster/*.png
+/fluido/.claude

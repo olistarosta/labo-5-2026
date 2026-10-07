@@ -79,12 +79,18 @@ if __name__ == '__main__':
         dt = cam['tiempo']['dt_por_cuadro_s']
         roi = (cal['centro_vortice_px'][0], cal['centro_vortice_px'][1], cal['radio_roi_px'])
         colores = cam.get('colores', BRILLO)
-        tiempos = np.loadtxt(os.path.join(sub, 'tiempos.csv'), delimiter=',', skiprows=1, ndmin=2)
+        ruta_t = os.path.join(sub, 'tiempos.csv')
+        with open(ruta_t, encoding='utf-8') as ft:
+            col_t = ft.readline().strip().split(',')      # se lee por nombre: cambia segun la fuente
+        tiempos = np.loadtxt(ruta_t, delimiter=',', skiprows=1, ndmin=2)
         sep = int(p['piv'].get('separacion_cuadros', 1))       # pares (k, k + sep)
         # Cuantos intervalos abarca cada salto de hora, con el mismo criterio que TD
         # (ext_analizar._ritmo): un cuadro perdido recien a partir de 1.7 periodos, porque la
         # hora llega cuantizada y con jitter y hay saltos de 1.65 sin que falte nada.
-        nint = np.maximum(np.floor(np.diff(tiempos[:, 1]) / dt + 0.3), 1).astype(int)
+        if 'cuadro_camara' in col_t:     # grabaciones nuevas: el contador de la camara, exacto
+            nint = np.maximum(np.diff(tiempos[:, col_t.index('cuadro_camara')]), 1).astype(int)
+        else:
+            nint = np.maximum(np.floor(np.diff(tiempos[:, 1]) / dt + 0.3), 1).astype(int)
         # Mismo paso temporal que TD: diferencia de horas (simulación) o dt fijo por los intervalos
         # entre los dos cuadros (cámara).
         cum = np.r_[0, np.cumsum(nint)]
@@ -133,10 +139,11 @@ if __name__ == '__main__':
             uc, vc = np.gradient(cx_par, t_par), np.gradient(cy_par, t_par)
             cx, cy = cx_par[k_par], cy_par[k_par]
             ucv, vcv = uc[k_par], vc[k_par]
-            if tiempos.shape[1] >= 4:
+            if 'xc_px' in col_t:
                 n = len(cen)
-                real_x = 0.5 * (tiempos[:n, 2] + tiempos[pareja[:n], 2])
-                real_y = 0.5 * (tiempos[:n, 3] + tiempos[pareja[:n], 3])
+                ix, iy = col_t.index('xc_px'), col_t.index('yc_px')
+                real_x = 0.5 * (tiempos[:n, ix] + tiempos[pareja[:n], ix])
+                real_y = 0.5 * (tiempos[:n, iy] + tiempos[pareja[:n], iy])
                 e = np.hypot(cx_par - real_x, cy_par - real_y)
                 seg = cen[:, 6] > 0.5
                 print('   centro seguido contra el real: %d de %d pares con particula, error mediana %.3f px, '
