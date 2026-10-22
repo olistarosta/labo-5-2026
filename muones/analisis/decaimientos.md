@@ -1,0 +1,2 @@
+Primero buscamos decaimientos con un T_MUERTO = 40 ns y habia 547 candidatos posibles (calculado suavizando las señales, hay que ver que eso este bien 100%). 
+Despues subimos T_MUERTO = 60 ns, obteniendo 523 candidatos.

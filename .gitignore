@@ -14,3 +14,13 @@ fluido/data glitter/2026-09-24_155129_PRENDIDO_VS_ALTURA_1/2026-10-05_172335/cam
 # Figuras del poster
 !fluido/poster/*.png
 /fluido/.claude
+
+# Salidas generadas por el análisis de decaimientos
+muones/salida_decaimientos/por_archivo/
+
+# Datos crudos de muones guardados externamente
+muones/data/Datos16al22deOctubre-*/
+muones/data/Datos16al22deOctubre-*.zip
+
+# macOS
+.DS_Store
