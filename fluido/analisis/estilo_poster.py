@@ -48,7 +48,10 @@ def titulo_centrado(fig, ax, texto):
     return t
 
 
-def usar_estilo(fontsize=25):
+def usar_estilo(fontsize=25, escala_ejes=1.0):
+    """fontsize: títulos, leyendas y texto en general. escala_ejes agranda solo las etiquetas de
+    los ejes (y de la barra de color) y los números de los ticks."""
+    ejes = round(fontsize * escala_ejes)
     plt.style.use("default")
     plt.rcParams.update({
         "font.family": "sans-serif",
@@ -59,14 +62,14 @@ def usar_estilo(fontsize=25):
         "mathtext.bf": "Inter:bold",
         "mathtext.default": "regular",
         "font.size": fontsize,
-        "axes.labelsize": fontsize,
+        "axes.labelsize": ejes,
         "axes.titlesize": fontsize,
         "axes.titleweight": "semibold",
         "axes.titlepad": 14,
         "figure.titlesize": fontsize,
         "figure.titleweight": "semibold",
-        "xtick.labelsize": fontsize - 2,
-        "ytick.labelsize": fontsize - 2,
+        "xtick.labelsize": ejes - 2,
+        "ytick.labelsize": ejes - 2,
         "legend.fontsize": fontsize - 4,
 
         "figure.facecolor": FONDO,

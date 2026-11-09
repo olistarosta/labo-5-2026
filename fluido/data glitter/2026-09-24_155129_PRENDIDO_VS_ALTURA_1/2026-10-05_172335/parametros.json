@@ -1,6 +1,6 @@
 {
   "grabacion": "GRABACIONES/2026-09-24_155129_PRENDIDO_VS_ALTURA_1",
-  "fecha_analisis": "2026-09-24 15:54:48",
+  "fecha_analisis": "2026-10-05 17:23:35",
   "detenido_a_mano": false,
   "camaras": {
     "A": {
@@ -10,21 +10,21 @@
       "pares_analizados": 1081,
       "completo": true,
       "calibracion": {
-        "mm_por_px": 0.15756568402596224,
+        "mm_por_px": 0.17120709470081877,
         "punto_a_px": [
-          424.15316642120763,
-          513.1391638713899
+          421.32547864506626,
+          504.6567945676185
         ],
         "punto_b_px": [
           1490.1914580265095,
-          532.9313589135238
+          510.31170743679945
         ],
-        "distancia_mm": 168.0,
+        "distancia_mm": 183.0,
         "centro_vortice_px": [
-          952.9307805596466,
-          521.6215331751616
+          964.2415316642121,
+          507.4842510022089
         ],
-        "radio_roi_px": 489.41891035935197,
+        "radio_roi_px": 488.2603862603042,
         "resolucion_analisis_px": [
           1920,
           1080
@@ -60,8 +60,8 @@
         "reloj_exacto": false,
         "paso_temporal": "fijo: dt por cuadro x cuadros del intervalo; los cuadros salen del contador de la camara"
       },
-      "vectores_por_par": 2744,
-      "descartados_pct": 34.57794046652624
+      "vectores_por_par": 2737,
+      "descartados_pct": 34.438234128063804
     }
   },
   "piv": {
@@ -84,9 +84,9 @@
   },
   "recipiente": {
     "volumen_agua_ml": 1200.0,
-    "altura_agua_mm": 50.0,
-    "circunferencia_linea_agua_mm": 574.0,
-    "radio_linea_agua_mm": 91.35493733474793
+    "altura_agua_mm": 5.0,
+    "circunferencia_linea_agua_mm": 57.4,
+    "radio_linea_agua_mm": 9.135493733474792
   },
   "grabacion_info": {
     "nombre": "PRENDIDO_VS_ALTURA_1",
