@@ -24,3 +24,9 @@ muones/data/Datos16al22deOctubre-*.zip
 
 # macOS
 .DS_Store
+
+# Muones: trazas crudas de decaimientos (31 GB). Se bajan del release
+# "muones-decaimientos-v1"; ver muones/data/README.md
+/muones/data/run_*/
+/muones/data/_indice/
+__pycache__/
