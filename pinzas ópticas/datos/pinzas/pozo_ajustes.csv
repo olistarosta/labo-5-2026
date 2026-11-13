@@ -1,0 +1,8 @@
+grabacion,eje,k,w,err_k,err_w,u_max,err_u_max,k_w2,err_k_w2,n_intervalos,n_patadas,residuo_um,nota,tau_c_ms,f_c_Hz
+BARRIDO 1,x,38,1.188,7.554,0.1273,27.39,3.968,53.65,11.27,237,12,0.07083,,26.32,6.048
+MUEVO A MANO,x,47.06,1.02,8.425,0.1516,29.11,4.041,48.95,10.65,175,8,0.2428,platina movida a mano: movimientos largos e irregulares,21.25,7.489
+BARRIDO 2,x,139.3,0.2664,192.9,0.05003,22.52,42.21,9.89,24.9,240,10,0.08058,tres de las cuatro partículas atrapadas son chicas (radio aparente 1.05 µm): no comparable,7.177,22.18
+BARRIDO STEPSIZE,x,5.156,2.125,7.904,2.175,6.645,13.2,23.28,149.8,94,6,0.152,"las seis patadas la sacan de la trampa: no hay vueltas que fijen el pozo, ajuste no confiable",193.9,0.8207
+BARRIDO STEPSIZE 2,x,38.78,1.077,4.214,0.107,25.34,2.466,45,7.664,242,11,0.06754,,25.79,6.172
+BARRIDO STEPSIZE 3,x,31.64,0.9965,9.568,0.2353,19.12,3.625,31.42,4.694,245,10,0.1398,,31.6,5.036
+BARRIDO STEPSIZE 3,y,36.95,0.9302,11.01,0.1736,20.85,3.96,31.97,5.676,323,17,0.1513,,27.06,5.881

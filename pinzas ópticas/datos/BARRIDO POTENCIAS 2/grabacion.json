@@ -1,0 +1,154 @@
+{
+ "version": 1,
+ "nombre": "2026-11-12_213103_importada_BARRIDO_POTENCIAS_2",
+ "tipo": null,
+ "hora_inicio_iso": null,
+ "muestra": {
+  "material": null,
+  "diametro_m": null,
+  "glicerina_pct": null,
+  "preparada": null
+ },
+ "condiciones": {
+  "temperatura_K": null,
+  "laser": null,
+  "profundidad_m": null,
+  "velocidad_platina_m_s": null
+ },
+ "camara": {
+  "modelo": null,
+  "serie": null,
+  "exposicion_us": null,
+  "periodo_us": 79993.60051195904,
+  "roi": [
+   0,
+   0,
+   1280,
+   1024
+  ],
+  "binning": null,
+  "ganancia": null,
+  "bits": 8,
+  "formato_pixel": "rgb",
+  "bayer_fase": null,
+  "tick_hz": null
+ },
+ "escala_m_por_px": null,
+ "notas": "",
+ "fuente": {
+  "formato": "tiff",
+  "programa": "ThorCam (tags TSI)",
+  "carpeta": "C:\\datos_pinzas\\GRABACIONES\\BARRIDO POTENCIAS 2",
+  "archivos": [
+   "BARRIDO POTENCIAS 2.tif",
+   "BARRIDO POTENCIAS 2_1.tif",
+   "BARRIDO POTENCIAS 2_2.tif",
+   "BARRIDO POTENCIAS 2_3.tif",
+   "BARRIDO POTENCIAS 2_4.tif",
+   "BARRIDO POTENCIAS 2_5.tif",
+   "BARRIDO POTENCIAS 2_6.tif",
+   "BARRIDO POTENCIAS 2_7.tif",
+   "BARRIDO POTENCIAS 2_8.tif",
+   "BARRIDO POTENCIAS 2_9.tif",
+   "BARRIDO POTENCIAS 2_10.tif",
+   "BARRIDO POTENCIAS 2_11.tif",
+   "BARRIDO POTENCIAS 2_12.tif",
+   "BARRIDO POTENCIAS 2_13.tif",
+   "BARRIDO POTENCIAS 2_14.tif",
+   "BARRIDO POTENCIAS 2_15.tif",
+   "BARRIDO POTENCIAS 2_16.tif",
+   "BARRIDO POTENCIAS 2_17.tif"
+  ],
+  "paginas": [
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167
+  ],
+  "dtype": "uint8",
+  "forma": [
+   1024,
+   1280,
+   3
+  ],
+  "muestras": 3,
+  "fotometrica": "RGB",
+  "compresion": "NONE",
+  "software": null,
+  "descripcion": null,
+  "fecha_tiff": null,
+  "tags_privados": {
+   "32768": 8
+  },
+  "paginas_saltadas": 0,
+  "formato_pixel": "rgb"
+ },
+ "tiempo_fuente": "nominal",
+ "informe_tiempo": {
+  "metodo": "nominal",
+  "ajuste": "ninguno: t_nominal_s escrito al importar (fps nominal)",
+  "tick_hz_usado": null,
+  "tick_hz_ajustado": null,
+  "residuo_max_host_s": null,
+  "residuo_mediana_host_s": null,
+  "residuo_p99_host_s": null,
+  "diferencia_max_vs_ajuste_s": null,
+  "aviso": "SIN timestamps reales: t = t_nominal_s (índice / fps nominal). No se miden el período real, el jitter ni la deriva del reloj, y NO se detectan cuadros perdidos. SIN contador de hardware: los cuadros perdidos NO se pueden detectar (cuadros_perdidos = NaN en el informe; 0 en el resultado = ninguno detectado).",
+  "ppm_reloj": null,
+  "fps_medido": 12.501,
+  "periodo_s": 0.07999360051195904,
+  "dt_medio_s": 0.07999360051195904,
+  "dt_desvio_s": 7.819795994781436e-15,
+  "dt_max_s": 0.07999360051198323,
+  "n_cuadros": 3006,
+  "cuadros_perdidos": null,
+  "posiciones_perdidos": [],
+  "anomalias_contador": [],
+  "patron_0_2": 0,
+  "contador": "ninguno",
+  "tiempo_fuente": "nominal",
+  "explicacion": "NO HAY timestamps reales: t = índice / fps nominal. No se detectan cuadros perdidos ni se mide el período, el jitter o la deriva del reloj."
+ },
+ "importacion": {
+  "fecha_iso": "2026-11-12T21:31:03",
+  "desde": "C:\\datos_pinzas\\GRABACIONES\\BARRIDO POTENCIAS 2\\BARRIDO POTENCIAS 2.tif",
+  "version_importador": 4,
+  "tags_encontrados": [
+   "TSI_SIGNIFICANT_BITS_INT (32768)"
+  ],
+  "encontrados": [
+   "período nominal",
+   "bits",
+   "roi"
+  ],
+  "faltan": [
+   "timestamps por cuadro: NO hay (t nominal o ninguno; sin detección de cuadros perdidos)",
+   "contador de cuadros: NO hay (no se detectan cuadros perdidos)",
+   "camara.exposicion_us (--exposicion_us): LIBRE y TRAMPA la necesitan",
+   "escala_m_por_px (--escala_nm_px) o una retícula",
+   "tipo (--tipo libre|atrapada|stokes|pegada|reticula)",
+   "muestra.diametro_m (--diametro_um)",
+   "muestra.glicerina_pct (--glicerina_pct) o eta a mano",
+   "condiciones.temperatura_K (si no, ambiente por defecto)",
+   "camara.ganancia (informativo)"
+  ],
+  "conflictos": [],
+  "avisos": [
+   "Cuadros RGB procesados por el programa (demosaico + balance de blancos; en sRGB además gamma): no son cuentas crudas del sensor."
+  ]
+ }
+}

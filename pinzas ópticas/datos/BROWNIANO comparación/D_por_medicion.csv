@@ -1,0 +1,5 @@
+medición,n solas,D [µm²/s],± estadística,± método,± retardos,± escala,± total,muestra,glicerina en masa [%],η mezcla [mPa·s],D Stokes–Einstein,a 20 °C,a 26 °C,medido / teórico,η efectiva [mPa·s],glicerina que daría ese D [%],Faxén: separación bead–pared [µm]
+BROWNIANO 1,3,0.056161,0.0032677,0.00082106,0.0012384,0.00023744,0.0035975,0.25 ml glicerina + 1 ml agua (dudoso),24.014,1.8265,0.079172,0.072086,0.086645,0.70936,2.5749,33.624,1.38
+BROWNIANO 2,7,0.079132,0.005539,0.0029689,0.0031545,0.00033456,0.0070398,65 ml glicerina + 60 ml agua,57.797,8.359,0.0173,0.015135,0.019667,4.5741,1.8275,24.03,
+GROS BROWNIANO,11,0.16853,0.0070404,0.0011489,0.00097489,0,0.0071998,desconocida: se compara con agua,0,0.93505,0.15466,0.14245,0.16738,1.0897,0.85806,,
+CHICAS BROWNIANO,26,0.10217,0.0047775,0.0010053,0.0085474,0,0.0098434,desconocida: se compara con agua,0,0.93505,0.15466,0.14245,0.16738,0.66063,1.4154,15.808,0.99176

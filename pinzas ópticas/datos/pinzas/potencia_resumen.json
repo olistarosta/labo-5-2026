@@ -1,0 +1,20 @@
+{
+ "T_K": 296.15,
+ "gamma_particula_suelta_N_s_m": 5.8701624926241894e-08,
+ "err_gamma": 5.2789616679090135e-09,
+ "gamma_kappa_tau_N_s_m": 5.440036029782932e-08,
+ "err_gamma_kappa_tau": 4.516064631837083e-09,
+ "W_central_sobre_dt": 0.5,
+ "retraso_cambio_s": 1.5,
+ "escalones_atrapada": 5,
+ "ruido_nm": {
+  "LASER 5 x": 22.1,
+  "LASER 5 y": 19.3,
+  "BARRIDO POTENCIAS 2 x": 39.3,
+  "BARRIDO POTENCIAS 2 y": 32.0
+ },
+ "c_G": {
+  "LASER 5": 0.295,
+  "BARRIDO POTENCIAS 2": 0.139
+ }
+}

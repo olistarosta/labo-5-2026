@@ -1,0 +1,54 @@
+PATADAS DE LA PLATINA Y FUERZA DE LA TRAMPA POR ARRASTRE (12/11/2026)
+Estos archivos los escriben analisis/PINZAS 2 - platina y patadas.ipynb y
+analisis/PINZAS 3 - fuerza y pozo por arrastre.ipynb (funciones en analisis/pinzas_datos.py y
+analisis/pinzas_fuerza.py, donde está documentada cada columna). Dudas y supuestos: analisis/DUDAS pinzas.md.
+Los archivos potencia_* son del barrido de potencia: ver "LEEME potencia.txt".
+
+Unidades: µm, s, µm/s, pN, pN/µm, kT (23 °C). x hacia la derecha, y hacia ABAJO (como la imagen).
+Celda vacía = no medido. Escala: 94.61 nm/px (datos/calibracion.json).
+
+------------------------------------------------------------------------------------------------
+patadas.csv                 UNA FILA POR MOVIMIENTO DE LA PLATINA, todas las grabaciones (PINZAS 2)
+  grabacion, n              grabación y número de movimiento dentro de ella
+  cuadro_ini, cuadro_fin, t_ini_s, t_fin_s, duracion_s
+  dx_um, dy_um              desplazamiento total de la imagen (suma de corrimientos cuadro a cuadro)
+  dx_part_um, dy_part_um, votos   lo mismo medido con las partículas seguidas antes y después
+  v_pico_um_s               mayor velocidad de la imagen, promediada por cuadro (la real es mayor)
+  v_media_um_s, vx_pico_um_s, vy_pico_um_s, corr_min
+  x_max_um, y_max_um, r_max_um    mayor apartamiento de la partícula según el seguimiento general
+  antes, despues, misma     ¿había partícula atrapada antes / después?, ¿la misma trayectoria?
+  confiable                 False = la correlación fue mala y las partículas no lo confirman: no usar
+  xi_max_um                 mayor apartamiento a lo largo de la patada (seguimiento de la ventana de la trampa)
+  volvio, t_vuelta_s        ¿volvió a estar atrapada entre 1 y 3 s después?, cuánto tardó
+  resultado                 'no se aparto' | 'se aparto y volvio' | 'escapo' | 'sin particula'
+  n_cuaderno, t_cuaderno_s, a_nominal_um_s2, paso_nominal_um, resultado_cuaderno
+                            renglón del cuaderno emparejado por la hora (vacío = sin renglón).
+                            Los valores nominales del motor NO son confiables: solo para identificar.
+
+fuerza_resumen.csv          las patadas confiables con partícula atrapada al empezar (sin LASER NE),
+                            con las mismas columnas más desplazamiento_um (PINZAS 3, sección 4)
+
+pozo_mapa.csv               FUERZA DE LA TRAMPA / γ CONTRA POSICIÓN, promediada por tramos (PINZAS 3, sección 2)
+  grabacion, eje            eje de las patadas (x horizontal, y vertical)
+  xi_um                     posición media de la partícula a lo largo de la patada, desde el centro
+  u_um_s                    mediana de F_trampa/γ en ese tramo [µm/s]; negativo = hacia el centro
+  err_u_um_s, n             desvío robusto / raíz de n, y cantidad de intervalos
+
+pozo_ajustes.csv            AJUSTE DE UN POZO GAUSSIANO por grabación y eje (PINZAS 3, sección 3)
+  k, err_k                  κ/γ [1/s] = 1/tau_c
+  tau_c_ms, f_c_Hz          tiempo de relajación y frecuencia de esquina
+  w, err_w                  ancho del pozo [µm]: donde la fuerza es máxima
+  u_max, err_u_max          fuerza máxima / γ [µm/s]
+  k_w2, err_k_w2            profundidad del pozo / γ [µm²/s]
+  n_patadas, n_intervalos, residuo_um
+  nota                      por qué ese ajuste no es confiable (vacío = sin reparos)
+  El resultado que se informa es el ajuste conjunto de BARRIDO 1 y BARRIDO STEPSIZE 2 (en el notebook).
+
+difusion_libres_en_trampa.csv   D de las partículas libres en LASER 5 y BARRIDO POTENCIAS 2 (PINZAS 3, sección 5)
+  particula, cuadros, distancia_a_la_trampa_um, alfa (pendiente log-log del MSD), D_um2_s,
+  radio_aparente_um, nominal_y_libre (True = entra en el promedio que da γ)
+
+fuerza_en_pN.csv            RESULTADO EN UNIDADES DE FUERZA, según de dónde se saque γ (PINZAS 3, sección 5)
+  gamma de                  'partículas libres (central)' | 'atrapada casi suelta' | 'receta + Stokes'
+  gamma [1e-8 N·s/m], rigidez kappa [pN/µm], fuerza máxima [pN], profundidad del pozo [kT],
+  sigma térmica esperada [nm]

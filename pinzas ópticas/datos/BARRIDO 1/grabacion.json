@@ -1,0 +1,158 @@
+{
+ "version": 1,
+ "nombre": "2026-11-12_211215_importada_ACELERACION",
+ "tipo": null,
+ "hora_inicio_iso": null,
+ "muestra": {
+  "material": null,
+  "diametro_m": null,
+  "glicerina_pct": null,
+  "preparada": null
+ },
+ "condiciones": {
+  "temperatura_K": null,
+  "laser": null,
+  "profundidad_m": null,
+  "velocidad_platina_m_s": null
+ },
+ "camara": {
+  "modelo": null,
+  "serie": null,
+  "exposicion_us": null,
+  "periodo_us": 99790.44007584073,
+  "roi": [
+   0,
+   0,
+   1280,
+   1024
+  ],
+  "binning": null,
+  "ganancia": null,
+  "bits": 8,
+  "formato_pixel": "rgb",
+  "bayer_fase": null,
+  "tick_hz": null
+ },
+ "escala_m_por_px": null,
+ "notas": "",
+ "fuente": {
+  "formato": "tiff",
+  "programa": "ThorCam (tags TSI)",
+  "carpeta": "C:\\datos_pinzas\\GRABACIONES\\BARRIDO 1",
+  "archivos": [
+   "ACELERACION.tif",
+   "ACELERACION_1.tif",
+   "ACELERACION_2.tif",
+   "ACELERACION_3.tif",
+   "ACELERACION_4.tif",
+   "ACELERACION_5.tif",
+   "ACELERACION_6.tif",
+   "ACELERACION_7.tif",
+   "ACELERACION_8.tif",
+   "ACELERACION_9.tif",
+   "ACELERACION_10.tif",
+   "ACELERACION_11.tif",
+   "ACELERACION_12.tif",
+   "ACELERACION_13.tif",
+   "ACELERACION_14.tif",
+   "ACELERACION_15.tif",
+   "ACELERACION_16.tif",
+   "ACELERACION_17.tif",
+   "ACELERACION_18.tif",
+   "ACELERACION_19.tif"
+  ],
+  "paginas": [
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   167,
+   46
+  ],
+  "dtype": "uint8",
+  "forma": [
+   1024,
+   1280,
+   3
+  ],
+  "muestras": 3,
+  "fotometrica": "RGB",
+  "compresion": "NONE",
+  "software": null,
+  "descripcion": null,
+  "fecha_tiff": null,
+  "tags_privados": {
+   "32768": 8
+  },
+  "paginas_saltadas": 0,
+  "formato_pixel": "rgb"
+ },
+ "tiempo_fuente": "nominal",
+ "informe_tiempo": {
+  "metodo": "nominal",
+  "ajuste": "ninguno: t_nominal_s escrito al importar (fps nominal)",
+  "tick_hz_usado": null,
+  "tick_hz_ajustado": null,
+  "residuo_max_host_s": null,
+  "residuo_mediana_host_s": null,
+  "residuo_p99_host_s": null,
+  "diferencia_max_vs_ajuste_s": null,
+  "aviso": "SIN timestamps reales: t = t_nominal_s (índice / fps nominal). No se miden el período real, el jitter ni la deriva del reloj, y NO se detectan cuadros perdidos. SIN contador de hardware: los cuadros perdidos NO se pueden detectar (cuadros_perdidos = NaN en el informe; 0 en el resultado = ninguno detectado).",
+  "ppm_reloj": null,
+  "fps_medido": 10.021,
+  "periodo_s": 0.09979044007584073,
+  "dt_medio_s": 0.09979044007584073,
+  "dt_desvio_s": 1.5089051361200633e-14,
+  "dt_max_s": 0.09979044007587845,
+  "n_cuadros": 3219,
+  "cuadros_perdidos": null,
+  "posiciones_perdidos": [],
+  "anomalias_contador": [],
+  "patron_0_2": 0,
+  "contador": "ninguno",
+  "tiempo_fuente": "nominal",
+  "explicacion": "NO HAY timestamps reales: t = índice / fps nominal. No se detectan cuadros perdidos ni se mide el período, el jitter o la deriva del reloj."
+ },
+ "importacion": {
+  "fecha_iso": "2026-11-12T21:12:15",
+  "desde": "C:\\datos_pinzas\\GRABACIONES\\BARRIDO 1\\ACELERACION.tif",
+  "version_importador": 4,
+  "tags_encontrados": [
+   "TSI_SIGNIFICANT_BITS_INT (32768)"
+  ],
+  "encontrados": [
+   "período nominal",
+   "bits",
+   "roi"
+  ],
+  "faltan": [
+   "timestamps por cuadro: NO hay (t nominal o ninguno; sin detección de cuadros perdidos)",
+   "contador de cuadros: NO hay (no se detectan cuadros perdidos)",
+   "camara.exposicion_us (--exposicion_us): LIBRE y TRAMPA la necesitan",
+   "escala_m_por_px (--escala_nm_px) o una retícula",
+   "tipo (--tipo libre|atrapada|stokes|pegada|reticula)",
+   "muestra.diametro_m (--diametro_um)",
+   "muestra.glicerina_pct (--glicerina_pct) o eta a mano",
+   "condiciones.temperatura_K (si no, ambiente por defecto)",
+   "camara.ganancia (informativo)"
+  ],
+  "conflictos": [],
+  "avisos": [
+   "Cuadros RGB procesados por el programa (demosaico + balance de blancos; en sRGB además gamma): no son cuentas crudas del sensor."
+  ]
+ }
+}

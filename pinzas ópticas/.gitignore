@@ -1,0 +1,19 @@
+# Todo lo de TouchDesigner (el .toe, sus backups, el código de los nodos, lib/ y herramientas/)
+TouchDesigner/
+
+# carpetas viejas que quedan vacías hasta cerrar TD (ya se movieron a TouchDesigner/)
+td/
+Análisis TDS/
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# salidas del análisis (se regeneran)
+analisis/figuras/
+
+# acceso directo local a C:\datos_pinzas
+*.lnk
+
+# copia binaria de las trayectorias que TouchDesigner usa para dibujar (lo mismo que trayectorias.csv)
+datos/**/_trayectorias.npz
