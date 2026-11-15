@@ -1,5 +1,11 @@
 # Instrucciones para agentes
 
+## Números
+
+Usar punto como separador decimal (`0.83`, no `0,83`) en todo lo que se
+produzca: marcas y etiquetas de las figuras, leyendas, pies de figura, texto y
+código LaTeX (`$0.83 \pm 0.09$`, no `$0{,}83$`).
+
 ## Figuras
 
 Todo gráfico de datos (matplotlib u otro) que se haga o se modifique en este
