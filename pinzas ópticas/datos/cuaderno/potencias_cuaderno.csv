@@ -1,0 +1,17 @@
+grabacion,n,t_ini_s,t_fin_s,potencia_mW,potencia_texto,nota
+LASER 5,1,0,30,30,30 mW (máxima),
+LASER 5,2,30,60,25,25 mW,
+LASER 5,3,60,90,20,20 mW,
+LASER 5,4,90,120,15,15 mW,
+LASER 5,5,120,150,7,7 mW,
+LASER 5,6,150,180,,< 7 mW,sin valor
+LASER 5,7,180,210,,< 7 mW,sin valor
+LASER 5,8,210,240,0,0,láser apagado
+BARRIDO POTENCIAS 2,1,0,30,30,30 mW (máxima),
+BARRIDO POTENCIAS 2,2,30,60,25,25 mW,
+BARRIDO POTENCIAS 2,3,60,90,21.5,20 a 23 mW,se tomó el punto medio
+BARRIDO POTENCIAS 2,4,90,120,15,15 mW,
+BARRIDO POTENCIAS 2,5,120,150,7,7 mW,
+BARRIDO POTENCIAS 2,6,150,180,3,3 mW,
+BARRIDO POTENCIAS 2,7,180,210,,< 3 mW,sin valor
+BARRIDO POTENCIAS 2,8,210,240,,<< 3 mW,sin valor

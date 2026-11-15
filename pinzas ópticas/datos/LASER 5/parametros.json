@@ -1,0 +1,60 @@
+{
+ "bloques": {
+  "b0_cuadro": {
+   "Formato": "thorcam",
+   "Carpeta": "",
+   "Archivo": "C:/datos_pinzas/GRABACIONES/LASER 5/BARRIDO_POTENCIAS.tif",
+   "Exposicion": 0.0,
+   "Fps": 13.128,
+   "Cuadro": 0
+  },
+  "b1_canal": {
+   "Canal": "verde"
+  },
+  "b2_fondo": {
+   "Metodo": "mediana",
+   "Ncuadros": 51,
+   "Escala": 25.0,
+   "Modo": "dividir",
+   "Trampax": 477.5,
+   "Trampay": 485.3,
+   "Tramparadio": 45
+  },
+  "b3_fourier": {
+   "Activo": true,
+   "Chico": 1.5,
+   "Grande": 60.0
+  },
+  "b4_clahe": {
+   "Activo": false,
+   "Clip": 1.5,
+   "Teselas": 8
+  },
+  "b5_realce": {
+   "Radio": 17.0
+  },
+  "b6_deteccion": {
+   "Umbral": 12.0,
+   "Maximo": 200
+  },
+  "b7_localizacion": {
+   "Lado": 0,
+   "Suavizado": 0.2
+  },
+  "b8_trayectorias": {
+   "Estado": "",
+   "Salida": "",
+   "Escalanm": 94.61,
+   "Ncuadros": 0,
+   "Maxsalto": 10.0,
+   "Memoria": 5,
+   "Largomin": 10,
+   "Colision": "marcar",
+   "Interpolar": 0,
+   "Distcolision": 0.0,
+   "Prediccion": 10
+  }
+ },
+ "escala_m_por_px": 9.461000000000001e-08,
+ "grabacion": "C:/datos_pinzas/IMPORTADAS/2026-11-12_212918_importada_BARRIDO_POTENCIAS"
+}

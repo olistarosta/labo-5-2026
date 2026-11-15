@@ -1,0 +1,9 @@
+{
+ "escala_nm_por_px": 94.609,
+ "err_nm_por_px": 0.044,
+ "periodo_px": 105.698,
+ "inclinacion_grados": 4.0,
+ "division_um": 10,
+ "imagen": "CALIBRACION 0,01mm.tif",
+ "nota": "el error es solo estadístico: no incluye la tolerancia de fabricación de la retícula"
+}

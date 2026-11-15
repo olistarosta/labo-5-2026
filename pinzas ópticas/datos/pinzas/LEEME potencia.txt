@@ -1,0 +1,90 @@
+BARRIDO DE POTENCIA CON LA PARTÍCULA ATRAPADA (LASER 5 y BARRIDO POTENCIAS 2, 12/11/2026)
+Todos los archivos potencia_* de esta carpeta los escribe analisis/PINZAS 4 - barrido de potencia.ipynb
+(funciones en analisis/potencia.py). Dudas y supuestos: analisis/DUDAS potencia.md.
+
+Unidades: µm, s, pN/µm, mW, Hz; varianzas en µm² (1 µm² = 1e6 nm²). Celda vacía = no medido.
+x hacia la derecha, y hacia ABAJO (como la imagen). "escalon" = 1..8, el renglón del cuaderno.
+kT = 4.089e-3 pN·µm (23 °C, SUPUESTO). dt = período entre cuadros (76 ms en LASER 5, 80 ms en BARRIDO POTENCIAS 2).
+W = exposición de la cámara (NO se conoce): los resultados se dan con W = dt/2 (central), 0 y dt.
+
+------------------------------------------------------------------------------------------------
+potencia_cuadros.csv        UNA FILA POR CUADRO de las dos grabaciones (sale de releer los TIFF)
+  grabacion, cuadro, t_s
+  escalon            escalón del cuaderno al que pertenece el cuadro (el cambio real ocurre ~1.5 s
+                     después de cada múltiplo de 30 s)
+  usable             True si el cuadro entra en el análisis: escalones 1 a 5 (30 a 7 mW), desde 5 s
+                     después del múltiplo de 30 s hasta 0.5 s después del siguiente
+  particula          id de la trayectoria (de atrapada.csv)
+  x_conv_um, y_conv_um   posición de atrapada.csv (la de la conversión a CSV). CONTAMINADA por la
+                     mancha del láser mientras la partícula está atrapada: no usar para la varianza
+  xc_um, yc_um       LA QUE SE USA: posición medida sobre verde + c_G·(rojo − rojo del fondo), sin
+                     los píxeles a menos de 8 px del láser. Respecto del mismo origen que atrapada.csv
+  xu_um, yu_um       igual, sin tapar el núcleo
+  xb_um, yb_um       sobre el canal azul corregido, sin los píxeles a menos de 11 px (muy ruidosa)
+  xs_um, ys_um       verde tal cual, sin tapar (réplica de la conversión)
+  rojo_nucleo        rojo en un disco de 6 px en el láser / rojo de la iluminación, menos su valor
+                     con el láser apagado (≈ 1.5 a 2 con partícula atrapada)
+  rojo_halo          lo mismo en el anillo de 25 a 50 px
+  rojo_lejos         rojo/verde a más de 100 px del láser, menos su valor con el láser apagado
+  rojo_max           máximo del canal rojo a menos de 15 px del láser [cuentas, 0–255]
+  plat_dx_um, plat_dy_um   corrimiento de la imagen por correlación (de atrapada.csv): acá sigue a
+                     las partículas libres que arrastra el líquido, no a la platina
+
+potencia_escalones.csv      EL RESULTADO. Una fila por grabación, escalón (1 a 5) y eje. W = dt/2
+  grabacion, escalon, potencia_mW (cuaderno; 21.5 = "20 a 23 mW"), eje (x o y)
+  W_s                exposición supuesta [s]
+  t_ini_usado_s, t_fin_usado_s   tramo usado
+  n, dt              cuadros del tramo y período entre cuadros [s]
+  media_um           posición media (respecto del equilibrio de atrapada.csv)
+  var_um2            varianza de la posición después de restar una parábola (deriva lenta) [µm²]
+  var_cruda_um2      varianza sin restar nada
+  ruido_um2          varianza del ruido de localización que se resta (ruido de píxel, cota inferior)
+  rho1               correlación entre un cuadro y el siguiente
+  kappa_<método>, err_kappa_<método>   rigidez [pN/µm] y su error estadístico (bootstrap por bloques;
+                     espectro: Fisher). Métodos: equiparticion, boltzmann, msd (usan la varianza),
+                     autocorrelacion y espectro (= gamma/tau_c: solo valen si "resuelto")
+  err_kappa_ruido    cuánto cambia kappa_equiparticion si el ruido restado cambia ± 20 %
+  err_kappa_total    suma en cuadratura de err_kappa_equiparticion y err_kappa_ruido
+  kappa_equiparticion_W0, kappa_equiparticion_Wdt   lo mismo con W = 0 y con W = dt (sistemático)
+  tau_<método>, err_tau_<método>   tiempo de relajación tau_c = gamma/kappa [s]
+  tau_espectro_W0, tau_espectro_Wdt   con W = 0 y W = dt
+  f_c_<método>       frecuencia de esquina 1/(2·pi·tau_c) [Hz]
+  resuelto           True si tau_c del espectro > un cuadro, su error < 40 % y el ruido < 30 % de la
+                     varianza. Si es False, tau_c y f_c NO son una medición
+  gamma_kappa_tau_1e8, err_   kappa_equiparticion × tau_espectro [1e-8 N·s/m]
+  var_psd_um2, var_msd_um2, amp_acf_um2   varianza térmica del ajuste del espectro y del MSD, y
+                     amplitud de la exponencial de la autocorrelación [µm²]
+  anarmonia_2s, chi2_boltzmann   peso de los términos x³ y x⁴ a ± 2 sigma (fracción de 2 kT) y chi²
+                     reducido de la parábola ajustada a U(x)
+  asimetria, curtosis_exceso     de la distribución de posiciones
+  rojo_nucleo, rojo_halo, rojo_lejos, sd_rojo_nucleo   indicadores de rojo del tramo
+  corr_xy            correlación entre x e y
+
+potencia_escalones_por_exposicion.csv   lo mismo, una fila por cada W (W_rel = W/dt = 0, 0.5, 1)
+
+potencia_rojo_por_escalon.csv   los 8 escalones: rojo relativo al primer escalón (nucleo_rel,
+  halo_rel, lejos_rel), rojo_max_cuentas, distancia media al centro [µm], cuadros con partícula
+potencia_ruido_pixel.csv    ruido de localización por ruido de píxel [µm], por escalón y estimador
+  (ruido_xc_um ...; c_G, c_B = cruce del rojo al verde y al azul). Las filas con escalon = 0 son el
+  chequeo con dos manchas de polvo quietas: ruido_xc/yc = desvío medido, ruido_xu/yu = predicho
+potencia_estimadores_de_posicion.csv   desvío estándar [nm] por escalón con cada estimador
+potencia_perfiles.csv       perfil radial de la partícula (intensidad/fondo − 1 contra r [µm]) atrapada
+  (verde tal cual y corregido) y suelta, con el radio aparente [µm]
+potencia_flujo.csv          velocidad de arrastre de las partículas libres [µm/s] (mediana y dispersión)
+potencia_gamma_particula_suelta.csv   D [µm²/s] por eje de la partícula después de los 152 s y
+  gamma = kT/D [1e-8 N·s/m]
+potencia_validacion_sinteticos.csv    sesgo y dispersión [%] de cada estimador en series simuladas
+potencia_potenciales.csv    U(x) [kT] de cada escalón y eje: x_um, U_kT, err_U_kT, U_parabola_kT
+potencia_autocorrelacion.csv   C(tau) [µm²] con error y la exponencial ajustada, retardos 0 a 10 cuadros
+potencia_espectros.csv      densidad espectral promediada en bandas [µm²/Hz] y el ajuste
+potencia_ajustes_kappa_potencia.csv   rectas kappa = a + b·P por grabación, eje y W (P_cero_mW = −a/b)
+potencia_ajustes_varianza_inversa_potencia.csv   rectas Var = a + b/P [nm²]; la ordenada es el ruido
+potencia_forma_del_pozo.csv   asimetría y curtosis de cada tramo contra un pozo armónico simulado (z)
+potencia_exposicion_estirado.csv   W/dt por el largo de los trazos de las partículas en una patada
+  de BARRIDO 2 (otra configuración de cámara)
+potencia_exposicion_verosimilitud.csv   −2·Δ ln L del espectro según la W supuesta
+potencia_baja.csv           después de los 150 s, en ventanas de 10 s: posición de la partícula,
+  su velocidad y la de las partículas libres [µm/s]
+potencia_centro.csv         corrimiento del centro de equilibrio por escalón [nm] y lo que predice el
+  arrastre del flujo
+potencia_resumen.json       gamma, ruido, c_G y los parámetros del análisis

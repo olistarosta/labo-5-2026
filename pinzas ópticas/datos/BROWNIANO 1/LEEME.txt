@@ -1,0 +1,41 @@
+8 · TRAYECTORIAS → CSV — une las posiciones de todos los cuadros en trayectorias y escribe los CSV.
+
+PROCESAR corre los containers 0–7 sobre TODOS los cuadros (en un proceso aparte: TD no se congela;
+el avance se ve en el panel ESTADO) y después ENLAZA: en cada cuadro asigna cada posición a la
+trayectoria que mejor le corresponde (asignación óptima, pinzas/enlace.py).
+
+Página PROCESAR
+  Carpeta de salida   dónde se escriben los CSV. Vacía = <grabación>/csv/<fecha>/.
+  Escala (nm/px)      para pasar px a µm. 0 = la que dice grabacion.json.
+  Procesar solo los primeros   0 = todo el video; un número = solo esos cuadros (para probar rápido).
+Página ENLACE (lo importante)
+  Salto máximo (px)   la misma partícula no puede moverse más que esto entre dos cuadros. Muy chico:
+                      las trayectorias se cortan; muy grande: se confunden vecinas. Regla: ~4 veces lo
+                      que se mueve por cuadro. Bead atrapada 3 · libres 5–8 · Stokes v·dt + 3.
+  Cuadros perdidos tolerados   si una partícula no se detecta unos cuadros (se desenfoca, pierde
+                      contraste) y reaparece antes de tantos cuadros, sigue con el MISMO número.
+  Largo mínimo (cuadros)   las trayectorias más cortas se descartan (suelen ser ruido o beads que
+                      pasan). Para un MSD conviene 50–100.
+  Si dos se acercan   qué hacer en una colisión (dos beads a menos de la distancia de colisión: su
+                      posición es menos confiable y se pueden intercambiar los números):
+                        marcar    se guardan igual, con colision = 1 en el CSV
+                        descartar esos cuadros quedan vacíos (NaN)
+                        cortar    la trayectoria termina ahí y sigue con otro número (lo más seguro
+                                  para un MSD: nunca mezcla dos beads)
+Página AVANZADO
+  Rellenar huecos de hasta (cuadros)   los huecos cortos se completan con una recta y quedan
+                      marcados (interpolado = 1). 0 = nunca (para MSD/espectro conviene 0).
+  Distancia de colisión (px)   0 = 2.5 radios de la bead.
+  Predecir con la velocidad (cuadros)   busca donde la partícula DEBERÍA estar según su velocidad en
+                      los últimos tantos cuadros (imprescindible en Stokes: las beads viajan). 0 = busca
+                      donde estaba.
+Salida: trayectorias.csv (cuadro, t_s, particula, x_px, y_px, x_um, y_um, z, interpolado, colision),
+particulas.csv, tiempo.csv, parametros.json, grabacion.json y LEEME.txt.
+La vista muestra las trayectorias del último PROCESAR sobre el cuadro actual (rojo = colisión).
+
+Escala usada: nan nm/px. Celda vacía = no medido.
+
+En Python:
+    import pandas as pd
+    d = pd.read_csv("trayectorias.csv")
+    for pid, tr in d.groupby("particula"): print(pid, len(tr), tr.x_um.std())

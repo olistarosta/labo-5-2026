@@ -1,0 +1,112 @@
+{
+ "version": 1,
+ "nombre": "2026-11-12_211147_importada_9_6_muestra1_mov_brow",
+ "tipo": null,
+ "hora_inicio_iso": null,
+ "muestra": {
+  "material": null,
+  "diametro_m": null,
+  "glicerina_pct": null,
+  "preparada": null
+ },
+ "condiciones": {
+  "temperatura_K": null,
+  "laser": null,
+  "profundidad_m": null,
+  "velocidad_platina_m_s": null
+ },
+ "camara": {
+  "modelo": null,
+  "serie": null,
+  "exposicion_us": null,
+  "periodo_us": null,
+  "roi": [
+   0,
+   0,
+   1440,
+   1080
+  ],
+  "binning": null,
+  "ganancia": null,
+  "bits": 8,
+  "formato_pixel": "rgb",
+  "bayer_fase": null,
+  "tick_hz": null
+ },
+ "escala_m_por_px": null,
+ "notas": "",
+ "fuente": {
+  "formato": "video",
+  "programa": null,
+  "carpeta": "C:\\datos_pinzas\\OTROS GRUPOS\\CHICAS BROWNIANO",
+  "archivos": [
+   "9_6_muestra1_mov_brow_1.mp4"
+  ],
+  "cuadros_repetidos": 122,
+  "fourcc": "\u0016\u0000\u0000\u0000",
+  "cv2_api": 0,
+  "fps_contenedor": 30.0,
+  "forma": [
+   1080,
+   1440
+  ],
+  "formato_pixel": "rgb",
+  "aviso": "VIDEO: 8 bits por canal y compresión con pérdida (ThorCam: Motion-JPEG escalado como en pantalla). Sirve para mirar o para un tracking grueso; NO para subpíxel fino, piso de ruido ni fotometría. Sin timestamps ni contador por cuadro."
+ },
+ "tiempo_fuente": "nominal",
+ "informe_tiempo": {
+  "metodo": "nominal",
+  "ajuste": "ninguno: t_nominal_s escrito al importar (fps nominal)",
+  "tick_hz_usado": null,
+  "tick_hz_ajustado": null,
+  "residuo_max_host_s": null,
+  "residuo_mediana_host_s": null,
+  "residuo_p99_host_s": null,
+  "diferencia_max_vs_ajuste_s": null,
+  "aviso": "SIN timestamps reales: t = t_nominal_s (índice / fps nominal). No se miden el período real, el jitter ni la deriva del reloj, y NO se detectan cuadros perdidos. SIN contador de hardware: los cuadros perdidos NO se pueden detectar (cuadros_perdidos = NaN en el informe; 0 en el resultado = ninguno detectado).",
+  "ppm_reloj": null,
+  "fps_medido": 19.542857142857144,
+  "periodo_s": 0.05116959064327485,
+  "dt_medio_s": 0.05116959064327485,
+  "dt_desvio_s": 0.02839475059253053,
+  "dt_max_s": 0.2,
+  "n_cuadros": 229,
+  "cuadros_perdidos": null,
+  "posiciones_perdidos": [],
+  "anomalias_contador": [],
+  "patron_0_2": 0,
+  "contador": "ninguno",
+  "tiempo_fuente": "nominal",
+  "explicacion": "NO HAY timestamps reales: t = índice / fps nominal. No se detectan cuadros perdidos ni se mide el período, el jitter o la deriva del reloj."
+ },
+ "importacion": {
+  "fecha_iso": "2026-11-12T21:11:47",
+  "desde": "C:\\datos_pinzas\\OTROS GRUPOS\\CHICAS BROWNIANO\\9_6_muestra1_mov_brow_1.mp4",
+  "version_importador": 4,
+  "tags_encontrados": [
+   "video \u0016\u0000\u0000\u0000 351 cuadros"
+  ],
+  "encontrados": [
+   "bits",
+   "roi"
+  ],
+  "faltan": [
+   "timestamps por cuadro: NO hay (t nominal o ninguno; sin detección de cuadros perdidos)",
+   "contador de cuadros: NO hay (no se detectan cuadros perdidos)",
+   "camara.exposicion_us (--exposicion_us): LIBRE y TRAMPA la necesitan",
+   "camara.periodo_us (--fps): solo informativo si hay timestamps",
+   "escala_m_por_px (--escala_nm_px) o una retícula",
+   "tipo (--tipo libre|atrapada|stokes|pegada|reticula)",
+   "muestra.diametro_m (--diametro_um)",
+   "muestra.glicerina_pct (--glicerina_pct) o eta a mano",
+   "condiciones.temperatura_K (si no, ambiente por defecto)",
+   "camara.ganancia (informativo)"
+  ],
+  "conflictos": [],
+  "avisos": [
+   "fps nominal = 30 (del contenedor del video)",
+   "VIDEO: 8 bits por canal y compresión con pérdida (ThorCam: Motion-JPEG escalado como en pantalla). Sirve para mirar o para un tracking grueso; NO para subpíxel fino, piso de ruido ni fotometría. Sin timestamps ni contador por cuadro.",
+   "122 de 351 cuadros son REPETIDOS (copia del anterior: la cámara no entregó uno nuevo) y se descartan; cada cuadro nuevo conserva el tiempo en que aparece en el video"
+  ]
+ }
+}

@@ -1,0 +1,4 @@
+gamma de,gamma [1e-8 N·s/m],rigidez kappa [pN/µm],fuerza máxima [pN],profundidad del pozo [kT],sigma térmica esperada [nm]
+partículas libres (central),4.983,1.898,1.308,599.5,46.41
+atrapada casi suelta,5.549,2.113,1.457,667.5,43.98
+receta + Stokes,23.62,8.996,6.2,2841,21.32

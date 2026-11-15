@@ -1,0 +1,12 @@
+grabacion,primer_archivo,archivos,cuadros,ancho_px,alto_px,fps,duracion_s,hora_inicio,pausas,tipo,laser_x_px,laser_y_px,que_es
+BROWNIANO 1,BROWNIANO1.tif,31,5102,1280,1024,10.021,509.1,16:06:23,BROWNIANO1_26.tif: +3.7 s; BROWNIANO1_27.tif: +1.1 s,browniano,,,sin láser: movimiento browniano
+LASER NE,LASER1.tif,14,2258,1280,1024,10.022,225.3,17:17:13,,patadas,496.9,477.2,"dos patadas (a = 49 y 100 µm/s², paso 200 µm); sin tiempos en el cuaderno"
+BARRIDO 1,ACELERACION.tif,20,3219,1280,1024,10.021,321.2,17:29:23,ACELERACION_17.tif: +0.6 s,patadas,496.9,477.2,"barrido de aceleración: 15 patadas, paso 100 µm, a = 100 a 420 µm/s²"
+MUEVO A MANO,MUEVO A MANO.tif,8,1209,1280,1024,10.021,120.6,17:47:23,,patadas,477.5,485.3,platina movida a mano
+BROWNIANO 2,BROWNIANO 2.tif,13,2121,1280,1024,10.021,211.7,17:49:41,,browniano,,,sin láser: movimiento browniano
+BARRIDO 2,SZ250_VM2600.tif,11,1753,1280,1024,10.019,175.0,18:00:55,,patadas,477.5,485.3,"3 patadas, paso 250 µm, a = 450 µm/s²"
+LASER 5,BARRIDO_POTENCIAS.tif,19,3165,1280,1024,13.128,241.1,18:22:33,,potencia,477.5,485.3,"barrido de potencia 1 (30 a 0 mW de a 30 s), partícula quieta"
+BARRIDO POTENCIAS 2,BARRIDO POTENCIAS 2.tif,18,3006,1280,1024,12.501,240.5,19:05:54,,potencia,477.5,485.3,"barrido de potencia 2 (30 a < 3 mW de a 30 s), partícula quieta"
+BARRIDO STEPSIZE,AC450_Vmax2600.tif,23,3834,1280,1024,12.502,306.7,19:10:53,,patadas,477.5,485.3,"barrido de paso: 7 patadas, a = 450 µm/s², paso 25 y 50 µm"
+BARRIDO STEPSIZE 2,AC250_Vmax2600.tif,21,3376,1280,1024,12.503,270.0,19:19:22,,patadas,477.5,485.3,"barrido de paso: 13 patadas, a = 250 µm/s², paso 25 a 150 µm"
+BARRIDO STEPSIZE 3,AC250_Vmax2600.tif,39,6412,1280,1024,12.501,512.9,19:34:39,AC250_Vmax2600_34.tif: +0.7 s,patadas,477.5,485.3,"no figura en el cuaderno (""ahora nos vamos a mover verticalmente"")"

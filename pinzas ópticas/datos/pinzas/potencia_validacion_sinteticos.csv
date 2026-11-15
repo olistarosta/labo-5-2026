@@ -1,0 +1,57 @@
+caso,descripcion,estimador,verdad,mediana,sesgo_pct,dispersion_pct,fallos_pct
+0,30 mW,kappa_equiparticion,2.0444,2.0729,1.3923,7.5169,0
+0,30 mW,kappa_boltzmann,2.0444,2.0722,1.362,8.0276,0
+0,30 mW,kappa_autocorrelacion,2.0444,9.8937,383.94,345.75,11.333
+0,30 mW,kappa_espectro,2.0444,2.0824,1.8606,32.266,0
+0,30 mW,kappa_msd,2.0444,1.9965,-2.3431,15.149,0
+0,30 mW,tau_autocorrelacion,0.03,0.0061991,-79.336,105.35,11.333
+0,30 mW,tau_espectro,0.03,0.029453,-1.8249,28.838,0
+0,30 mW,tau_msd,0.03,0.0293,-2.3328,34.399,0
+1,"30 mW, ruido alto",kappa_equiparticion,2.0444,2.0611,0.81785,11.138,0
+1,"30 mW, ruido alto",kappa_boltzmann,2.0444,2.0583,0.67809,12.102,0
+1,"30 mW, ruido alto",kappa_autocorrelacion,2.0444,9.5179,365.56,345.29,12
+1,"30 mW, ruido alto",kappa_espectro,2.0444,2.2117,8.1852,66.895,0
+1,"30 mW, ruido alto",kappa_msd,2.0444,1.8278,-10.595,32.351,0
+1,"30 mW, ruido alto",tau_autocorrelacion,0.03,0.0064439,-78.52,139.44,12
+1,"30 mW, ruido alto",tau_espectro,0.03,0.027731,-7.565,50.323,0
+1,"30 mW, ruido alto",tau_msd,0.03,0.027681,-7.7309,68.812,0
+2,15 mW,kappa_equiparticion,0.62904,0.65543,4.1948,9.4986,0
+2,15 mW,kappa_boltzmann,0.62904,0.65639,4.3465,10.072,0
+2,15 mW,kappa_autocorrelacion,0.62904,0.72203,14.782,41.945,0
+2,15 mW,kappa_espectro,0.62904,0.65165,3.5932,20.363,0
+2,15 mW,kappa_msd,0.62904,0.62717,-0.29754,10.751,0
+2,15 mW,tau_autocorrelacion,0.1,0.087123,-12.877,32.369,0
+2,15 mW,tau_espectro,0.1,0.096532,-3.4685,18.695,0
+2,15 mW,tau_msd,0.1,0.1017,1.7012,26.327,0
+3,7 mW,kappa_equiparticion,0.20444,0.22699,11.029,16.956,0
+3,7 mW,kappa_boltzmann,0.20444,0.22569,10.393,16.368,0
+3,7 mW,kappa_autocorrelacion,0.20444,0.25364,24.065,34.966,0
+3,7 mW,kappa_espectro,0.20444,0.20733,1.4142,22.141,0
+3,7 mW,kappa_msd,0.20444,0.20528,0.41227,20.898,0
+3,7 mW,tau_autocorrelacion,0.3,0.24181,-19.397,23.711,0
+3,7 mW,tau_espectro,0.3,0.29582,-1.3937,21.702,0
+3,7 mW,tau_msd,0.3,0.32302,7.6728,38.099,0
+4,7 mW con deriva,kappa_equiparticion,0.20444,0.22524,10.175,16.956,0
+4,7 mW con deriva,kappa_boltzmann,0.20444,0.22618,10.636,17.035,0
+4,7 mW con deriva,kappa_autocorrelacion,0.20444,0.25748,25.946,36.587,0
+4,7 mW con deriva,kappa_espectro,0.20444,0.20325,-0.58153,21.979,0
+4,7 mW con deriva,kappa_msd,0.20444,0.19716,-3.5615,18.516,0
+4,7 mW con deriva,tau_autocorrelacion,0.3,0.23821,-20.597,22.11,0
+4,7 mW con deriva,tau_espectro,0.3,0.30175,0.58493,22.191,0
+4,7 mW con deriva,tau_msd,0.3,0.31613,5.3766,29.764,0
+5,"30 mW, W = dt pero se supone dt/2",kappa_equiparticion,2.0444,2.645,29.378,10.981,0
+5,"30 mW, W = dt pero se supone dt/2",kappa_boltzmann,2.0444,2.647,29.476,10.425,0
+5,"30 mW, W = dt pero se supone dt/2",kappa_autocorrelacion,2.0444,2.3234,13.646,358.79,8.6667
+5,"30 mW, W = dt pero se supone dt/2",kappa_espectro,2.0444,1.3285,-35.016,21.126,0
+5,"30 mW, W = dt pero se supone dt/2",kappa_msd,2.0444,3.1423,53.704,21.428,0
+5,"30 mW, W = dt pero se supone dt/2",tau_autocorrelacion,0.03,0.026398,-12.007,151.84,8.6667
+5,"30 mW, W = dt pero se supone dt/2",tau_espectro,0.03,0.046167,53.889,46.555,0
+5,"30 mW, W = dt pero se supone dt/2",tau_msd,0.03,0.045943,53.142,45.1,0
+6,"30 mW, W = 0 pero se supone dt/2",kappa_equiparticion,2.0444,1.5246,-25.427,5.392,0
+6,"30 mW, W = 0 pero se supone dt/2",kappa_boltzmann,2.0444,1.531,-25.11,5.3996,0
+6,"30 mW, W = 0 pero se supone dt/2",kappa_autocorrelacion,2.0444,9.7327,376.07,352.97,13.333
+6,"30 mW, W = 0 pero se supone dt/2",kappa_espectro,2.0444,2.6451,29.381,80.959,0
+6,"30 mW, W = 0 pero se supone dt/2",kappa_msd,2.0444,1.2177,-40.437,28.719,0
+6,"30 mW, W = 0 pero se supone dt/2",tau_autocorrelacion,0.03,0.0063017,-78.994,131.4,13.333
+6,"30 mW, W = 0 pero se supone dt/2",tau_espectro,0.03,0.023187,-22.709,36.921,0
+6,"30 mW, W = 0 pero se supone dt/2",tau_msd,0.03,0.022833,-23.892,54.738,0

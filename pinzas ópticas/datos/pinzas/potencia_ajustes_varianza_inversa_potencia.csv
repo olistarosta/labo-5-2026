@@ -1,0 +1,5 @@
+grabacion,eje,ordenada_nm2,err_ordenada_nm2,ruido_plantilla_nm2,pendiente_nm2_mW,err_pendiente,chi2,gl
+LASER 5,x,-1901.1,428.6,487.7,1.113e+05,11519,15.692,3
+LASER 5,y,-2530.7,412.76,372.11,1.3819e+05,11408,1.3905,3
+BARRIDO POTENCIAS 2,x,1677.5,301.91,1544.3,38434,5529.6,0.57949,3
+BARRIDO POTENCIAS 2,y,1254.8,281.53,1020.9,39275,5612.6,4.2808,3
