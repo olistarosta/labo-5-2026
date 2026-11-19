@@ -26,3 +26,55 @@ particulas.csv          una fila por partícula
   R_ap_um                 radio aparente (del borde de la imagen; depende del foco)
   alfa, deriva_um_s       pendiente log-log de su MSD y velocidad de su deriva
   D_recta_um2_s           su D, restándole su propia recta
+
+
+TODAS LAS GRABACIONES, POR RADIO: todas_*.csv
+Las escribe "todas las grabaciones por radio.ipynb": partículas libres de las 17 grabaciones nuestras, con y sin láser.
+Muestras: 12/11 (la de la pinza y BROWNIANO 2), 19/11 (no anotada) y la de BROWNIANO 1.
+
+todas_D_por_clase.csv   EL RESULTADO: una fila por muestra y por clase de radio aparente
+  clase                   chica (R_ap < 1.2 µm), intermedia (1.2 a 1.6), nominal (1.6 a 2.1), grande (> 2.1)
+  D [µm²/s], ± error      promedio entre partículas y su error (dispersión entre partículas / √n)
+  dispersión entre partículas, error típico de una partícula, dispersión entre grabaciones
+                          si la primera es mayor que la segunda, las partículas de verdad difunden distinto
+  radio equivalente [µm]  radio que daría Stokes–Einstein tomando a las nominales de la misma muestra como 1.5 µm
+
+todas_particulas.csv    una fila por trayectoria con radio medido (100 cuadros o más)
+  cuadros                 posiciones que se usan (sin colisión y con la platina quieta); cuadros_medidos: todas
+  dist_laser_um           menor distancia al láser en toda la trayectoria; en_atrapada: 1 si figura en atrapada.csv
+  R_ap_um, err_R_ap_um, disp_R_ap_um, contraste
+                          radio aparente (radios.csv), su error, cuánto cambia entre cuadros, qué tan oscura se ve
+  D_um2_s, err_D_um2_s    D (mitad de la pendiente de la varianza del desplazamiento, sin el arrastre) y su error (bootstrap)
+  Dx_um2_s, Dy_um2_s      lo mismo por eje, con sus errores
+  ordenada_um2, ruido_nm  ordenada de esa recta y el error de localización por eje que implica (vacío si es negativa)
+  alfa                    pendiente log-log de la varianza contra el retardo (1 = browniano libre, 0 = pegada)
+  v_um_s                  velocidad media de arrastre; x_px, y_px: posición media en la imagen
+  motivo                  libre, o por qué se descarta: imagen moviéndose / atrapada o cerca del láser / corta /
+                          pegada al vidrio / agregado o fuera de foco (lo que se vio mirando las imágenes: pares y
+                          racimos de partículas pegadas entre sí, o fuera de foco en BROWNIANO 1 y 2)
+  clase                   la clase de radio, solo en las libres
+
+todas_libres_por_clase.csv     cuántas libres hay de cada clase en cada una de las 17 grabaciones
+todas_compatibilidad_entre_dias.csv   ¿el 12/11 y el 19/11 dan el mismo D? una fila por clase, y una para las nominales
+                               de los barridos de potencia solos (lo mismo con lo mismo)
+  D 12/11, D 19/11, ±            promedio de cada día; el error es el mayor entre el estadístico y la dispersión entre
+                               grabaciones / √grabaciones
+  cociente, diferencia en errores   D 19/11 / D 12/11, y cuántas veces su propio error vale la diferencia (< 2: compatibles)
+  D las dos juntas, ± juntas     solo si son compatibles
+todas_grabaciones.csv   una fila por grabación: día, cuadros, duración, patadas, tramos quietos, cuánto se mueve la imagen
+                        entera en los cuadros que se usan, si se usa, y cuántas trayectorias hay de cada motivo
+todas_D_por_grabacion.csv      la clase nominal grabación por grabación, con el día, la hora de inicio y el arrastre de las libres
+todas_D_vs_radio_franjas.csv   D promedio por franja de radio aparente, en cada muestra (los puntos del ajuste)
+todas_D_vs_radio_ajustes.csv   las tres curvas ajustadas en cada muestra y en las dos juntas: 1/R, exponente libre (p) y
+                               radio corrido (D = A / (R_ap − δ), la curva de la figura); parámetros con error agrandado
+                               por √(chi2 por grado), chi2 por grado y la viscosidad que sale de la constante
+todas_chequeos_browniano.csv   una fila por muestra y clase: curtosis (0 = gaussiana), pasos de más de 3 desvíos,
+                               alfa del MSD promedio (1), ordenada del MSD, correlación entre pasos seguidos y la esperada
+                               por el error de localización, Dy / Dx (1)
+todas_movimiento_comun.csv     por grabación: correlación entre los pasos simultáneos de partículas distintas
+                               (0 = la imagen no tiembla)
+todas_histograma_pasos.csv, todas_msd_promedio.csv     los puntos de las figuras histograma_pasos_<día> y msd_promedio_<día>
+                               (columnas muestra y clase)
+todas_atrapada_suelta.csv      D de la partícula que estaba atrapada, medido después de apagar el láser (barridos de potencia)
+todas_comparacion.csv   D, coeficiente de arrastre, viscosidad efectiva y glicerina que la daría: nominales de cada día,
+                        de los barridos de potencia de los dos días juntos, la atrapada ya suelta, y los análisis anteriores

@@ -13,6 +13,21 @@ Resultados a los que se refieren los impactos ($W = dt/2$, error estadístico + 
 
 $\gamma = (5.9 \pm 0.5)\times10^{-8}$ N·s/m (difusión de la partícula suelta) y $(5.4 \pm 0.5)\times10^{-8}$ ($\kappa\,\tau_c$ a 15 y 7 mW).
 
+## Novedades del 19/11/2026 (calibración de potencia y seis barridos nuevos)
+
+Lo que sigue en este archivo se escribió el 12/11, con dos barridos y la potencia del display. Con lo del 19/11 cambia así (el análisis nuevo es `los ocho barridos con la potencia calibrada.ipynb`):
+
+- **Pregunta 1 (exposición):** el 19/11 se anotó, 30.5 ms. Para los barridos 3 a 8 ya no es una duda. Para los del 12/11 sigue abierta.
+- **Pregunta 2 (cómo se leyó la potencia):** respondida. Era el display, que no da la potencia real. Se usa la calibración del 19/11 (`datos/cuaderno/calibracion_potencia.csv`), con ± 0.5 mW para los barridos 1 a 6.
+- **Pregunta 3 (por qué `LASER 5` no era lineal):** con la potencia real se da vuelta. `LASER 5` cae sobre una recta por el origen en todos sus escalones; el que se aparta es el escalón más bajo de `BARRIDO POTENCIAS 2` («7» en el display). Ese valor sale de interpolar la calibración entre «5» y «15», donde es menos segura.
+- **Pregunta nueva A: ¿por qué el 12/11 la trampa era 1.3 a 1.7 veces más rígida a igual potencia calibrada?** 0.40 contra 0.23 pN/µm por mW en $x$. El 12/11 la rigidez por patadas dio lo mismo que la térmica, así que no es el método. ¿Se tocó la alineación o el foco? ¿La calibración del 19/11 vale para el 12/11?
+- **Pregunta nueva B: en `BARRIDO POTENCIAS 3`, ¿el escalón de 150 a 180 s fue «5»?** La partícula sigue retenida y se ve el rojo del láser hasta los 180 s; en los barridos 4, 5 y 6 se suelta a los 150 s. Esa grabación además tiene motas pegadas a la partícula y no se usa.
+- **Pregunta nueva C: ¿con qué error se midió la potencia de los barridos 7 y 8?** Se supuso ± 0.05 mW.
+- **Decisión nueva: qué escalones se usan.** Se miró el video de cada grabación (recortes cada 10 s en `figuras/ocho barridos/recortes_barrido_*.svg`). No se usan: el barrido 3 entero; los escalones 3 y 4 del barrido 5 (la imagen se desenfoca); los escalones 2 a 5 del barrido 7 (se le pega otra partícula). Tabla: `resultados/ocho_escalones_que_se_usan.csv`.
+- **Decisión nueva: error de repetición.** La misma partícula (barridos 4, 5 y 6) da rigideces que difieren 18 %, contra 12 % de error calculado. Se suma 13 % en cuadratura al error de todos los puntos.
+- **Decisión nueva: tramo usable en el 19/11.** El cambio de potencia cae entre 0 y 2.5 s después de la hora del cuaderno. Se descartan los primeros 5 s y el último segundo de cada escalón.
+- **Decisión nueva: fondo de la imagen en el 19/11.** La partícula tarda en irse al apagar el láser, así que el fondo sale del tramo apagado sin los píxeles cercanos a las partículas. En el barrido 3 no se va nunca: el ruido de la cámara se midió en una ventana corrida 230 px.
+
 ## Preguntas para Lenny
 
 ### 1. ¿Qué exposición tenía la cámara?

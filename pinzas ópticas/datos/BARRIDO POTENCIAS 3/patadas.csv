@@ -1,0 +1,2 @@
+n,cuadro_ini,cuadro_fin,t_ini_s,t_fin_s,duracion_s,dx_um,dy_um,dx_part_um,dy_part_um,votos,v_pico_um_s,v_media_um_s,vx_pico_um_s,vy_pico_um_s,corr_min,x_max_um,y_max_um,r_max_um,antes,despues,misma,confiable,n_cuaderno,t_cuaderno_s,a_nominal_um_s2,paso_nominal_um,resultado_cuaderno
+1,148,163,10.762,11.853,1.1632,-0.28828,1.278,-0.29676,0.82817,2,2.5337,1.1263,0.40408,2.5012,0.3552,0.15289,0.13558,0.17306,True,True,True,True,,,,,

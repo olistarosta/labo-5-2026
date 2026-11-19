@@ -76,9 +76,9 @@ Registro de lo que se va haciendo con los datos, en orden y con fecha: qué se p
 
 | Qué | Figura | Qué muestra |
 |---|---|---|
-| Posiciones de la atrapada, `LASER 5`, $x$, 30 mW | `3 - potencial con barrido de potencias/figuras/histograma_posiciones_LASER_5_x_30mW.svg` | campana angosta; de acá sale la parábola |
+| Posiciones de la atrapada, `LASER 5`, $x$, 30 mW | `3 - potencial con barrido de potencias/figuras/método/histograma_posiciones_LASER_5_x_30mW.svg` | campana angosta; de acá sale la parábola |
 | Pasos de las partículas libres | `2 - potencial con patadas/figuras/histograma_pasos_libres_LASER_5.svg` (y `BARRIDO_POTENCIAS_2`) | promedio 0, ancho 145 nm; más cola que una gaussiana |
-| Posiciones con la partícula casi suelta, `BARRIDO POTENCIAS 2`, $x$ | `3 - potencial con barrido de potencias/figuras/histograma_posiciones_BARRIDO_POTENCIAS_2_x_suelta.svg` | repartidas de −3.3 a +2.7 µm, sin campana; la atrapada a 30 mW cabe en un intervalo |
+| Posiciones con la partícula casi suelta, `BARRIDO POTENCIAS 2`, $x$ | `3 - potencial con barrido de potencias/figuras/método/histograma_posiciones_BARRIDO_POTENCIAS_2_x_suelta.svg` | repartidas de −3.3 a +2.7 µm, sin campana; la atrapada a 30 mW cabe en un intervalo |
 
 - **Ojo con el histograma de pasos:** su ancho da $D$ = 0.139 µm²/s, contra 0.089 de la pendiente del MSD. La diferencia es el error de medición de cada posición (ver abajo). $\gamma$ se saca del MSD, no de ese ancho.
 - **Error mío:** Lenny pidió «el histograma de movimiento libre» y primero hice el de pasos; quería el de posiciones. Quedaron los dos.
@@ -143,4 +143,52 @@ Registro de lo que se va haciendo con los datos, en orden y con fecha: qué se p
 
 - ¿Reprocesar la partícula atrapada comparando con su propia imagen (5–7 nm en vez de 20–35)? Mejoraría la rigidez a 25 y 30 mW. Antes hay que resolver el punto oscuro del láser.
 - Siguen abiertas las preguntas del `README.md`: mezcla real de la muestra, exposición, cómo se leyó la potencia, si en `LASER 5` el láser se apagó a los 180 s.
-- Todo lo de hoy quedó confirmado en git y subido.
+- Lo de esta parte del día quedó confirmado en git y subido (commit «Pinzas ópticas: todo ordenado por objetivo…»).
+
+## 19/11/2026 (tarde) — grabaciones nuevas, potencia calibrada y browniano con todo
+
+**Pedido de Lenny:** mirar las mediciones nuevas (clase 3: `BARRIDO POTENCIAS 3` a `8`); las calibraciones de potencia anteriores «eran cualquier cosa»; los barridos 7 y 8 son los más confiables; a los barridos 1 a 6 asignarles la calibración nueva con 0.5 de error; y un buen análisis browniano con todas las grabaciones, usando las partículas no atrapadas, juntando todo y distinguiendo por radio.
+
+### Grabaciones nuevas
+
+- Seis videos de 240 s, 13.752 cuadros por segundo, exposición 30.5 ms (anotada en el cuaderno). Convertidos igual que los del 12/11: `datos/BARRIDO POTENCIAS 3` … `8` (trayectorias, platina, láser, detecciones en la trampa, `atrapada.csv`, radios, imágenes de control). MP4 para mirar en `C:\datos_pinzas\VISTAS\`.
+- Posición del láser (mancha roja): (475.5, 484.5) px en 3 a 6 y (472.0, 479.2) px en 7 y 8. Escala: se supuso la misma, 94.61 nm/px (el pico de radio aparente de las partículas da 1.82 µm los dos días).
+- El cuaderno de laboratorio nuevo quedó copiado en `docs/cuaderno_de_laboratorio.md`. Trae además los renglones de «ahora nos vamos a mover verticalmente» (22 patadas con sus tiempos), que antes no estaban: **no se pasaron todavía** a `datos/cuaderno/patadas_cuaderno.csv`.
+
+### Calibración de la potencia
+
+- `datos/cuaderno/calibracion_potencia.csv`: display 30 → 4.80 mW, 25 → 4.27, 20 → 3.15, 15 → 1.83, 5 → 0.0044. Entre puntos se interpola con una recta.
+- `datos/cuaderno/potencias_cuaderno.csv` ahora tiene `display_mW`, `potencia_mW` (real) y `err_potencia_mW`: ± 0.5 mW en los barridos 1 a 6 (indicación de Lenny), ± 0.05 mW en 7 y 8 (**supuesto mío**).
+- **Decisión:** el «7» del display (barridos 1 y 2) no tiene punto de calibración; interpolado da 0.37 mW. El «20 a 23» del barrido 2 da 3.49 mW.
+
+### Barrido de potencias con la potencia real — `los ocho barridos con la potencia calibrada`
+
+- **Notebook nuevo** en `3 - potencial con barrido de potencias/`. El anterior (`barrido de potencias`) queda como **el método**, con un aviso arriba de que sus mW son los del display; sus figuras pasaron a `figuras/método/` y las nuevas están en `figuras/ocho barridos/`.
+- **Código:** `codigo/potencia.py` generalizado a las ocho grabaciones (`TODOS`, `NUEVOS`, `EXPOSICION_S`, `ATRAPADA_HASTA`, `escalones("display")`, `tabla_cuadros(grabaciones=…, sufijo=…)`).
+- **Resultado:** el 19/11 la rigidez es proporcional a la potencia real: $\kappa_x = (0.228 \pm 0.011)$ y $\kappa_y = (0.276 \pm 0.013)$ pN/µm por mW (16 escalones, de 1.56 a 4.85 mW). Los barridos con display calibrado (4 a 6) y los de potencia medida (7 y 8) dan la misma pendiente.
+- **El 12/11 da 0.40 ± 0.04** en $x$: 1.3 a 1.7 veces más rígida a igual potencia calibrada. Queda abierto (alineación, foco, o que la calibración no valga para ese día).
+- **Repetición:** la misma partícula en los barridos 4, 5 y 6 difiere 18 %, contra 12 % de error calculado. Se sumó 13 % al error de todos los puntos.
+
+**Lo que no funcionó o hubo que cambiar**
+
+1. **El fondo de la imagen.** El 12/11 la partícula se iba de la trampa y quedaban cuadros vacíos para medir el fondo. El 19/11 tarda en irse (en el barrido 3 no se va nunca). Se cambió a: mediana de los cuadros con el láser apagado, sin los píxeles cercanos a las partículas; y el ruido de la cámara del barrido 3, de una ventana corrida 230 px.
+2. **Buscar vecinas con el seguimiento no sirve.** La partícula que se le pega a la atrapada en el barrido 7 no aparece en `trayectorias.csv` ni en las detecciones (las toma como una sola mancha). Hubo que **mirar el video**: recortes cada 10 s (`figuras/ocho barridos/recortes_barrido_*.svg`).
+3. **Primera pasada con todos los escalones:** los ajustes daban $\chi^2$ de 35 a 230 con 8 a 15 grados de libertad. Mirando los videos: el barrido 3 tiene motas pegadas a la partícula todo el tiempo (y no se suelta a los 150 s), el 5 se desenfoca después de los 95 s, y al 7 se le pega otra partícula a los 76 s. Sin esos escalones (quedan 26 de 36) y con el error de repetición, los $\chi^2$ quedan en 4 a 14.
+4. **Tiempos de los escalones del 19/11:** el cambio cae entre 0 y 2.5 s después de la hora del cuaderno; se descartan 5 s al principio y 1 s al final de cada escalón.
+
+### Browniano con todas las grabaciones, por radio — `todas las grabaciones por radio`
+
+- **Notebook nuevo** en `1 - movimiento browniano/` (lo armó un agente en paralelo; revisé sus figuras y números). Funciones en `codigo/browniano_todas.py`; tablas `resultados/todas_*.csv`; figuras en `figuras/todas las grabaciones/`.
+- **254 trayectorias libres** de 14 grabaciones: 141 de la muestra del 12/11, 109 del 19/11 y 4 de `BROWNIANO 1`. No aportan `LASER NE` (la imagen entera viaja), `MUEVO A MANO` ni `BARRIDO 2` (sin tramos quietos de 20 s).
+- **Por radio aparente:** nominales (1.6 a 2.1 µm) $D$ = 0.076 ± 0.003 µm²/s el 12/11 y 0.091 ± 0.004 el 19/11; intermedias 0.117 y 0.180; chicas (< 1.2 µm) 0.26 los dos días.
+- **Los dos días:** comparando barridos de potencia con barridos de potencia, las nominales coinciden (0.086 contra 0.091; juntas 0.089 ± 0.003). Lo que baja el promedio del 12/11 son las grabaciones con patadas (0.073 ± 0.005); no se sabe por qué.
+- **Es browniano:** MSD recto (pendiente log-log 0.97 a 1.02), pasos independientes una vez descontado el error de localización, partículas que no se mueven juntas, histograma de pasos gaussiano en trozos de 6 s.
+- **$D$ contra el radio:** con el radio aparente tal cual no sigue $1/R$. Sí describe la tendencia si el radio real es el aparente menos unos 0.4 µm (el anillo de difracción): una partícula de 1.5 µm se ve de 1.9 µm.
+- **Decisiones del agente:** $D$ por la varianza del desplazamiento en trozos de 6 s (validado con simulaciones, 1 %); criterio de patada más estricto que el de `pinzas_datos`; clases con bordes fijos en 1.2, 1.6 y 2.1 µm; 32 pares o racimos sacados mirando recortes.
+
+**Pendiente / para decidir**
+
+- ¿Por qué el 12/11 la trampa era más rígida a igual potencia calibrada?
+- El $\gamma$ = 5.0 ± 0.2 ×10⁻⁸ N·s/m que usa el objetivo 2 (patadas) para pasar a pN queda dentro de lo que da el browniano con todo (4.6 a 5.6), pero su error parece optimista; ± 0.4 sería más realista. **No se cambió nada en el objetivo 2.**
+- Pasar al `patadas_cuaderno.csv` los renglones nuevos del cuaderno (movimiento vertical, `BARRIDO STEPSIZE 3`).
+- Esta tanda quedó confirmada en git (sin subir a GitHub).

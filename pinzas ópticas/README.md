@@ -1,14 +1,14 @@
 # Pinzas ópticas (Labo 5)
 
-Análisis de la práctica de pinzas ópticas del 12/11/2026. Está ordenado **por objetivo**: una carpeta por objetivo, y adentro de cada una lo mismo.
+Análisis de la práctica de pinzas ópticas (grabaciones del 12/11 y del 19/11/2026). Está ordenado **por objetivo**: una carpeta por objetivo, y adentro de cada una lo mismo.
 
 ## Los objetivos
 
 | Carpeta | Objetivo | Resultado principal |
 |---|---|---|
-| `1 - movimiento browniano/` | caracterizar el movimiento browniano de las partículas libres | las cuatro mediciones son brownianas; $D$ de 0.06 a 0.17 µm²/s |
+| `1 - movimiento browniano/` | caracterizar el movimiento browniano de las partículas libres | es browniano; 254 partículas libres de 14 grabaciones: $D$ = 0.08 a 0.09 µm²/s las de tamaño nominal y 0.26 las chicas |
 | `2 - potencial con patadas/` | caracterizar el potencial de la trampa moviendo la platina de golpe | pozo gaussiano de 1.14 µm de ancho; rigidez 1.9 ± 0.2 pN/µm; fuerza máxima 1.3 pN |
-| `3 - potencial con barrido de potencias/` | caracterizar el potencial con el temblor térmico de la partícula, bajando la potencia | rigidez 2.0 pN/µm a 30 mW, baja con la potencia |
+| `3 - potencial con barrido de potencias/` | caracterizar el potencial con el temblor térmico de la partícula, bajando la potencia | la rigidez es proporcional a la potencia real: 0.23 pN/µm por mW (19/11) |
 | `0 - calibración y precisión/` | lo que usan los tres: escala, lista de grabaciones, precisión de la medición | 94.61 nm/px; el centro se mide con 16 a 35 nm de error |
 
 **Adentro de cada carpeta de objetivo:**
@@ -51,20 +51,21 @@ pinzas ópticas/
 
 Por orden de cuánto pesan. El detalle está en el `DUDAS.md` de cada objetivo.
 
-1. **¿Qué mezcla tenía la muestra de la pinza?** La receta del cuaderno (60 ml de agua + 65 ml de glicerina) daría una difusión 4.7 veces más lenta que la medida; los datos corresponden a alrededor de 24 % de glicerina. No cambia los resultados, sí lo que se informe como muestra.
-2. **¿Qué exposición tenía la cámara, y cambió entre grabaciones?** Cambia la rigidez del barrido de potencias a potencia alta hasta un factor 1.8.
-3. **¿Cómo se leyó la potencia?** (medidor, tabla o display).
-4. **¿En `LASER 5` el láser se apagó a los 180 s?** El cuaderno dice «< 7 mW» y no queda rojo.
-5. **¿Qué tamaños nominales de partículas se mezclaron?**
-6. **¿Qué potencia había en las grabaciones con patadas?** Se supuso 30 mW.
-7. **Temperatura** del laboratorio.
-8. **Otros grupos:** escala, cuadros por segundo y muestra de sus videos.
+1. **¿Por qué el 12/11 la trampa era 1.3 a 1.7 veces más rígida que el 19/11 a igual potencia calibrada?** ¿Se tocó la alineación o el foco? ¿La calibración de potencia del 19/11 vale para el 12/11?
+2. **¿Qué mezcla tenía la muestra?** La receta del cuaderno (60 ml de agua + 65 ml de glicerina) daría una difusión unas 4 veces más lenta que la medida; los datos corresponden a alrededor de 25 % de glicerina. No cambia los resultados, sí lo que se informe como muestra. La muestra del 19/11 no está anotada.
+3. **¿Qué exposición tenía la cámara el 12/11?** (El 19/11 se anotó: 30.5 ms.) Cambia la rigidez del 12/11 a potencia alta hasta un factor 1.8.
+4. **¿En `BARRIDO POTENCIAS 3` el escalón de 150 a 180 s fue «5» en el display?** La partícula sigue retenida hasta los 180 s.
+5. **¿Con qué error se midió la potencia de los barridos 7 y 8?** Se supuso ± 0.05 mW.
+6. **¿Qué tamaños nominales de partículas se mezclaron?**
+7. **¿Qué potencia había en las grabaciones con patadas?** Se supuso el máximo del display («30», 4.80 mW reales).
+8. **Temperatura** del laboratorio.
+9. **Otros grupos:** escala, cuadros por segundo y muestra de sus videos.
 
-Para la próxima vez: anotar la exposición de la cámara y medir la potencia con el medidor. Son las dos incertezas mayores de la rigidez.
+Ya respondidas: cómo se leyó la potencia (era el display; el 19/11 se calibró, `datos/cuaderno/calibracion_potencia.csv`) y la exposición del 19/11.
 
 ## Las grabaciones
 
-Se grabaron 11 videos (133 GB; `datos/catalogo.csv` dice qué es cada uno) y se analizaron además dos de otros grupos. El cuaderno de laboratorio está en `docs/cuaderno_de_laboratorio.md`.
+Se grabaron 17 videos (11 el 12/11 y 6 barridos de potencia el 19/11; unos 203 GB; `datos/catalogo.csv` dice qué es cada uno) y se analizaron además dos de otros grupos. El cuaderno de laboratorio está en `docs/cuaderno_de_laboratorio.md`.
 
 **Tablas de cada grabación con láser** (`datos/<grabación>/`; las columnas están documentadas en el archivo que las arma):
 
@@ -98,9 +99,13 @@ Dos cosas a tener en cuenta con la pinza prendida:
 <Python global> laser_csv.py "BARRIDO 1"
 <Python global> trampa_roi.py "BARRIDO 1"
 # 4. las tablas atrapada / seguida / patadas / fuerza_intervalos las escribe el notebook «platina y patadas»
+#    (para un barrido de potencia alcanza con atrapada.csv:  <Python global> -c "from pinzas_datos import guardar_tablas; guardar_tablas('BARRIDO POTENCIAS 3')")
+# 5. radios e imágenes de control (desde pinzas ópticas/)
+<Python de TD> codigo/medir_radios.py "datos/BARRIDO 1"
+<Python de TD> TouchDesigner/herramientas/guardar_pasos.py "datos/BARRIDO 1/parametros.json" "datos/BARRIDO 1/imágenes de control/pasos" --cuadros 100 1500
 ```
 
-Una grabación nueva hay que agregarla a `CATALOGO` en `codigo/pinzas_datos.py` (posición del láser, cuadros por segundo, tipo).
+Una grabación nueva hay que agregarla a `CATALOGO` en `codigo/pinzas_datos.py` (posición del láser, cuadros por segundo, tipo). Si es un barrido de potencia, además sus escalones van en `datos/cuaderno/potencias_cuaderno.csv` y su nombre en `codigo/potencia.py` (`NUEVOS`, `ATRAPADA_HASTA`, `EXPOSICION_S`).
 
 # De video a CSV con TouchDesigner
 

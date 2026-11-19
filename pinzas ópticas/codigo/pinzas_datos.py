@@ -47,6 +47,19 @@ CATALOGO = {
                                 que='barrido de paso: 13 patadas, a = 250 µm/s², paso 25 a 150 µm'),
     'BARRIDO STEPSIZE 3':  dict(trampa_px=(477.5, 485.3), fps=12.501, tipo='patadas', eje='y',
                                 que='no figura en el cuaderno ("ahora nos vamos a mover verticalmente")'),
+    # ---- 19/11/2026 (clase 3): exposición 30.5 ms. El láser se ubicó igual que antes (mancha roja).
+    'BARRIDO POTENCIAS 3': dict(trampa_px=(475.5, 484.5), fps=13.752, tipo='potencia', eje=None,
+                                que='barrido de potencia 3 (30 a 5 en el display, después apagado), partícula quieta'),
+    'BARRIDO POTENCIAS 4': dict(trampa_px=(475.5, 484.5), fps=13.752, tipo='potencia', eje=None,
+                                que='barrido de potencia 4, igual que el 3; misma partícula que 5 y 6'),
+    'BARRIDO POTENCIAS 5': dict(trampa_px=(475.5, 484.5), fps=13.752, tipo='potencia', eje=None,
+                                que='barrido de potencia 5, igual que el 3; misma partícula que 4 y 6'),
+    'BARRIDO POTENCIAS 6': dict(trampa_px=(475.5, 484.5), fps=13.752, tipo='potencia', eje=None,
+                                que='barrido de potencia 6, igual que el 3; misma partícula que 4 y 5'),
+    'BARRIDO POTENCIAS 7': dict(trampa_px=(472.0, 479.2), fps=13.752, tipo='potencia', eje=None,
+                                que='barrido de potencia 7 (4.85 a 1.56 mW medidos, después apagado), partícula quieta'),
+    'BARRIDO POTENCIAS 8': dict(trampa_px=(472.0, 479.2), fps=13.752, tipo='potencia', eje=None,
+                                que='barrido de potencia 8, igual que el 7'),
 }
 
 

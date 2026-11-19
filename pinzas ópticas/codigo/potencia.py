@@ -1,6 +1,8 @@
-"""Barrido de potencia con la partícula atrapada y la platina quieta (LASER 5 y BARRIDO POTENCIAS 2).
+"""Barrido de potencia con la partícula atrapada y la platina quieta.
 
-Lo usa `barrido de potencias.ipynb`. Tres partes:
+Grabaciones: LASER 5 y BARRIDO POTENCIAS 2 (12/11/2026) y BARRIDO POTENCIAS 3 a 8 (19/11/2026).
+Lo usan `barrido de potencias.ipynb` (el método, con las dos primeras) y
+`los ocho barridos con la potencia calibrada.ipynb`. Tres partes:
 
 1. VIDEO  (`medir_video`): lee los TIFF originales (C:\\datos_pinzas\\GRABACIONES) alrededor del láser y
    mide en cada cuadro (a) cuánta luz roja del láser llega a la cámara, en el núcleo y lejos de él, y
@@ -32,8 +34,13 @@ from carpetas import resultados                                     # noqa: E402
 
 GRABACIONES = r"C:\datos_pinzas\GRABACIONES"
 SALIDA = resultados('potencia')                                     # CSV de este análisis
-BARRIDOS = ('LASER 5', 'BARRIDO POTENCIAS 2')
-# cuadros en que la trampa está vacía y el láser apagado o casi: de ahí sale el fondo de la imagen
+BARRIDOS = ('LASER 5', 'BARRIDO POTENCIAS 2')                        # 12/11/2026: los del notebook del método
+NUEVOS = tuple('BARRIDO POTENCIAS %d' % k for k in range(3, 9))      # 19/11/2026 (exposición 30.5 ms)
+TODOS = BARRIDOS + NUEVOS
+EXPOSICION_S = {g: 0.0305 for g in NUEVOS}                           # la del cuaderno; el 12/11 no se anotó
+# cuadros en que la trampa está vacía y el láser apagado o casi: de ahí sale el fondo de la imagen.
+# En las del 19/11 la partícula no se va del todo: el fondo sale del tramo con el láser apagado,
+# sin los píxeles cercanos a las partículas (ver `_fondo_sin_particulas`).
 CUADROS_VACIOS = {'LASER 5': (2400, 2540), 'BARRIDO POTENCIAS 2': (2760, 3000)}
 R_NUCLEO = 11.0          # px: radio que se tapa alrededor del láser al localizar
 KT_PN_UM = lambda T: KB * T * 1e18                                  # kT en pN·µm
@@ -130,6 +137,66 @@ def _localizar(rec, tx, ty, xc0, yc0, x_abs0, y_abs0, suavizado, r_tapa, r_max):
     return x + x_abs0, y + y_abs0
 
 
+def _fondo_sin_particulas(nombre, pag, i0, j0, n, radios=(42.0, 30.0), libre_px=75.0, max_pares=160):
+    """Fondo de la ventana [n, n, 3] cuando la trampa no llega a quedar vacía por mucho tiempo.
+
+    Mediana temporal, píxel a píxel, de los cuadros con el láser APAGADO (el último escalón, desde 3 s
+    después del cambio), sin contar en cada cuadro los píxeles a menos de `radio` px de una partícula
+    seguida (`trayectorias.csv`). Se prueba con radio 42 px; si algún píxel queda con menos de 30
+    cuadros (la partícula casi no se fue), con 30 px.
+
+    Devuelve (fondo, dif, corrimiento). dif [m, n, n, 3] son diferencias de dos cuadros seguidos,
+    divididas por √2: el ruido real de la cámara. Se toman de la misma ventana en los cuadros en que
+    no hay ninguna partícula a menos de libre_px del láser; si no hay al menos 40 pares así (la
+    partícula no se va), de una ventana igual corrida `corrimiento` = (dx, dy) px hacia un lugar sin
+    partículas (mismo sensor y misma luz: el ruido es el mismo dentro de lo que cambia el brillo)."""
+    e = escalones()
+    e = e[(e.grabacion == nombre) & (e.potencia_mW == 0)].iloc[-1]
+    fps = CATALOGO[nombre]['fps']
+    tx, ty = CATALOGO[nombre]['trampa_px']
+    k0 = int((e.t_ini_s + 3.0) * fps)
+    tr = pd.read_csv(os.path.join(DATOS, nombre, 'trayectorias.csv'), usecols=['cuadro', 'x_px', 'y_px'])
+    tr = tr[tr.x_px.notna() & (tr.cuadro >= k0)]
+    donde = {k: v[['x_px', 'y_px']].values for k, v in tr.groupby('cuadro')}
+    yy, xx = np.mgrid[i0:i0 + n, j0:j0 + n]
+    cuadros = list(range(k0, len(pag), 2))
+    crudo = np.array([ventana(pag[k], i0, j0, n, n) for k in cuadros])
+    for radio in radios:
+        tapa = np.zeros(crudo.shape[:3], bool)
+        for i, k in enumerate(cuadros):
+            for x, y in donde.get(k, ()):
+                if abs(x - tx) < n and abs(y - ty) < n:
+                    tapa[i] |= np.hypot(xx - x, yy - y) < radio
+        if (~tapa).sum(0).min() >= 30:
+            break
+    pila = crudo.astype(np.float32)
+    pila[tapa] = np.nan
+    fondo = np.nanmedian(pila, axis=0)
+    for c in range(3):                                                   # píxeles tapados siempre
+        fondo[..., c] = np.where(np.isfinite(fondo[..., c]), fondo[..., c], np.nanmedian(fondo[..., c]))
+    del pila, crudo
+
+    def pares(dx, dy):
+        cerca = lambda k: any(np.hypot(x - tx - dx, y - ty - dy) < libre_px + (n // 2 if (dx or dy) else 0)
+                              for x, y in donde.get(k, ()))
+        return [k for k in range(k0, len(pag) - 1) if not cerca(k) and not cerca(k + 1)]
+
+    alto, ancho = pag[0][3], pag[0][2]
+    for dx, dy in ((0, 0), (230, 0), (-230, 0), (0, 230), (0, -230), (230, 230), (-230, -230), (230, -230), (-230, 230),
+                   (460, 0), (0, 460), (0, -460), (460, 230), (460, -230)):
+        if not (0 <= i0 + dy and i0 + dy + n <= alto and 0 <= j0 + dx and j0 + dx + n <= ancho):
+            continue
+        libres = pares(dx, dy)
+        if len(libres) >= 40:
+            break
+    else:
+        raise RuntimeError('%s: no hay cuadros sin partículas para medir el ruido de la cámara' % nombre)
+    libres = libres[::max(1, len(libres) // max_pares)]
+    dif = np.array([(ventana(pag[k + 1], i0 + dy, j0 + dx, n, n).astype(np.float32)
+                     - ventana(pag[k], i0 + dy, j0 + dx, n, n).astype(np.float32)) / np.sqrt(2) for k in libres])
+    return fondo.astype(np.float32), dif, (dx, dy)
+
+
 ESTIMADORES = {
     # nombre: (canal, corregir el cruce del rojo, suavizado px, radio tapado en el láser px)
     'c': (1, True, 3.0, 8.0),       # el que se usa: verde corregido + núcleo tapado
@@ -166,14 +233,27 @@ def medir_video(nombre, medio=110, lado=32, r_max=27.0, avisar=True):
     yy, xx = np.mgrid[i0:i0 + n, j0:j0 + n]
     r = np.hypot(xx - tx, yy - ty)
     nuc, halo, lejos = r <= 6, (r > 25) & (r <= 50), r > 100
-    v0, v1 = CUADROS_VACIOS[nombre]
-    vacios = np.array([ventana(pag[k], i0, j0, n, n).astype(np.float32) for k in range(v0, v1)])
-    fondo = np.median(vacios, axis=0)
-    ref_n = np.mean([v[..., 0][nuc].mean() / v[..., 0][lejos].mean() for v in vacios])
-    ref_h = np.mean([v[..., 0][halo].mean() / v[..., 0][lejos].mean() for v in vacios])
-    ref_l = np.mean([v[..., 0][lejos].mean() / v[..., 1][lejos].mean() for v in vacios])
     t = a.t_s.values
-    c_G, c_B = _cruce_rojo(pag, i0, j0, n, r <= 3, np.flatnonzero((t > 5) & (t < 145))[::3])
+    if nombre in CUADROS_VACIOS:
+        v0, v1 = CUADROS_VACIOS[nombre]
+        vacios = np.array([ventana(pag[k], i0, j0, n, n).astype(np.float32) for k in range(v0, v1)])
+        fondo = np.median(vacios, axis=0)
+        ref_n = np.mean([v[..., 0][nuc].mean() / v[..., 0][lejos].mean() for v in vacios])
+        ref_h = np.mean([v[..., 0][halo].mean() / v[..., 0][lejos].mean() for v in vacios])
+        ref_l = np.mean([v[..., 0][lejos].mean() / v[..., 1][lejos].mean() for v in vacios])
+        dif = (vacios[1:] - vacios[:-1]) / np.sqrt(2)
+        t_laser = 145.0
+    else:
+        fondo, dif, corrido = _fondo_sin_particulas(nombre, pag, i0, j0, n)
+        if avisar or corrido != (0, 0):
+            print('  %s: ruido de la cámara medido en una ventana corrida %s px' % (nombre, corrido), flush=True)
+        R0, G0 = fondo[..., 0], fondo[..., 1]
+        ref_n, ref_h = R0[nuc].mean() / R0[lejos].mean(), R0[halo].mean() / R0[lejos].mean()
+        ref_l = R0[lejos].mean() / G0[lejos].mean()
+        e = escalones()
+        e = e[(e.grabacion == nombre) & (e.n <= n_atrapada(nombre))]
+        t_laser = float(e.t_fin_s.max()) - 5.0                          # hasta acá hay láser y partícula
+    c_G, c_B = _cruce_rojo(pag, i0, j0, n, r <= 3, np.flatnonzero((t > 5) & (t < t_laser))[::3])
     cruce = {1: c_G, 2: c_B}
     xp = a.x_um.values / ESCALA_UM + a.x0_px.values
     yp = a.y_um.values / ESCALA_UM + a.y0_px.values
@@ -201,7 +281,7 @@ def medir_video(nombre, medio=110, lado=32, r_max=27.0, avisar=True):
         if avisar and k % 500 == 0:
             print('  %s: cuadro %d de %d' % (nombre, k, len(pag)), flush=True)
     d = pd.DataFrame(filas)
-    extras = dict(c_G=c_G, c_B=c_B, fondo=fondo, vacios=vacios, origen=(i0, j0), trampa=(tx, ty))
+    extras = dict(c_G=c_G, c_B=c_B, fondo=fondo, dif=dif, origen=(i0, j0), trampa=(tx, ty))
     return d, extras
 
 
@@ -221,7 +301,7 @@ def ruido_por_plantilla(nombre, extras, cuadros, lado=32, r_max=27.0):
     """
     tx, ty = extras['trampa']
     i0, j0 = extras['origen']
-    fondo, vacios = extras['fondo'], extras['vacios']
+    fondo = extras['fondo']
     pag = indice_tiff(nombre)
     n = fondo.shape[0]
     ic, jc = int(round(ty)) - i0, int(round(tx)) - j0
@@ -234,7 +314,7 @@ def ruido_por_plantilla(nombre, extras, cuadros, lado=32, r_max=27.0):
         acum[2] = acum[2] + (v[..., 2] + extras['c_B'] * exceso) / fondo[sl][..., 2]
     plantilla = {c: acum[c] / len(cuadros) for c in acum}
     res = {e: [] for e in ESTIMADORES if e != 's'}
-    dv = (vacios[1:] - vacios[:-1])[:, sl[0], sl[1]] / np.sqrt(2)      # ruido: diferencias de cuadros seguidos
+    dv = extras['dif'][:, sl[0], sl[1]]                                # ruido: diferencias de cuadros seguidos
     for d in dv[::2]:
         for e in res:
             canal, _, suav, tapa = ESTIMADORES[e]
@@ -274,31 +354,50 @@ def ruido_objeto_fijo(nombre, extras, centro_px, cuadros, lado=32, r_max=27.0, s
 RETRASO_S = 1.5        # el cambio de potencia se ve en el video ~1.5 s después de cada múltiplo de 30 s
 MARGEN_INI_S = 5.0     # se descarta desde el múltiplo de 30 s hasta 5 s después (3.5 s tras el cambio)
 MARGEN_FIN_S = 0.5     # y se usa hasta 0.5 s después del múltiplo siguiente (1 s antes del cambio)
-N_ATRAPADA = 5         # escalones (1..5: 30 a 7 mW) en que la partícula está atrapada todo el tramo
+N_ATRAPADA = 5         # escalones (1..5: 30 a 7 mW) en que la partícula está atrapada todo el tramo (12/11)
+# en las del 19/11: 3 a 6 tienen cuatro escalones con la trampa prendida (el quinto, «5» en el display,
+# es 0.004 mW: suelta); 7 y 8 tienen cinco
+ATRAPADA_HASTA = {'BARRIDO POTENCIAS 3': 4, 'BARRIDO POTENCIAS 4': 4, 'BARRIDO POTENCIAS 5': 4,
+                  'BARRIDO POTENCIAS 6': 4, 'BARRIDO POTENCIAS 7': 5, 'BARRIDO POTENCIAS 8': 5}
 
 
-def escalones():
+def n_atrapada(grabacion):
+    """Hasta qué escalón la partícula está atrapada todo el tramo."""
+    return ATRAPADA_HASTA.get(grabacion, N_ATRAPADA)
+
+
+def escalones(potencia='real'):
     """Los escalones del cuaderno con el tramo que se usa de cada uno.
-    Columnas: grabacion, n, t_ini_s, t_fin_s (cuaderno), potencia_mW, potencia_texto, nota,
-    t_cambio_s (cuándo cambia de verdad: nominal + RETRASO_S), t_ini_usado_s, t_fin_usado_s."""
+    Columnas: grabacion, n, t_ini_s, t_fin_s (cuaderno), display_mW (lo que marcaba el display),
+    potencia_mW y err_potencia_mW (la real, con la calibración del 19/11/2026), potencia_texto, nota,
+    t_cambio_s (cuándo cambia de verdad: nominal + RETRASO_S), t_ini_usado_s, t_fin_usado_s.
+    potencia='display': en potencia_mW va lo que marcaba el display (así está escrito el notebook del
+    método, que es anterior a la calibración)."""
     cu = pd.read_csv(os.path.join(DATOS, 'cuaderno', 'potencias_cuaderno.csv'))
-    cu['t_cambio_s'] = cu.t_ini_s + np.where(cu.n > 1, RETRASO_S, 0.0)
+    if potencia == 'display':
+        cu['potencia_mW'] = cu.display_mW
+    nuevas = cu.grabacion.isin(NUEVOS).values
+    # 12/11: el cambio se ve ~1.5 s después de la hora del cuaderno. 19/11: cae entre 0 y 2.5 s después
+    # (se ve en cuándo se suelta la partícula), así que ahí se deja además 1 s antes del cambio siguiente.
+    cu['t_cambio_s'] = cu.t_ini_s + np.where(cu.n > 1, np.where(nuevas, 1.0, RETRASO_S), 0.0)
     cu['t_ini_usado_s'] = cu.t_ini_s + MARGEN_INI_S
-    cu['t_fin_usado_s'] = cu.t_fin_s + MARGEN_FIN_S
+    cu['t_fin_usado_s'] = cu.t_fin_s + np.where(nuevas, -1.0, MARGEN_FIN_S)
     return cu
 
 
-def tabla_cuadros(recalcular=False, avisar=True):
-    """Tabla por cuadro de las dos grabaciones (`3 - potencial con barrido de potencias/resultados/potencia_cuadros.csv`) y el ruido de
-    píxel por escalón (`potencia_ruido_pixel.csv`). Si ya existen se leen; si no (o recalcular=True)
-    se relee el video (unos 5 minutos). Devuelve (cuadros, ruido)."""
+def tabla_cuadros(recalcular=False, avisar=True, grabaciones=BARRIDOS, sufijo=''):
+    """Tabla por cuadro de las grabaciones (`3 - potencial con barrido de potencias/resultados/potencia_cuadros<sufijo>.csv`) y el ruido de
+    píxel por escalón (`potencia_ruido_pixel<sufijo>.csv`). Si ya existen se leen; si no (o recalcular=True)
+    se relee el video (unos 2 a 3 minutos por grabación). Devuelve (cuadros, ruido).
+    Sin argumentos: las dos del 12/11. Las del 19/11: grabaciones=NUEVOS, sufijo='_19-11'."""
     os.makedirs(SALIDA, exist_ok=True)
-    r1, r2 = os.path.join(SALIDA, 'potencia_cuadros.csv'), os.path.join(SALIDA, 'potencia_ruido_pixel.csv')
+    r1 = os.path.join(SALIDA, 'potencia_cuadros%s.csv' % sufijo)
+    r2 = os.path.join(SALIDA, 'potencia_ruido_pixel%s.csv' % sufijo)
     if not recalcular and os.path.exists(r1) and os.path.exists(r2):
         return pd.read_csv(r1), pd.read_csv(r2)
     esc = escalones()
     tablas, ruidos = [], []
-    for g in BARRIDOS:
+    for g in grabaciones:
         if avisar:
             print('releyendo el video de', g, flush=True)
         d, ex = medir_video(g, avisar=False)
@@ -306,10 +405,10 @@ def tabla_cuadros(recalcular=False, avisar=True):
         x0, y0 = a.x0_px.values[0], a.y0_px.values[0]
         out = pd.DataFrame(dict(grabacion=g, cuadro=a.cuadro, t_s=a.t_s))
         e = esc[esc.grabacion == g]
-        out['escalon'] = np.clip(np.searchsorted(e.t_cambio_s.values, a.t_s.values, side='right'), 1, 8)
+        out['escalon'] = np.clip(np.searchsorted(e.t_cambio_s.values, a.t_s.values, side='right'), 1, int(e.n.max()))
         usable = np.zeros(len(a), bool)
         for _, f in e.iterrows():
-            usable |= (a.t_s.values >= f.t_ini_usado_s) & (a.t_s.values < f.t_fin_usado_s) & (f.n <= N_ATRAPADA)
+            usable |= (a.t_s.values >= f.t_ini_usado_s) & (a.t_s.values < f.t_fin_usado_s) & (f.n <= n_atrapada(g))
         out['usable'] = usable
         out['particula'] = a.particula
         out['x_conv_um'], out['y_conv_um'] = a.x_um, a.y_um
@@ -320,7 +419,7 @@ def tabla_cuadros(recalcular=False, avisar=True):
             out[c] = d[c].values
         out['plat_dx_um'], out['plat_dy_um'] = a.plat_dx_um, a.plat_dy_um
         tablas.append(out)
-        for _, f in e[e.n <= N_ATRAPADA].iterrows():
+        for _, f in e[e.n <= n_atrapada(g)].iterrows():
             ks = np.flatnonzero((a.t_s.values >= f.t_ini_usado_s) & (a.t_s.values < f.t_fin_usado_s))
             rp = ruido_por_plantilla(g, ex, ks[::2])
             fila = dict(grabacion=g, escalon=int(f.n), c_G=ex['c_G'], c_B=ex['c_B'], n_cuadros_vacios=rp['n'])
@@ -329,7 +428,8 @@ def tabla_cuadros(recalcular=False, avisar=True):
                 fila['ruido_y%s_um' % q] = rp['y' + q] * ESCALA_UM
             ruidos.append(fila)
         ks = np.flatnonzero((a.t_s.values >= 5) & (a.t_s.values < 30))
-        for nombre_p, centro in (('polvo_1', (970.0, 400.0)), ('polvo_2', (462.5, 155.0))):
+        # chequeo con dos manchas de polvo del sensor: solo en las del 12/11 (ahí se ubicaron)
+        for nombre_p, centro in (('polvo_1', (970.0, 400.0)), ('polvo_2', (462.5, 155.0))) if g in BARRIDOS else ():
             mx, my, px_, py_ = ruido_objeto_fijo(g, ex, centro, ks)
             ruidos.append(dict(grabacion=g, escalon=0, c_G=np.nan, c_B=np.nan, n_cuadros_vacios=len(ks),
                                ruido_xc_um=mx * ESCALA_UM, ruido_yc_um=my * ESCALA_UM,
@@ -640,20 +740,23 @@ def ruido_de_referencia(ruido, grabacion, eje, estimador='c'):
 
 
 def analizar_escalones(cuadros, ruido, gamma, T=296.15, W_rel=(0.0, 0.5, 1.0), estimador='c',
-                       err_rel_ruido=0.2, n_boot=200, f_min_hz=0.2):
-    """Corre `analizar_tramo` en cada grabación, escalón atrapado (1..N_ATRAPADA), eje y exposición
+                       err_rel_ruido=0.2, n_boot=200, f_min_hz=0.2, grabaciones=BARRIDOS, potencia='real'):
+    """Corre `analizar_tramo` en cada grabación, escalón atrapado (1..n_atrapada), eje y exposición
     supuesta W = W_rel·dt. Devuelve (tabla, detalles):
       tabla: una fila por (grabacion, escalon, eje, W_rel) con todo lo de `analizar_tramo` más
              potencia_mW, t_ini_usado_s, t_fin_usado_s, ruido_um2, f_c_<m> [Hz] = 1/(2π τ_<m>),
              err_kappa_ruido (cuánto cambia κ de equipartición si el ruido restado cambia ±20 %),
              rojo_nucleo, rojo_halo, rojo_lejos (medias del tramo), sd_rojo_nucleo, corr_xy.
       detalles[(grabacion, escalon, eje, W_rel)] = dict con 'graficos' y la serie sin tendencia.
-    Con W = 0 no se usa gamma (no hay blur que corregir)."""
-    esc = escalones()
+    Con W = 0 no se usa gamma (no hay blur que corregir).
+    grabaciones: cuáles; potencia: 'real' (calibrada) o 'display' (ver `escalones`).
+    gamma puede ser un número o un dict {grabación: gamma}."""
+    esc = escalones(potencia)
     filas, det = [], {}
-    for g in BARRIDOS:
+    for g in grabaciones:
         d = cuadros[cuadros.grabacion == g]
-        for _, e in esc[(esc.grabacion == g) & (esc.n <= N_ATRAPADA)].iterrows():
+        gamma_g = gamma[g] if isinstance(gamma, dict) else gamma
+        for _, e in esc[(esc.grabacion == g) & (esc.n <= n_atrapada(g))].iterrows():
             m = ((d.t_s >= e.t_ini_usado_s) & (d.t_s < e.t_fin_usado_s)).values
             t = d.t_s.values[m]
             dt = float(np.median(np.diff(t)))
@@ -662,10 +765,11 @@ def analizar_escalones(cuadros, ruido, gamma, T=296.15, W_rel=(0.0, 0.5, 1.0), e
             for eje in 'xy':
                 s2 = ruido_de_referencia(ruido, g, eje, estimador)
                 for wr in W_rel:
-                    a = analizar_tramo(t, xy[eje], wr * dt, T, s2, gamma if wr > 0 else None,
+                    a = analizar_tramo(t, xy[eje], wr * dt, T, s2, gamma_g if wr > 0 else None,
                                        f_min_hz=f_min_hz, n_boot=n_boot, semilla=int(e.n) * 10 + (eje == 'y'))
                     det[(g, int(e.n), eje, wr)] = dict(graficos=a.pop('graficos'), x=a.pop('x_sin_tendencia_um'), t=t)
-                    fila = dict(grabacion=g, escalon=int(e.n), potencia_mW=e.potencia_mW, eje=eje, W_rel=wr,
+                    fila = dict(grabacion=g, escalon=int(e.n), potencia_mW=e.potencia_mW,
+                                err_potencia_mW=e.err_potencia_mW, display_mW=e.display_mW, eje=eje, W_rel=wr,
                                 W_s=wr * dt, t_ini_usado_s=e.t_ini_usado_s, t_fin_usado_s=e.t_fin_usado_s,
                                 ruido_um2=s2)
                     fila.update(a)

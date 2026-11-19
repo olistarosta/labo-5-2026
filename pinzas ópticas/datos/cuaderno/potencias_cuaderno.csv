@@ -1,17 +1,53 @@
-grabacion,n,t_ini_s,t_fin_s,potencia_mW,potencia_texto,nota
-LASER 5,1,0,30,30,30 mW (máxima),
-LASER 5,2,30,60,25,25 mW,
-LASER 5,3,60,90,20,20 mW,
-LASER 5,4,90,120,15,15 mW,
-LASER 5,5,120,150,7,7 mW,
-LASER 5,6,150,180,,< 7 mW,sin valor
-LASER 5,7,180,210,,< 7 mW,sin valor
-LASER 5,8,210,240,0,0,láser apagado
-BARRIDO POTENCIAS 2,1,0,30,30,30 mW (máxima),
-BARRIDO POTENCIAS 2,2,30,60,25,25 mW,
-BARRIDO POTENCIAS 2,3,60,90,21.5,20 a 23 mW,se tomó el punto medio
-BARRIDO POTENCIAS 2,4,90,120,15,15 mW,
-BARRIDO POTENCIAS 2,5,120,150,7,7 mW,
-BARRIDO POTENCIAS 2,6,150,180,3,3 mW,
-BARRIDO POTENCIAS 2,7,180,210,,< 3 mW,sin valor
-BARRIDO POTENCIAS 2,8,210,240,,<< 3 mW,sin valor
+grabacion,n,t_ini_s,t_fin_s,display_mW,potencia_mW,err_potencia_mW,potencia_texto,nota
+LASER 5,1,0,30,30,4.8,0.5,30 mW (máxima),
+LASER 5,2,30,60,25,4.27,0.5,25 mW,
+LASER 5,3,60,90,20,3.15,0.5,20 mW,
+LASER 5,4,90,120,15,1.83,0.5,15 mW,
+LASER 5,5,120,150,7,0.3695,0.5,7 mW,interpolado entre 5 y 15 del display
+LASER 5,6,150,180,,,,< 7 mW,sin valor
+LASER 5,7,180,210,,,,< 7 mW,sin valor
+LASER 5,8,210,240,0,0,0,0,láser apagado
+BARRIDO POTENCIAS 2,1,0,30,30,4.8,0.5,30 mW (máxima),
+BARRIDO POTENCIAS 2,2,30,60,25,4.27,0.5,25 mW,
+BARRIDO POTENCIAS 2,3,60,90,21.5,3.486,0.5,20 a 23 mW,se tomó el punto medio
+BARRIDO POTENCIAS 2,4,90,120,15,1.83,0.5,15 mW,
+BARRIDO POTENCIAS 2,5,120,150,7,0.3695,0.5,7 mW,interpolado entre 5 y 15 del display
+BARRIDO POTENCIAS 2,6,150,180,3,0.00264,0.5,3 mW,por debajo del último punto calibrado
+BARRIDO POTENCIAS 2,7,180,210,,,,< 3 mW,sin valor
+BARRIDO POTENCIAS 2,8,210,240,,,,<< 3 mW,sin valor
+BARRIDO POTENCIAS 3,1,0,60,30,4.8,0.5,30 mW en el display,
+BARRIDO POTENCIAS 3,2,60,90,25,4.27,0.5,25 mW en el display,
+BARRIDO POTENCIAS 3,3,90,120,20,3.15,0.5,20 mW en el display,
+BARRIDO POTENCIAS 3,4,120,150,15,1.83,0.5,15 mW en el display,
+BARRIDO POTENCIAS 3,5,150,180,5,0.0044,0.5,5 mW en el display,
+BARRIDO POTENCIAS 3,6,180,240,0,0,0,0 mW,láser apagado
+BARRIDO POTENCIAS 4,1,0,60,30,4.8,0.5,30 mW en el display,
+BARRIDO POTENCIAS 4,2,60,90,25,4.27,0.5,25 mW en el display,
+BARRIDO POTENCIAS 4,3,90,120,20,3.15,0.5,20 mW en el display,
+BARRIDO POTENCIAS 4,4,120,150,15,1.83,0.5,15 mW en el display,
+BARRIDO POTENCIAS 4,5,150,180,5,0.0044,0.5,5 mW en el display,
+BARRIDO POTENCIAS 4,6,180,240,0,0,0,0 mW,láser apagado
+BARRIDO POTENCIAS 5,1,0,60,30,4.8,0.5,30 mW en el display,
+BARRIDO POTENCIAS 5,2,60,90,25,4.27,0.5,25 mW en el display,
+BARRIDO POTENCIAS 5,3,90,120,20,3.15,0.5,20 mW en el display,
+BARRIDO POTENCIAS 5,4,120,150,15,1.83,0.5,15 mW en el display,
+BARRIDO POTENCIAS 5,5,150,180,5,0.0044,0.5,5 mW en el display,
+BARRIDO POTENCIAS 5,6,180,240,0,0,0,0 mW,láser apagado
+BARRIDO POTENCIAS 6,1,0,60,30,4.8,0.5,30 mW en el display,
+BARRIDO POTENCIAS 6,2,60,90,25,4.27,0.5,25 mW en el display,
+BARRIDO POTENCIAS 6,3,90,120,20,3.15,0.5,20 mW en el display,
+BARRIDO POTENCIAS 6,4,120,150,15,1.83,0.5,15 mW en el display,
+BARRIDO POTENCIAS 6,5,150,180,5,0.0044,0.5,5 mW en el display,
+BARRIDO POTENCIAS 6,6,180,240,0,0,0,0 mW,láser apagado
+BARRIDO POTENCIAS 7,1,0,60,,4.85,0.05,4.85 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 7,2,60,90,,4.1,0.05,4.1 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 7,3,90,120,,3.58,0.05,3.58 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 7,4,120,150,,2.31,0.05,2.31 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 7,5,150,180,,1.56,0.05,1.56 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 7,6,180,240,,0,0,0 mW,láser apagado
+BARRIDO POTENCIAS 8,1,0,60,,4.85,0.05,4.85 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 8,2,60,90,,4.1,0.05,4.1 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 8,3,90,120,,3.58,0.05,3.58 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 8,4,120,150,,2.31,0.05,2.31 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 8,5,150,180,,1.56,0.05,1.56 mW (medida),potencia ya medida
+BARRIDO POTENCIAS 8,6,180,240,,0,0,0 mW,láser apagado

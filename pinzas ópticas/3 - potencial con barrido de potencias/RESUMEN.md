@@ -6,45 +6,62 @@ Con la partícula atrapada y la platina quieta, se baja la potencia del láser p
 
 | Archivo | Qué es |
 |---|---|
-| `barrido de potencias.ipynb` | el análisis completo |
-| `figuras/` | sus figuras, en SVG |
-| `resultados/` | tablas (`potencia_*.csv`); `LEEME.txt` explica las columnas |
+| `los ocho barridos con la potencia calibrada.ipynb` | **el resultado**: la rigidez contra la potencia real, con los ocho barridos (12/11 y 19/11) |
+| `barrido de potencias.ipynb` | **el método**, con los dos primeros barridos: cómo se mide la posición con el láser encima, el error de medición, las correcciones, la forma del pozo. Sus «mW» son los del display |
+| `figuras/ocho barridos/` y `figuras/método/` | las figuras de cada notebook, en SVG |
+| `resultados/` | tablas: `ocho_*.csv` (resultado) y `potencia_*.csv` (método); `LEEME.txt` explica las columnas |
 | `DUDAS.md` | preguntas para responder y decisiones que se tomaron |
 
-Las grabaciones que se usan: `LASER 5` y `BARRIDO POTENCIAS 2`. Las funciones están en `../codigo/potencia.py`.
+Las grabaciones: `LASER 5` (barrido 1) y `BARRIDO POTENCIAS 2` a `8`. Las funciones están en `../codigo/potencia.py`. La tabla de potencias de cada escalón está en `../datos/cuaderno/potencias_cuaderno.csv` y la calibración en `../datos/cuaderno/calibracion_potencia.csv`.
+
+## La potencia
+
+El 19/11 se midió la potencia real y el display no la da: «30 mW» son 4.80 mW, «25» son 4.27, «20» son 3.15, «15» son 1.83 y «5» son 0.004 mW. A los barridos 1 a 6 (anotados con el display) se les asigna la potencia real con ± 0.5 mW. En los barridos 7 y 8 se anotó la potencia ya medida.
 
 ## Cómo se hizo
 
 1. Se mide la posición de la partícula atrapada en cada cuadro, corrigiendo el punto oscuro que deja el láser.
-2. Para cada escalón de potencia se arma el **histograma de posiciones**. Donde la partícula pasa más tiempo, el pozo es más hondo: $U = -k_BT \ln N$. Cerca del centro eso da una parábola, y su curvatura es la rigidez $\kappa$.
-3. A la varianza de la posición se le resta el error de medición antes de calcular la rigidez.
-4. Se compara con otros caminos (autocorrelación y espectro) y con la rigidez que sale de las patadas.
+2. Para cada escalón, la varianza de la posición da la rigidez: $\kappa = k_BT/\mathrm{Var}(x)$, después de restar el error de medición y de corregir el promedio que hace la cámara durante la exposición (30.5 ms el 19/11; no anotada el 12/11, se supone medio período).
+3. Se miró el video de cada grabación para ver si la partícula está sola y en foco. Se usan 26 de los 36 escalones.
+4. Se ajusta una recta por el origen, $\kappa = b\,P$, teniendo en cuenta el error de la potencia.
 
-Figuras para empezar: `figuras/histograma_posiciones_LASER_5_x_30mW.svg` (el histograma de un escalón), `figuras/histograma_posiciones_BARRIDO_POTENCIAS_2_x_suelta.svg` (la partícula casi suelta, sin pozo), `figuras/potencial_LASER_5_x.svg` (las parábolas) y `figuras/kappa_potencia_x.svg` (rigidez contra potencia).
+Figuras para empezar: `figuras/ocho barridos/rigidez_potencia_x.svg` (el resultado), `calibracion_potencia.svg` (display contra potencia real), `recortes_barrido_7.svg` (la partícula que se le pega a la atrapada) y `potencial_BARRIDO_POTENCIAS_8_x.svg` (las parábolas). Del método: `figuras/método/histograma_posiciones_LASER_5_x_30mW.svg` (el histograma del que sale una parábola).
 
 ## Resultados
 
-Rigidez por el movimiento térmico de la partícula quieta, en pN/µm (exposición supuesta de medio período):
+- **La rigidez es proporcional a la potencia real.** El 19/11, con 16 escalones limpios: $\kappa_x = (0.228 \pm 0.011)$ y $\kappa_y = (0.276 \pm 0.013)$ pN/µm por mW, entre 1.56 y 4.85 mW. La recta por el origen describe bien los datos.
+- **La calibración del display sirve.** Los barridos 4 a 6 (display convertido) dan $0.235 \pm 0.017$ en $x$; los 7 y 8 (potencia medida), $0.222 \pm 0.015$.
+- **A potencia máxima** (4.8 mW reales), $\kappa_x$ es de 1.0 a 1.5 pN/µm el 19/11 y de 2.0 a 2.1 pN/µm el 12/11.
+- **El 12/11 la trampa era 1.3 a 1.7 veces más rígida a igual potencia calibrada** ($0.40 \pm 0.04$ pN/µm por mW en $x$). No es del método: ese día la rigidez medida con las patadas (objetivo 2) dio lo mismo, 1.9 ± 0.2 pN/µm. La causa queda abierta.
+- **La medición se repite dentro de un 18 %** (la misma partícula en los barridos 4, 5 y 6). El error calculado en cada grabación es 12 %; la diferencia se sumó al error de cada punto.
+- **El arrastre $\gamma$ es el mismo los dos días:** 5.9 ± 0.5 y 5.5 ± 0.4 ×10⁻⁸ N·s/m.
+- **Forma del pozo cerca del centro:** parabólica hasta donde llega el movimiento térmico (2 a 5 $k_BT$), los dos días.
+- **Con «5» en el display (0.004 mW) la partícula se suelta** en los barridos 4, 5 y 6.
 
-| | 30 mW | 25 | 20 | 15 | 7 |
-|---|---|---|---|---|---|
-| `LASER 5`, $\kappa_x$ | 2.03 ± 0.20 | 1.46 ± 0.17 | 1.17 ± 0.11 | 0.61 ± 0.07 | 0.13 ± 0.02 |
-| `BARRIDO POTENCIAS 2`, $\kappa_x$ | 2.1 ± 0.7 | 1.7 ± 0.4 | 1.5 ± 0.3 | 1.15 ± 0.21 | 0.64 ± 0.08 |
+Rigidez $\kappa_x$ de los barridos limpios, en pN/µm (el error incluye el 13 % de repetición):
 
-- **Coincide con las patadas:** 2.0 pN/µm a 30 mW contra 1.9 ± 0.2. Son dos caminos independientes.
-- **Rigidez contra potencia:** `BARRIDO POTENCIAS 2` es compatible con una recta por el origen (0.055 a 0.060 pN/µm por mW). `LASER 5` no: a 7 mW es 2.5 a 5 veces más blanda. La causa queda abierta.
-- **Frecuencia de esquina:** se resuelve solo a potencia baja (1.6 Hz a 15 mW y 0.5 a 0.9 Hz a 7 mW en `LASER 5`; 1.6 Hz a 7 mW en `BARRIDO POTENCIAS 2`). A 20–30 mW queda por encima de lo que da la cámara; la extrapolación da 4.3 a 5.7 Hz a 30 mW, compatible con los 6.1 Hz de las patadas.
-- **Forma del pozo cerca del centro:** parabólica hasta donde llega el movimiento térmico (3 a 5 $k_BT$). $\kappa_y/\kappa_x$ = 0.81 ± 0.06 en `LASER 5` y 0.93 ± 0.10 en `BARRIDO POTENCIAS 2`.
-- **Por debajo de 7 mW** la partícula deja de estar atrapada: en `LASER 5` se la lleva el flujo; en `BARRIDO POTENCIAS 2` queda 60 s a 1–4 µm del centro.
-- **La exposición** es la incerteza dominante a potencia alta: la rigidez a 30 mW va de 1.7 a 3.0 pN/µm según se suponga un período entero o cero.
+| Barrido | 4.8 mW | 4.1–4.3 | 3.2–3.6 | 2.3 | 1.6–1.8 | 0.4 |
+|---|---|---|---|---|---|---|
+| 1 (`LASER 5`, 12/11) | 2.03 ± 0.33 | 1.46 ± 0.25 | 1.17 ± 0.19 | | 0.61 ± 0.11 | 0.13 ± 0.03 |
+| 2 (12/11) | 2.11 ± 0.73 | 1.68 ± 0.43 | 1.46 ± 0.39 | | 1.15 ± 0.26 | 0.64 ± 0.11 |
+| 4 (19/11) | 1.50 ± 0.22 | 1.09 ± 0.20 | 0.76 ± 0.12 | | 0.32 ± 0.06 | |
+| 5 (19/11) | 1.03 ± 0.17 | 0.70 ± 0.13 | | | | |
+| 6 (19/11) | 1.19 ± 0.19 | 1.36 ± 0.21 | 0.69 ± 0.13 | | 0.43 ± 0.09 | |
+| 7 (19/11) | 1.01 ± 0.18 | | | | | |
+| 8 (19/11) | 1.05 ± 0.17 | 1.07 ± 0.21 | 1.00 ± 0.15 | 0.54 ± 0.09 | 0.28 ± 0.05 | |
 
-## Lo que no se pudo hacer
+(Los valores exactos, con los dos ejes, están en `resultados/ocho_escalones.csv`.)
 
-- **Medir la exposición** de forma directa en estas grabaciones. Hay una estimación indirecta en `BARRIDO 2` (0.40 ± 0.10 del período) y una pista de que fue de al menos unos 15 ms (ver `../0 - calibración y precisión/REPORTE resolución y precisión.md`).
+## Lo que no se usa y por qué
+
+- **Barrido 3, entero:** tiene motas pegadas a la partícula toda la grabación, y entre 150 y 180 s sigue retenida cuando con «5» en el display tendría que soltarse.
+- **Barrido 5, escalones de «20» y «15»:** la imagen se desenfoca por momentos.
+- **Barrido 7, desde el segundo escalón:** a los 76 s llega otra partícula más chica y queda pegada a la atrapada hasta los 170 s. De los dos barridos con potencia medida, el que vale entero es el 8.
 
 ## Pendiente
 
-- **¿Qué exposición tenía la cámara, y cambió entre grabaciones?** Cambia la rigidez a potencia alta hasta un factor 1.8.
-- **¿Cómo se leyó la potencia?** (medidor, tabla o display). El rojo que dispersa la partícula casi no cambia entre 30 y 7 mW nominales, así que el video no puede confirmar esos escalones.
-- **¿En `LASER 5` el láser se apagó a los 180 s?** El cuaderno dice «< 7 mW» y no queda rojo.
+- **¿Por qué el 12/11 la trampa era más rígida?** ¿Se tocó la alineación o el foco entre los dos días? ¿La calibración del 19/11 vale para el 12/11?
+- **La exposición del 12/11** sigue sin conocerse.
+- **El error de la potencia medida** (barridos 7 y 8): se supuso ± 0.05 mW.
+- **El «7» del display** (barridos 1 y 2) sale de interpolar la calibración entre «5» y «15»: 0.37 ± 0.5 mW.
 - El detalle está en `DUDAS.md`.

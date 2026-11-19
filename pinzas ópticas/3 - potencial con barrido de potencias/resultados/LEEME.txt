@@ -99,3 +99,41 @@ potencia_histograma_BARRIDO_POTENCIAS_2_x_suelta.csv   POSICIONES CON LA PARTÍC
   x_um                    centro de cada intervalo de 0.2 µm, respecto del centro de la trampa
   cuadros_casi_suelta     cuadros entre 153 y 210 s en ese intervalo
   cuadros_atrapada_30mW   cuadros del primer escalón (30 mW) en ese intervalo, para comparar
+
+================================================================================================
+LOS OCHO BARRIDOS CON LA POTENCIA CALIBRADA (12/11 y 19/11/2026)
+Los escribe «los ocho barridos con la potencia calibrada.ipynb». "barrido" = 1 (LASER 5), 2 a 8 (BARRIDO POTENCIAS 2 a 8).
+OJO: en los archivos potencia_* de arriba, potencia_mW es lo que marcaba el DISPLAY (30, 25, 20, 15, 7);
+en los ocho_* es la potencia REAL (calibración del 19/11, datos/cuaderno/calibracion_potencia.csv).
+
+potencia_cuadros_19-11.csv, potencia_ruido_pixel_19-11.csv
+  lo mismo que potencia_cuadros.csv y potencia_ruido_pixel.csv, para BARRIDO POTENCIAS 3 a 8
+
+ocho_escalones_que_se_usan.csv   UNA FILA POR ESCALÓN CON LA PARTÍCULA ATRAPADA
+  limpio             True = la partícula está sola y en foco (mirando el video); solo esos entran en los ajustes
+  observacion        por qué no se usa
+
+ocho_gamma.csv              ARRASTRE DE CADA PARTÍCULA, medido cuando queda suelta
+  t_ini_s, t_fin_s, cuadros   el tramo en que difunde libre
+  Dx, Dy, D_um2_s, err_D      coeficiente de difusión [µm²/s]
+  gamma_1e8_N_s_m, err        arrastre = kT/D, en 1e-8 N·s/m (vacío = no se pudo medir)
+
+ocho_escalones.csv          EL RESULTADO: una fila por barrido, escalón y eje
+  potencia_mW, err_potencia_mW   potencia real y su error (± 0.5 mW en los barridos 1 a 6; ± 0.05 en 7 y 8, supuesto)
+  display_mW                lo que marcaba el display (vacío en 7 y 8)
+  cuadros, W_s              cuadros usados y exposición con la que se corrigió (0.0305 s el 19/11; medio período el 12/11)
+  desvio_medido_nm, ruido_nm   cuánto tiembla la partícula y el error de medición que se le resta
+  kappa_pN_um               rigidez
+  err_kappa_estadistico     por tener un tramo finito (bootstrap de bloques)
+  err_kappa_ruido           por no conocer el ruido mejor que ± 10 %
+  err_kappa_total           los dos anteriores juntos
+  err_kappa_final           el total más 13 % de repetición entre grabaciones: EL QUE SE USA
+  kappa_si_exposicion_cero, kappa_si_exposicion_un_periodo   solo 12/11: lo que daría con otra exposición
+  limpio                    si entra en los ajustes
+  media_um                  posición media en el escalón; t_ini_usado_s, t_fin_usado_s: el tramo usado
+
+ocho_ajustes.csv            RECTAS DE RIGIDEZ CONTRA POTENCIA, por grupo de barridos y eje (solo escalones limpios)
+  pendiente_pN_um_mW, err_pendiente, chi2, gl    recta por el origen, kappa = b·P
+  recta_libre_*             la misma recta sin obligarla a pasar por el origen (ordenada, pendiente, chi2, gl)
+
+ocho_potencial_BARRIDO_POTENCIAS_8_x.csv   los puntos de la figura del potencial (U en kT contra x en µm)

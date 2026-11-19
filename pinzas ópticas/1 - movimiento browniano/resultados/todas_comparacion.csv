@@ -1,0 +1,12 @@
+qué,partículas,D [µm²/s],± D,gamma [1e-8 N·s/m],± gamma,viscosidad efectiva [mPa·s],± viscosidad,glicerina a 23 °C [% en masa],a 20 °C,a 26 °C
+"ESTE ANÁLISIS: nominales, muestra 12/11",102,0.075533,0.003351,5.4132,0.24633,1.9145,0.087123,25.422,22.615,28.12
+"ESTE ANÁLISIS: nominales, muestra 19/11",52,0.09056,0.0038525,4.515,0.19744,1.5969,0.069832,19.816,16.872,22.635
+"ESTE ANÁLISIS: nominales de los barridos de potencia, los dos días juntos",70,0.089394,0.0031894,4.5739,0.16964,1.6177,0.059997,20.233,17.3,23.043
+"este análisis: la atrapada, ya suelta, muestra 19/11",5,0.078905,0.003808,5.1819,0.25554,1.8327,0.090377,24.117,21.279,26.842
+este análisis: nominales de BROWNIANO 2,7,0.07718,0.0049545,5.2978,0.34429,1.8737,0.12177,24.781,21.959,27.492
+este análisis: nominales de LASER 5 y BARRIDO POTENCIAS 2,18,0.086025,0.00397,4.753,0.22457,1.681,0.079427,21.453,18.55,24.236
+este análisis: nominales de las grabaciones con patadas,77,0.072931,0.0044672,5.6064,0.34807,1.9828,0.1231,26.452,23.668,29.127
+este análisis: nominales de BROWNIANO 1 (otra muestra),3,0.055156,0.0023865,7.4132,0.32943,2.6219,0.11651,34.09,31.475,36.613
+"antes: BROWNIANO 2, beads solas (comparación de mediciones)",7,0.079,0.007,5.1757,0.46159,1.8305,0.16325,24.08,21.241,26.806
+antes: libres de LASER 5 y BARRIDO POTENCIAS 2 (fuerza y pozo),22,0.082,0.004,4.9863,0.24843,1.7636,0.087862,22.944,20.078,25.694
+"antes: BROWNIANO 1, beads solas (comparación de mediciones)",3,0.056,0.004,7.3014,0.52675,2.5823,0.1863,33.699,31.075,36.229

@@ -95,7 +95,7 @@ BARRIDO STEP SIZE: a \= 450 micro m/s^2 ; v max \= 2600 micro m/s
 5) 25				t= 2.05.32  
 6) 25				t= 2.19.17
 
-Aca observamos un movimiento interesante en el que se quedó “orbitando brownianamente” cerca del láser
+Acá observamos un movimiento interesante en el que se quedó “orbitando brownianamente” cerca del láser
 
 7) 25				t \= 4.25.96
 
@@ -117,9 +117,71 @@ Acá cambiamos a \= 250 micro m/s^2 (BARRIDO STEP SIZE 2\)
 
 Ahora nos vamos a mover verticalmente:
 
+1) step size: 25 		t= 0.10.22  
+2) 25			t= 0.23.32  
+3) 25			t= 0.28.19  
+4) 25			t= 0.31.17	  
+5) 50 der			t \= 0.42.72  
+6) 50 der 			t= 0.59.55  
+7) 50 izq			t= 2.15.20  
+8) 100 izq 		t= 2.20.25  
+9) 150			t= 2.49.63  
+10) 150			t= 3.03.78  
+11) 50 arriba 		t= 3.25.01  
+12) 30 arriba		t= 3.56.01  
+13) 30 			t= 4.27.36  
+14) 50 arriba		t= 4.38.93  
+15) 75 arriba 		t= 5.34.72  
+16) 75 arriba		t= 5.57.38  
+17) 70 arriba		t= 6.32.21  
+18) 70 arriba		t= 6.41.06  
+19) 70 izq			t= 7.01.18  
+20) 150 izq			t= 7.06.87  
+21) 150 izq			t= 7.41.24  
+22) 150 izq 		t= 7.50.97
+
 ## **Clase 3**
 
- 
+Barrido de potencia de nuevo: archivo BARRIDO DE POTENCIA 3
 
-## 
+- 00:00 / 1 min : 30  
+- 1 min / 1 30 min : 25 mW  
+- 1 30 min / 2 min : 20 mW  
+- 2 min / 2 30 min : 15 mW  
+- 2 30 min / 3 min : 5 mW  
+- 3 min / 4 min : 0 mW
+
+Otro mas igual que se llama BARRIDO DE POTENCIA 4  
+Otro mas igual que se llama BARRIDO DE POTENCIA 5  
+Otra mas igual: BARRIDO DE POTENCIA 6
+
+Las mediciones 4, 5 y 6 son la misma particula confirmado. La 3 no estamos seguros. Las 4 mediciones se hicieron con una exposición de 30.5 ms por frame
+
+ Calibracion de potencia:
+
+- 30 mW son en realidad 4.80 mW  
+- 25 mW son 4.27 mW  
+- 20 mW , son 3.15 mW  
+- 15 mW, son 1.83 mW  
+- 5 mW, son 0.0044 mW  
+  
+
+
+
+
+Con la nueva calibración, hacemos BARRIDO DE POTENCIA 7  
+0 a 1; 4.85 mW  
+1 a 1 30 ; 4.1 mW  
+1 30 a 2 ; 3.58 mW  
+2 a 2 30 ; 2.31 mW  
+2 30 a 3 ; 1.56 mW  
+3 a 4 ; 0 mW
+
+Con la nueva calibración, hacemos BARRIDO DE POTENCIA 8  
+0 a 1; 4.85 mW  
+1 a 1 30 ; 4.1 mW  
+1 30 a 2 ; 3.58 mW  
+2 a 2 30 ; 2.31 mW  
+2 30 a 3 ; 1.56 mW  
+3 a 4 ; 0 mW
 
