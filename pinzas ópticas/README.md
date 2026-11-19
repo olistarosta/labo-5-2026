@@ -1,58 +1,70 @@
-# Pinzas ópticas — de video a CSV (Labo 5)
+# Pinzas ópticas (Labo 5)
 
-Se graba con el programa de Thorlabs (**ThorImageCAM** o **ThorCam**) y la platina se mueve con **Kinesis**, todo desde tu PC: ver **[docs/configurar_pc.md](docs/configurar_pc.md)**.
+Análisis de la práctica de pinzas ópticas del 12/11/2026. Está ordenado **por objetivo**: una carpeta por objetivo, y adentro de cada una lo mismo.
 
-TouchDesigner hace una sola cosa: **PROCESAMIENTO** convierte el video en **trayectorias en CSV**.
+## Los objetivos
 
-El análisis físico (MSD, κ, Stokes) se hace después en VS Code, con los CSV (carpeta `analisis/`).
+| Carpeta | Objetivo | Resultado principal |
+|---|---|---|
+| `1 - movimiento browniano/` | caracterizar el movimiento browniano de las partículas libres | las cuatro mediciones son brownianas; $D$ de 0.06 a 0.17 µm²/s |
+| `2 - potencial con patadas/` | caracterizar el potencial de la trampa moviendo la platina de golpe | pozo gaussiano de 1.14 µm de ancho; rigidez 1.9 ± 0.2 pN/µm; fuerza máxima 1.3 pN |
+| `3 - potencial con barrido de potencias/` | caracterizar el potencial con el temblor térmico de la partícula, bajando la potencia | rigidez 2.0 pN/µm a 30 mW, baja con la potencia |
+| `0 - calibración y precisión/` | lo que usan los tres: escala, lista de grabaciones, precisión de la medición | 94.61 nm/px; el centro se mide con 16 a 35 nm de error |
 
-## Carpetas
+**Adentro de cada carpeta de objetivo:**
+
+| | |
+|---|---|
+| `RESUMEN.md` | **por dónde empezar**: qué se quiere saber, cómo se hizo, qué salió y qué falta |
+| los `.ipynb` | los análisis (el `RESUMEN.md` dice en qué orden leerlos) |
+| `figuras/` | las figuras, solo en SVG |
+| `resultados/` | las tablas en CSV, con un `LEEME.txt` que explica las columnas |
+| `DUDAS.md` | preguntas para responder y decisiones que se tomaron |
+
+## El resto de las carpetas
 
 ```
 pinzas ópticas/
-  analisis/           análisis y visualización en VS Code: trayectorias.py + notebooks (uno por grabación)
-  datos/              los CSV de trayectorias de cada grabación (salida de PROCESAR / _lote.py)
-  figuras/            las figuras de cada análisis, en PDF (va al informe) y PNG (no se sube)
-  pinzas/             paquete Python (lo usan TouchDesigner y el análisis)
-  tests/              tests del paquete y de los bloques   →  correr_tests.py
-  docs/               configurar_pc (cámara, Kinesis, PC), CONTRATO (unidades y formatos), LECCIONES, PLAN
-  GRUPOS ANTERIORES/  videos de referencia
-  TouchDesigner/      NO va a git (.gitignore): el .toe, sus Backup, el código de los nodos
-                      (bloques/, construir_bloques.py), herramientas/ y lib/
+  CUADERNO DE ANÁLISIS.md   registro con fecha de todo lo que se fue haciendo (lo nuevo, al final)
+  datos/<grabación>/        lo que sale de cada video: trayectorias, platina, láser, radios (CSV)
+                            y las imágenes de control del análisis de imagen
+  datos/cuaderno/           el cuaderno de laboratorio pasado a tablas
+  codigo/                   las funciones que usan los notebooks (.py)
+  pinzas/                   paquete Python general (conversión de video, física); lo usa también TouchDesigner
+  tests/                    tests del paquete y de los bloques   →  correr_tests.py
+  docs/                     cuaderno de laboratorio, configurar_pc (cámara, Kinesis, PC), CONTRATO, LECCIONES, PLAN
+  TouchDesigner/            NO va a git (.gitignore): el .toe, sus Backup, el código de los nodos
+                            (bloques/, construir_bloques.py), herramientas/ y lib/
 ```
 
-`TouchDesigner/` no está versionada: su único respaldo es OneDrive.
-
-Todo lo de TD está en **`TouchDesigner/PINZAS ÓPTICAS.toe`**: en `/project1` está el container **PROCESAMIENTO**.
-
-**Dónde va cada cosa.** Los videos van a `C:\datos_pinzas\`, fuera de OneDrive y de GitHub; los análisis y los gráficos van acá, en el repo.
+**Los videos no están acá.** Van en `C:\datos_pinzas\`, fuera de OneDrive y de GitHub:
 
 | Qué | Dónde |
 |---|---|
 | Grabaciones de ThorCam (TIFF) | `C:\datos_pinzas\GRABACIONES\<grabación>\` |
-| Video para mirar (MP4, lo arma `analisis/ver_video.py`) | `C:\datos_pinzas\VISTAS\<grabación>.mp4` |
+| Video para mirar (MP4, lo arma `codigo/ver_video.py`) | `C:\datos_pinzas\VISTAS\<grabación>.mp4` |
 | Grabación importada (apunta a los TIFF, no los copia) | `C:\datos_pinzas\IMPORTADAS\` |
-| CSV de trayectorias | `datos/<grabación>/` |
-| Notebook del análisis | `analisis/<grabación>.ipynb` |
-| Figuras | `figuras/<grabación>/` |
-| Pasos intermedios del análisis de imagen (lo arma `TouchDesigner/herramientas/guardar_pasos.py`) | `figuras/<grabación>/pasos/` |
-| Radio aparente de cada partícula (lo arma `analisis/medir_radios.py`) | `datos/<grabación>/radios.csv`, `perfiles.csv` y `figuras/<grabación>/radios/recortes.png` |
 
-## La práctica del 12/11/2026: por dónde empezar
+**Dónde escribe cada notebook.** Lo decide `codigo/carpetas.py`: `figuras("patadas")` y `resultados("patadas")` son las carpetas del objetivo 2, y así con `"browniano"`, `"potencia"` y `"comun"`.
 
-Se grabaron 11 videos (`C:\datos_pinzas\GRABACIONES\`, 133 GB; `datos/catalogo.csv` dice qué es cada uno) y se analizaron además dos de otros grupos. El cuaderno de laboratorio está en `docs/cuaderno_de_laboratorio.md` y pasado a tablas en `datos/cuaderno/`.
+## Preguntas abiertas
 
-**Notebooks, en orden de lectura** (carpeta `analisis/`; cada uno termina con una conclusión y lo que no se puede afirmar):
+Por orden de cuánto pesan. El detalle está en el `DUDAS.md` de cada objetivo.
 
-| Notebook | Qué responde | Dudas |
-|---|---|---|
-| `PINZAS 1 - calibración y catálogo` | escala (94.61 nm/px con la retícula) y qué es cada grabación | `DUDAS pinzas.md` |
-| `BROWNIANO comparación` | movimiento browniano en 4 mediciones, seis formas de sacar la deriva, $D$ y Stokes–Einstein, radios | `DUDAS browniano.md` |
-| `PINZAS 2 - platina y patadas` | cuánto se movió de verdad la platina en cada patada, contra lo anotado en el cuaderno | `DUDAS pinzas.md` |
-| `PINZAS 3 - fuerza y pozo por arrastre` | fuerza de la trampa contra posición, forma del pozo, tiempo de relajación, cuándo se escapa, y el paso a pN | `DUDAS pinzas.md` |
-| `PINZAS 4 - barrido de potencia` | rigidez y frecuencia de la trampa contra la potencia, con el movimiento térmico de la partícula quieta | `DUDAS potencia.md` |
+1. **¿Qué mezcla tenía la muestra de la pinza?** La receta del cuaderno (60 ml de agua + 65 ml de glicerina) daría una difusión 4.7 veces más lenta que la medida; los datos corresponden a alrededor de 24 % de glicerina. No cambia los resultados, sí lo que se informe como muestra.
+2. **¿Qué exposición tenía la cámara, y cambió entre grabaciones?** Cambia la rigidez del barrido de potencias a potencia alta hasta un factor 1.8.
+3. **¿Cómo se leyó la potencia?** (medidor, tabla o display).
+4. **¿En `LASER 5` el láser se apagó a los 180 s?** El cuaderno dice «< 7 mW» y no queda rojo.
+5. **¿Qué tamaños nominales de partículas se mezclaron?**
+6. **¿Qué potencia había en las grabaciones con patadas?** Se supuso 30 mW.
+7. **Temperatura** del laboratorio.
+8. **Otros grupos:** escala, cuadros por segundo y muestra de sus videos.
 
-`BROWNIANO 1` y `GROS BROWNIANO` son los primeros análisis, de una grabación cada uno; `BROWNIANO comparación` los incluye y los supera.
+Para la próxima vez: anotar la exposición de la cámara y medir la potencia con el medidor. Son las dos incertezas mayores de la rigidez.
+
+## Las grabaciones
+
+Se grabaron 11 videos (133 GB; `datos/catalogo.csv` dice qué es cada uno) y se analizaron además dos de otros grupos. El cuaderno de laboratorio está en `docs/cuaderno_de_laboratorio.md`.
 
 **Tablas de cada grabación con láser** (`datos/<grabación>/`; las columnas están documentadas en el archivo que las arma):
 
@@ -60,21 +72,20 @@ Se grabaron 11 videos (`C:\datos_pinzas\GRABACIONES\`, 133 GB; `datos/catalogo.c
 |---|---|---|
 | `trayectorias.csv`, `particulas.csv`, `tiempo.csv`, `parametros.json` | todas las partículas seguidas | `TouchDesigner/herramientas/convertir.py` |
 | `platina.csv` | cuánto se corre toda la imagen de un cuadro al siguiente (movimiento de la platina) | `TouchDesigner/herramientas/platina.py` |
-| `laser.csv` | cuánto rojo dispersa lo que hay en la trampa (≈ 0 = vacía) | `analisis/laser_csv.py` |
-| `trampa_detecciones.csv` | detecciones en una ventana alrededor del láser, en todos los cuadros y sin enlazar | `analisis/trampa_roi.py` |
-| `atrapada.csv` | una fila por cuadro: la partícula atrapada (posición respecto del equilibrio) y la platina | `analisis/pinzas_datos.py` |
-| `seguida.csv` | la partícula atrapada seguida también cuando se aparta varios µm | `analisis/pinzas_fuerza.py` |
-| `patadas.csv` | una fila por movimiento de la platina: desplazamiento, duración, velocidad, qué hizo la partícula, renglón del cuaderno | `analisis/pinzas_fuerza.py` |
-| `fuerza_intervalos.csv` | una fila por par de cuadros alrededor de cada patada: fuerza de la trampa / γ y posición | `analisis/pinzas_fuerza.py` |
-| `radios.csv`, `perfiles.csv` | radio aparente y perfil radial de cada partícula | `analisis/medir_radios.py` |
+| `laser.csv` | cuánto rojo dispersa lo que hay en la trampa (≈ 0 = vacía) | `codigo/laser_csv.py` |
+| `trampa_detecciones.csv` | detecciones en una ventana alrededor del láser, en todos los cuadros y sin enlazar | `codigo/trampa_roi.py` |
+| `atrapada.csv` | una fila por cuadro: la partícula atrapada (posición respecto del equilibrio) y la platina | `codigo/pinzas_datos.py` |
+| `seguida.csv` | la partícula atrapada seguida también cuando se aparta varios µm | `codigo/pinzas_fuerza.py` |
+| `patadas.csv` | una fila por movimiento de la platina: desplazamiento, duración, velocidad, qué hizo la partícula, renglón del cuaderno | `codigo/pinzas_fuerza.py` |
+| `fuerza_intervalos.csv` | una fila por par de cuadros alrededor de cada patada: fuerza de la trampa / γ y posición | `codigo/pinzas_fuerza.py` |
+| `radios.csv`, `perfiles.csv` | radio aparente y perfil radial de cada partícula | `codigo/medir_radios.py` |
+| `imágenes de control/pasos/` | cada paso del análisis de imagen en algunos cuadros (PNG) | `TouchDesigner/herramientas/guardar_pasos.py` |
+| `imágenes de control/radios/` | un recorte de cada partícula con su radio medido | `codigo/medir_radios.py` |
 
-Los resultados de todas las grabaciones juntas están en `datos/pinzas/` (ver `LEEME.txt` para patadas y fuerza, y `LEEME potencia.txt` para el barrido de potencia) y en `datos/BROWNIANO comparación/`. El resumen de resultados y las preguntas abiertas están en `RESUMEN 12-11-2026.md`.
+Dos cosas a tener en cuenta con la pinza prendida:
 
-Tres cosas a tener en cuenta con la pinza prendida:
-
-- **El láser ensucia la posición.** La cámara le resta rojo al verde y el láser deja un punto oscuro en el centro de la partícula atrapada, que corre la posición medida. Para el movimiento térmico de la partícula quieta hay que usar `xc_um`, `yc_um` de `datos/pinzas/potencia_cuadros.csv`, no `atrapada.csv`. Para los apartamientos grandes de las patadas el efecto es menor que el error (`DUDAS pinzas.md`, punto J).
+- **El láser ensucia la posición.** La cámara le resta rojo al verde y el láser deja un punto oscuro en el centro de la partícula atrapada, que corre la posición medida. Para el movimiento térmico de la partícula quieta hay que usar `xc_um`, `yc_um` de `3 - potencial con barrido de potencias/resultados/potencia_cuadros.csv`, no `atrapada.csv`. Para los apartamientos grandes de las patadas el efecto es menor que el error (`2 - potencial con patadas/DUDAS.md`, punto J).
 - **Los valores del motor no sirven.** El movimiento de la platina se mide en el video (`platina.csv`).
-- **Para la próxima vez:** anotar la exposición de la cámara y medir la potencia con el medidor. Son las dos incertezas mayores de la rigidez.
 
 **Para rehacer una grabación con láser desde el video** (en este orden; `Python de TD` = `"C:/Program Files/Derivative/TouchDesigner/bin/python.exe"`, `Python global` = `C:\Dev\Global\.venv\Scripts\python.exe`):
 
@@ -83,13 +94,19 @@ Tres cosas a tener en cuenta con la pinza prendida:
 <Python de TD> TouchDesigner/herramientas/convertir.py "C:/datos_pinzas/GRABACIONES/BARRIDO 1/ACELERACION.tif" --nombre "BARRIDO 1" --fps 10.021 --escala_nm 94.61 --set b2_fondo.Trampax=496.9 b2_fondo.Trampay=477.2 b2_fondo.Tramparadio=45 b8_trayectorias.Largomin=10
 # 2. movimiento de la platina
 <Python de TD> TouchDesigner/herramientas/platina.py "C:/datos_pinzas/GRABACIONES/BARRIDO 1/ACELERACION.tif" --nombre "BARRIDO 1" --fps 10.021 --trampa 496.9 477.2 60 --escala_nm 94.61
-# 3. mancha roja y detecciones alrededor de la trampa (desde analisis/)
+# 3. mancha roja y detecciones alrededor de la trampa (desde codigo/)
 <Python global> laser_csv.py "BARRIDO 1"
 <Python global> trampa_roi.py "BARRIDO 1"
-# 4. las tablas atrapada / seguida / patadas / fuerza_intervalos las escribe el notebook PINZAS 2
+# 4. las tablas atrapada / seguida / patadas / fuerza_intervalos las escribe el notebook «platina y patadas»
 ```
 
-Una grabación nueva hay que agregarla a `CATALOGO` en `analisis/pinzas_datos.py` (posición del láser, cuadros por segundo, tipo).
+Una grabación nueva hay que agregarla a `CATALOGO` en `codigo/pinzas_datos.py` (posición del láser, cuadros por segundo, tipo).
+
+# De video a CSV con TouchDesigner
+
+Se graba con el programa de Thorlabs (**ThorImageCAM** o **ThorCam**) y la platina se mueve con **Kinesis**, todo desde tu PC: ver **[docs/configurar_pc.md](docs/configurar_pc.md)**.
+
+TouchDesigner hace una sola cosa: **PROCESAMIENTO** convierte el video en **trayectorias en CSV**. Todo lo de TD está en **`TouchDesigner/PINZAS ÓPTICAS.toe`**: en `/project1` está el container **PROCESAMIENTO**. `TouchDesigner/` no está versionada: su único respaldo es OneDrive.
 
 ## Convertir a CSV (container PROCESAMIENTO)
 
@@ -200,7 +217,7 @@ Calibrado con `GRUPOS ANTERIORES/recorte de laser y browniano 10.mp4` (1314 × 1
 | B8 Largo mínimo | 50 | |
 | B8 Predecir con la velocidad | 10 | la deriva es lo que más mueve a las beads |
 
-Resultado (PROCESAR en TD + `analisis/browniano.ipynb`): 719 cuadros sin repetir, ~13 beads por cuadro, 40 trayectorias (20 de más de 150 cuadros); tarda ~0.4 s por cuadro. **D = 25 ± 2 px²/s** (19 beads libres) y **1 bead atrapada** (la del láser: MSD que se aplana). Con beads de 3 µm, la escala que sale de D (79 nm/px) y la del tamaño aparente (88 nm/px) coinciden en ~10 %: el tracking mide bien el browniano.
+Resultado (PROCESAR en TD + un notebook de prueba que ya no está): 719 cuadros sin repetir, ~13 beads por cuadro, 40 trayectorias (20 de más de 150 cuadros); tarda ~0.4 s por cuadro. **D = 25 ± 2 px²/s** (19 beads libres) y **1 bead atrapada** (la del láser: MSD que se aplana). Con beads de 3 µm, la escala que sale de D (79 nm/px) y la del tamaño aparente (88 nm/px) coinciden en ~10 %: el tracking mide bien el browniano.
 
 Dos cosas de los MP4 que el importador resuelve solo:
 - **Cuadros repetidos.** El video repite el cuadro anterior cuando la cámara no entregó uno nuevo (109 de 828). Se descartan al importar (un cuadro es repetido si cambia menos del 0.01 % de los píxeles) y cada cuadro nuevo conserva el tiempo en que aparece. Si no, el tiempo queda mal y el MSD tiene un pico falso en Δ = 0.
@@ -220,7 +237,7 @@ Y una que no: **el MP4 no guarda la exposición** (para el blur) **ni la escala*
 | `grabacion.json` · `parametros.json` | los metadatos y todos los parámetros de los bloques (reproducible) |
 | `LEEME.txt` | qué es cada columna |
 
-- **Posiciones:** px es el píxel del **sensor**; µm = px × escala. **Sin deriva restada**: eso es análisis (`analisis/`).
+- **Posiciones:** px es el píxel del **sensor**; µm = px × escala. **Sin deriva restada**: eso es análisis (carpetas por objetivo).
 - **Tiempo:** el tiempo real de cada cuadro, no el del fps nominal. Usalo siempre en vez del número de cuadro.
 - **Celda vacía:** no medido (NaN).
 
@@ -240,32 +257,29 @@ Para repetir una conversión sin TD:
 
 Para guardar lo que muestra cada container (B0 … B7) y sus pasos intermedios en algunos cuadros, con los mismos parámetros de una conversión:
 ```bash
-"C:/Program Files/Derivative/TouchDesigner/bin/python.exe" TouchDesigner/herramientas/guardar_pasos.py "datos/<grabación>/parametros.json" "figuras/<grabación>/pasos" --cuadros 0 300 599
+"C:/Program Files/Derivative/TouchDesigner/bin/python.exe" TouchDesigner/herramientas/guardar_pasos.py "datos/<grabación>/parametros.json" "datos/<grabación>/imágenes de control/pasos" --cuadros 0 300 599
 ```
 Escribe un PNG por paso a resolución completa (`cuadro_NNNN/`) y un panel con todos los pasos de cada cuadro (`pasos_cuadro_NNNN.png` y `.pdf`). Sin `--cuadros`: el primero, el del medio y el último.
 
-## Análisis y visualización (carpeta `analisis/`)
+## El código de los análisis (carpeta `codigo/`)
 
-Con los CSV, en VS Code. Necesita numpy, pandas y matplotlib en el Python que uses.
+Las funciones que usan los notebooks de las carpetas por objetivo. Necesita numpy, scipy, pandas y matplotlib en el Python que uses.
 
 | Archivo | Qué es |
 |---|---|
+| `carpetas.py` | dónde va cada cosa: `figuras(objetivo)` y `resultados(objetivo)` devuelven las carpetas de cada objetivo |
 | `trayectorias.py` | funciones: `cargar` / `ultima_salida`, `matrices` (formato ancho, NaN = no medido), `deriva`, `sin_deriva_por_particula`, `msd`, `coeficientes_D`, `D_teorico` y los gráficos (`graficar_trayectorias`, `graficar_velocidades`, `graficar_msd`, `graficar_histograma`, …). Para comparar formas de sacar la deriva: `tiempo_regular`, `sin_deriva_media_movil`, `msd_pares`, `ajustar_msd_deriva`, `correlacion_pasos`, `simular` y `analizar_deriva` (aplica cualquiera de los seis métodos de `METODOS_DERIVA`) |
-| `browniano.ipynb` | browniano libre de punta a punta: trayectorias, deriva, MSD, D por partícula, histograma de desplazamientos y chequeo de la escala |
-| `BROWNIANO 1.ipynb` | la grabación BROWNIANO 1 (12/11/2026): ¿es browniano? MSD, histograma de desplazamientos contra la gaussiana y correlación entre pasos. Lee `datos/BROWNIANO 1/` y guarda en `figuras/BROWNIANO 1/` |
-| `GROS BROWNIANO.ipynb` | el video de otro grupo `OTROS GRUPOS\GROS BROWNIANO` (AVI), el mismo análisis **sin restar la deriva** (`RESTAR_DERIVA = False`) |
-| `BROWNIANO comparación.ipynb` | las cuatro mediciones de browniano libre (BROWNIANO 1 y 2, GROS, CHICAS): seis formas de sacar la deriva comparadas y validadas con sintéticos y con simulación gemela, chequeos de browniano, radio aparente de cada partícula, D en µm²/s y Stokes–Einstein. Lee `datos/<medición>/`, guarda en `figuras/BROWNIANO comparación/` y `datos/BROWNIANO comparación/` (`resumen.csv`, `particulas.csv`, `D_por_medicion.csv`) |
-| `PINZAS 1` a `PINZAS 4` | la pinza prendida: ver «La práctica del 12/11/2026» más arriba |
+| `resolucion.py` | funciones de `resolución y precisión`: perfil de la retícula, ruido de píxel, partículas pegadas al vidrio y error por pares, prueba con corrimientos conocidos, localización por plantilla, contorno de la partícula. Lee los TIFF originales |
 | `pinzas_datos.py` | catálogo de las grabaciones con láser y tablas por cuadro: `atrapada` (la partícula en la trampa), `patadas` (movimientos de la platina), `emparejar_cuaderno` |
 | `pinzas_fuerza.py` | `seguir` (la partícula atrapada también cuando se aparta), `intervalos` (fuerza de la trampa / γ entre cuadros), `ajustar_pozo` (pozo gaussiano integrando el movimiento), `resumen_patadas` |
-| `potencia.py` | funciones del barrido de potencia (`PINZAS 4`): relee los TIFF alrededor del láser (rojo y posición con el láser corregido), ruido de localización por plantilla, Ornstein–Uhlenbeck sintético, estimadores de rigidez por tramo, exposición por estirado |
+| `potencia.py` | funciones del barrido de potencia (`barrido de potencias`): relee los TIFF alrededor del láser (rojo y posición con el láser corregido), ruido de localización por plantilla, Ornstein–Uhlenbeck sintético, estimadores de rigidez por tramo, exposición por estirado |
 | `laser_csv.py`, `trampa_roi.py` | leen los TIFF directo (solo la zona del láser): mancha roja por cuadro y detecciones sin enlazar alrededor de la trampa |
-| `medir_radios.py` | radio aparente de cada partícula seguida, por perfil radial sobre el video. Se corre con el Python de TD: `python.exe analisis/medir_radios.py "datos/<grabación>" [--largo_min 200]`. Para la partícula ATRAPADA no sirve tal cual (toma el punto oscuro del centro): ver `DUDAS pinzas.md`, punto I |
+| `medir_radios.py` | radio aparente de cada partícula seguida, por perfil radial sobre el video. Se corre con el Python de TD: `python.exe codigo/medir_radios.py "datos/<grabación>" [--largo_min 200]`. Para la partícula ATRAPADA no sirve tal cual (toma el punto oscuro del centro): ver `2 - potencial con patadas/DUDAS.md`, punto I |
 | `ver_video.py` | arma un MP4 para mirar una grabación de ThorCam: `python ver_video.py "C:\datos_pinzas\GRABACIONES\<grabación>"` |
 
 El MSD y su ajuste son los de `pinzas.libre` (todos los orígenes, tiempos reales, Savin & Doyle). Además el paquete trae `pinzas.trampa` (κ por cinco métodos) y `pinzas.stokes`.
 
-**La deriva hay que restarla antes del MSD**, y en estos videos **no es común a todas las beads**: restando solo el promedio, el MSD queda con pendiente ~1.5. Por eso el notebook le resta a cada partícula su propia recta x(t), y(t). `BROWNIANO comparación.ipynb` compara seis formas de hacerlo; la recta por partícula alcanza en las cuatro mediciones.
+**La deriva hay que restarla antes del MSD**, y en estos videos **no es común a todas las beads**: restando solo el promedio, el MSD queda con pendiente ~1.5. Por eso los notebooks de browniano le restan a cada partícula su propia recta x(t), y(t). `1 - movimiento browniano/comparación de mediciones.ipynb` compara seis formas de hacerlo; la recta por partícula alcanza en las cuatro mediciones.
 
 
 ## Grabaciones de ThorCam
@@ -299,7 +313,7 @@ Cómo configurar la cámara para que la grabación sirva (exposición, fps, form
 | Lo común de los containers y el lote | `TouchDesigner/bloques/_td_bloque.py`, `_lote.py` |
 | Enlace de trayectorias (memoria, interpolación, colisiones) | `pinzas/enlace.py` |
 | Lectura, tiempo, importación de ThorCam y videos | `pinzas/io.py`, `pinzas/tiempo.py`, `pinzas/importar.py` |
-| Análisis y gráficos de los CSV (VS Code) | `analisis/trayectorias.py`, `analisis/browniano.ipynb` |
+| Análisis y gráficos de los CSV (VS Code) | `codigo/trayectorias.py` y los notebooks de `1 - movimiento browniano/` |
 | MSD, κ, Stokes | `pinzas/libre.py`, `pinzas/trampa.py`, `pinzas/stokes.py` |
 | Versión anterior, sin uso (se puede borrar) | `TouchDesigner/_anterior/` |
 

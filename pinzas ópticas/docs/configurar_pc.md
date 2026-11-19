@@ -63,6 +63,6 @@ Para practicar en tu casa: **Kinesis Simulator** (está instalado) simula el T-C
 1. **Kinesis:** Home y posicionar la platina.
 2. **ThorImageCAM / ThorCam:** en vivo, enfocar, fijar exposición, ganancia y fps, y grabar el TIFF en `C:\datos_pinzas\THORCAM\`.
 3. **TouchDesigner** (`TouchDesigner/PINZAS ÓPTICAS.toe`): B0 → *Cómo está guardado* = `thorcam`, elegí el `.tif`. Si faltan exposición o fps, completalos. Después **PROCESAR TODO EL VIDEO**.
-4. **VS Code:** `analisis/browniano.ipynb` sobre la salida.
+4. **VS Code:** los notebooks de las carpetas por objetivo (ver README) sobre la salida.
 
 **Antes del día de medición:** grabá un TIFF corto de prueba (unos segundos) y pasalo por B0. Así confirmás que el importador lee bien los tiempos de **tu** cámara y de **tu** versión del programa; ESTADO muestra el formato y los cuadros. Los tags de Thorlabs y los OME-TIFF están probados con archivos sintéticos, no con uno real de esta cámara.

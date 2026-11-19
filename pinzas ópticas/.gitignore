@@ -9,8 +9,6 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# salidas del análisis (se regeneran)
-analisis/figuras/
 
 # acceso directo local a C:\datos_pinzas
 *.lnk

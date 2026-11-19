@@ -1,0 +1,19 @@
+magnitud,valor,unidad,como
+tamaño del píxel,94.61,nm,retícula de 0.01 mm (escala y catálogo)
+diámetro aparente de una partícula,38.974,px,contorno de la partícula quieta 340
+nitidez de la óptica (ancho de un borde),496.7,nm,bordes de las líneas de la retícula
+ruido de un píxel,1.7921,% del brillo,"diferencia entre cuadros seguidos, BARRIDO 1"
+contraste de la partícula (profundidad del anillo oscuro),14.715,% del brillo,imagen promedio de la partícula 340
+error sistemático del centro (linealidad),0.46063,nm,corrimientos conocidos de 0.1 a 1 px
+"error de una medición, prueba con ruido real",15.524,nm,"partícula modelo sobre zonas vacías, entre cuadros"
+corrimiento fijo según el lugar de la imagen,6.6355,nm,partícula modelo sobre 12 zonas vacías
+"error de una medición, partículas quietas reales (mediana)",33.156,nm,17 pares de partículas pegadas al vidrio
+"error de una medición, mejor par",16.425,nm,par de partículas quietas con mejor contraste
+"error de una medición, peor par",46.683,nm,par de partículas quietas
+error de una medición comparando con la imagen de la partícula,4.5606,nm,prueba con ruido real; no es el método en uso
+cota teórica del error de una medición,3.2887,nm,Cramér–Rao con ruido independiente entre píxeles
+"error de una medición, partículas libres (mediana)",54.972,nm,"compensación entre pasos seguidos, 22 partículas libres; es un mínimo"
+"error de una medición, partícula libre peor enfocada",94.802,nm,compensación entre pasos seguidos
+elipse aparente del contorno (mediana),5.1889,%,13 partículas pegadas al vidrio
+piso de la medición de elipse,0.39577,%,partícula redonda sobre fondos reales
+deformación común a todas las partículas,1.3098,%,promedio con dirección de las elipses; error ± 0.9

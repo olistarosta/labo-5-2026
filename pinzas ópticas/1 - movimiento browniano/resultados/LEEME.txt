@@ -1,0 +1,28 @@
+MOVIMIENTO BROWNIANO: TABLAS DE RESULTADOS
+Las escribe "comparación de mediciones.ipynb". Unidades: µm, s, µm²/s. Celda vacía = no medido.
+
+D_por_medicion.csv      EL RESULTADO: una fila por medición (BROWNIANO 1, BROWNIANO 2, GROS, CHICAS)
+  n solas                 partículas que no chocan ni están pegadas (las que entran en D)
+  D [µm²/s]               coeficiente de difusión, con sus errores por separado:
+  ± estadística, ± método (forma de sacar la deriva), ± retardos (cuántos puntos del MSD), ± escala, ± total
+  muestra, glicerina en masa [%], η mezcla [mPa·s]     lo que dice el cuaderno y la viscosidad que daría
+  D Stokes–Einstein, a 20 °C, a 26 °C                  D esperado para esa muestra (a 23 °C y en los extremos)
+  medido / teórico        cociente entre D medido y el esperado
+  η efectiva [mPa·s], glicerina que daría ese D [%]    la viscosidad que explicaría el D medido
+  Faxén: separación bead–pared [µm]                    a qué distancia del vidrio estaría si la diferencia fuera por la pared
+
+resumen.csv             una fila por medición y por forma de sacar la deriva (seis formas)
+  metodo, ventana_s       la forma de sacar la deriva y su ventana, si tiene
+  n_libres, alfa          partículas usadas y pendiente log-log del MSD (1 = browniano)
+  D_libres_um2_s, D_conjunto_um2_s, D_solas_um2_s      D con distintos grupos de partículas
+  factor_gemela*          cuánto del browniano se lleva ese método, medido con una simulación igual a la medición
+  ordenada_um2            ordenada del MSD (error de medición de la posición)
+  media_sobre_sigma, curtosis, correlacion_pasos, anisotropia   chequeos de que es browniano:
+                          promedio del paso (0), forma de campana (0), pasos independientes (0), igual en x y en y (1)
+
+particulas.csv          una fila por partícula
+  clase                   sola / pegada / choca ...
+  cuadros                 en cuántos cuadros se la siguió
+  R_ap_um                 radio aparente (del borde de la imagen; depende del foco)
+  alfa, deriva_um_s       pendiente log-log de su MSD y velocidad de su deriva
+  D_recta_um2_s           su D, restándole su propia recta

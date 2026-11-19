@@ -1,0 +1,20 @@
+RESOLUCIÓN DEL VIDEO Y PRECISIÓN DEL CENTRO (resolución y precisión; lo arma codigo/resolucion.py)
+
+resolucion_resumen.csv            todos los números del notebook: magnitud, valor, unidad, cómo se midió
+resolucion_borde_reticula.csv     perfil de brillo a través de una línea de la retícula: posicion_um, brillo_relativo
+resolucion_ruido_de_pixel.csv     ruido de un píxel por grabación [cuentas y % del brillo] y parecido con el píxel vecino
+resolucion_quietas.csv            partículas pegadas al vidrio de BARRIDO 1: cuadros en que están quietas,
+                                  posición [px], desvío de la posición sx_px, sy_px, y z (señal sobre ruido)
+resolucion_pares.csv              pares de pegadas (a, b): n cuadros en común, separación [px],
+                                  sigma_x_px, sigma_y_px = error de UNA medición (desvío de la diferencia / raíz de 2),
+                                  comun_x_px, comun_y_px = lo que se mueven las dos juntas
+resolucion_corrimientos.csv       prueba con corrimientos conocidos: corrimiento_px impuesto, medido_px, error_px,
+                                  error_nm, n mediciones
+resolucion_metodos.csv            error de una medición [nm] con simetría radial, con la imagen de la propia
+                                  partícula y la cota teórica
+resolucion_libres.csv             partículas libres de LASER 5 y BARRIDO POTENCIAS 2: senal_sobre_ruido,
+                                  ancho_del_paso_nm (difusión + error), producto_de_pasos_seguidos_nm2
+                                  (negativo = se compensan), error_de_una_medicion_nm (es un mínimo)
+resolucion_contornos.csv          forma de cada pegada: radio_um, elipse_pct (eje mayor respecto del menor),
+                                  dirección del eje mayor, lo mismo con cada mitad de los cuadros,
+                                  tres_lobulos_pct, cuatro_lobulos_pct
